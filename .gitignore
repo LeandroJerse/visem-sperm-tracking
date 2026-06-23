@@ -14,6 +14,12 @@ wandb/
 *.pth
 *.onnx
 data/raw/
+data/tracked/
 data/processed/frames/
+data/yolo/
 results/
+runs/
 .DS_Store
+
+# Large reference PDFs (dataset papers — downloadable, not source)
+*.pdf
