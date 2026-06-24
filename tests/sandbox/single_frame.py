@@ -31,7 +31,9 @@ Output (one folder per run) under ``results/tests/<method>__<video>__f<frame>/``
 from __future__ import annotations
 
 import argparse
+import csv
 import json
+from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -98,7 +100,40 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--draw-mode", default="both", choices=["box", "centroid", "circle", "both"])
     p.add_argument("--weights", default=None, help="Pesos YOLO (--method yolo).")
     p.add_argument("--out-dir", default="results/tests", help="Raiz das saídas.")
+    p.add_argument("--no-stages", action="store_true",
+                   help="Não salva imagens de etapas intermediárias (útil em baterias).")
     return p.parse_args(argv)
+
+
+COMPARISON_FIELDS = [
+    "timestamp", "method", "video", "frame", "warmup",
+    "n_detections", "n_ground_truth", "count_diff", "count_ratio",
+    "overrides", "run_dir",
+]
+
+
+def _append_comparison(summary: dict, out_root: Path) -> None:
+    """Append one row to the cumulative comparisons CSV in ``out_root``."""
+    csv_path = out_root / "comparisons.csv"
+    write_header = not csv_path.exists()
+    row = {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "method": summary["method"],
+        "video": Path(summary["video"]).stem,
+        "frame": summary["frame"],
+        "warmup": summary["warmup"],
+        "n_detections": summary["n_detections"],
+        "n_ground_truth": summary["n_ground_truth"],
+        "count_diff": summary["count_diff"],
+        "count_ratio": summary["count_ratio"] if summary["count_ratio"] is not None else "",
+        "overrides": json.dumps(summary["overrides"], ensure_ascii=False),
+        "run_dir": Path(summary["out_dir"]).name,
+    }
+    with open(csv_path, "a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=COMPARISON_FIELDS)
+        if write_header:
+            writer.writeheader()
+        writer.writerow(row)
 
 
 def main(argv: list[str] | None = None) -> dict:
@@ -126,16 +161,24 @@ def main(argv: list[str] | None = None) -> dict:
 
     gt = load_gt(gt_dir, args.frame, w, h)
 
-    # Output folder, one per run.
-    out_dir = Path(args.out_dir) / f"{args.method}__{stem}__f{args.frame}"
+    # Output: results/tests/<stem>/<method>__f<frame>[__params]/
+    param_parts: list[str] = []
+    if args.method == "bgsub" and len(warmup_frames) > 0:
+        param_parts.append(f"w{len(warmup_frames)}")
+    for key, val in sorted(overrides.items()):
+        param_parts.append(f"{key}={val}")
+    params_str = ("__" + "_".join(param_parts)) if param_parts else ""
+    video_dir = Path(args.out_dir) / stem
+    out_dir = video_dir / f"{args.method}__f{args.frame}{params_str}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     cv2.imwrite(str(out_dir / "00_input.png"), frame)
 
-    # Intermediate stages (re-primes bgsub internally with the warmup frames).
+    # Intermediate stages — skipped in batch mode (--no-stages).
     stages = compute_stages(args.method, detector, frame, warmup_frames)
-    for idx, (name, img) in enumerate(stages, start=1):
-        cv2.imwrite(str(out_dir / f"{idx:02d}_{name}.png"), img)
+    if not args.no_stages:
+        for idx, (name, img) in enumerate(stages, start=1):
+            cv2.imwrite(str(out_dir / f"{idx:02d}_{name}.png"), img)
 
     # Final annotated frame: detections (green) + ground truth (red).
     annotated = frame.copy()
@@ -152,6 +195,11 @@ def main(argv: list[str] | None = None) -> dict:
     rows += [detection_to_row(stem, args.frame, "manual", d) for d in gt]
     write_detections_csv(rows, out_dir / "detections.csv")
 
+    n_det = len(dets)
+    n_gt = len(gt)
+    diff = n_det - n_gt
+    ratio = n_det / n_gt if n_gt > 0 else None
+
     summary = {
         "method": detector.name,
         "video": str(video_path),
@@ -159,8 +207,10 @@ def main(argv: list[str] | None = None) -> dict:
         "frame_size": [w, h],
         "warmup": len(warmup_frames) if args.method == "bgsub" else 0,
         "overrides": overrides,
-        "n_detections": len(dets),
-        "n_ground_truth": len(gt),
+        "n_detections": n_det,
+        "n_ground_truth": n_gt,
+        "count_diff": diff,          # positivo = excesso, negativo = falta
+        "count_ratio": round(ratio, 3) if ratio is not None else None,
         "detections": [
             {"cx": round(d.cx, 2), "cy": round(d.cy, 2),
              "w": round(d.w, 2), "h": round(d.h, 2), "score": round(d.score, 3)}
@@ -172,13 +222,27 @@ def main(argv: list[str] | None = None) -> dict:
     (out_dir / "summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
     )
+    _append_comparison(summary, video_dir)
 
-    print(f"[{detector.name}] frame {args.frame} de {stem}: "
-          f"{len(dets)} detecções, {len(gt)} GT")
+    # Console report.
     if overrides:
         print("  overrides:", overrides)
-    print("  etapas:", ", ".join(n for n, _ in stages) or "(nenhuma)")
-    print("  saída:", out_dir)
+    print(f"  etapas:", ", ".join(n for n, _ in stages) or "(nenhuma)")
+
+    if n_gt > 0:
+        sign = "+" if diff > 0 else ""
+        bar_len = 20
+        filled = round(min(n_det / n_gt, 2.0) * (bar_len / 2))
+        bar = "#" * filled + "-" * (bar_len - filled)
+        print(f"\n  contagem")
+        print(f"    detectado : {n_det:>4}")
+        print(f"    GT        : {n_gt:>4}")
+        print(f"    diferença : {sign}{diff:>4}  ({sign}{diff/n_gt*100:.1f}%)")
+        print(f"    ratio     : {ratio:.3f}  [{bar}]")
+    else:
+        print(f"\n  detectado: {n_det}  (sem GT disponível)")
+
+    print(f"\n  saída: {out_dir}")
     return summary
 
 

@@ -28,22 +28,25 @@ from .single_frame import main as run_single_frame
 # Parâmetros ajustáveis por método (nome -> valor padrão como string).
 # Servem só para o menu sugerir o que dá para mexer; o cast é feito no
 # single_frame. Mantemos alinhado aos construtores em src/detection/.
+# Parâmetros secundários expostos no bloco opcional "Ajustar parâmetros?".
+# threshold_value e morph_iterations são perguntas diretas no fluxo principal
+# e NÃO ficam aqui. min_area/max_area são do filtro de área (CCL), não do limiar.
 TUNABLE: dict[str, dict[str, str]] = {
     "threshold": {
-        "min_area": "3", "max_area": "300", "blur": "3",
-        "invert": "true", "adaptive": "false", "morph_kernel": "3",
+        "blur": "1", "invert": "false", "adaptive": "false", "morph_kernel": "3",
+        "min_area": "3", "max_area": "300",
     },
     "blob": {
-        "min_area": "2", "max_area": "200",
         "min_threshold": "10", "max_threshold": "200", "dark": "true",
+        "min_area": "2", "max_area": "200",
     },
     "bgsub": {
-        "method": "MOG2", "min_area": "3", "max_area": "400",
-        "history": "200", "var_threshold": "16", "morph_kernel": "3",
+        "method": "MOG2", "history": "200", "var_threshold": "16", "morph_kernel": "3",
+        "min_area": "3", "max_area": "400",
     },
     "watershed": {
-        "min_area": "3", "max_area": "600", "blur": "3",
-        "dist_ratio": "0.4", "morph_kernel": "3",
+        "blur": "3", "dist_ratio": "0.4", "morph_kernel": "3",
+        "min_area": "3", "max_area": "600",
     },
     "yolo": {},
 }
@@ -134,6 +137,17 @@ def main() -> None:
         )
         if warmup:
             extra += ["--warmup", str(warmup)]
+    if method == "threshold":
+        thresh_raw = ask("\nValor do threshold (0-255) ou Enter para Otsu automático", default="")
+        if thresh_raw.strip():
+            extra += ["--set", f"threshold_value={thresh_raw.strip()}"]
+    if method in ("threshold", "bgsub", "watershed"):
+        iters = ask_int("\nQuantas aberturas morfológicas (morph_open)?", default="1") or 1
+        if iters != 1:
+            extra += ["--set", f"morph_iterations={iters}"]
+        close_iters = ask_int("Quantos fechamentos morfológicos (morph_close)? (0 = desabilitado)", default="1") or 0
+        if close_iters != 1:
+            extra += ["--set", f"close_iterations={close_iters}"]
     if method == "yolo":
         weights = ask("Caminho dos pesos YOLO (.pt)", default="")
         if not weights:

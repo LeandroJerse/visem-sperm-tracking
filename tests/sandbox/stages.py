@@ -39,12 +39,40 @@ def stages_threshold(det, frame_bgr: np.ndarray) -> list[tuple[str, np.ndarray]]
             thresh_type, det.adaptive_block, det.adaptive_c,
         )
         out.append(("3_adaptive_thresh", binary))
+    elif det.threshold_value is not None:
+        _, binary = cv2.threshold(gray, det.threshold_value, 255, thresh_type)
+        out.append((f"3_fixed_thresh_{det.threshold_value}", binary))
     else:
-        _, binary = cv2.threshold(gray, 0, 255, thresh_type + cv2.THRESH_OTSU)
-        out.append(("3_otsu_thresh", binary))
+        used_val, binary = cv2.threshold(gray, 0, 255, thresh_type + cv2.THRESH_OTSU)
+        out.append((f"3_otsu_thresh_{int(used_val)}", binary))
 
-    opened = cv2.morphologyEx(binary, cv2.MORPH_OPEN, det.kernel, iterations=1)
-    out.append(("4_morph_open", opened))
+    opened = cv2.morphologyEx(binary, cv2.MORPH_OPEN, det.kernel, iterations=det.morph_iterations)
+    out.append((f"4_morph_open_x{det.morph_iterations}", opened))
+
+    if det.close_iterations > 0:
+        closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, det.kernel, iterations=det.close_iterations)
+        out.append((f"5_morph_close_x{det.close_iterations}", closed))
+        ccl_step = "6"
+    else:
+        closed = opened
+        ccl_step = "5"
+
+    # Connected-component labelling — each region gets a unique colour.
+    n_labels, labels, stats, _ = cv2.connectedComponentsWithStats(
+        closed, connectivity=8
+    )
+    colored = np.zeros((*closed.shape, 3), dtype=np.uint8)
+    for lbl in range(1, n_labels):
+        area = float(stats[lbl, cv2.CC_STAT_AREA])
+        if area < det.min_area or area > det.max_area:
+            continue
+        # Deterministic hue via golden-ratio sequence → well-spread colours.
+        hue = int(((lbl * 0.618033988749895) % 1.0) * 179)
+        bgr = cv2.cvtColor(
+            np.array([[[hue, 220, 210]]], dtype=np.uint8), cv2.COLOR_HSV2BGR
+        )[0, 0]
+        colored[labels == lbl] = bgr
+    out.append((f"{ccl_step}_labeled_components", colored))
     return out
 
 
