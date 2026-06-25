@@ -31,7 +31,9 @@ my_tcc/
 │   ├── raw/videos/        # vídeos brutos VISEM original (.avi)
 │   ├── tracked/           # VISEM-Tracking (Train/<id>/{images,labels,labels_ftid})
 │   └── yolo/              # dataset YOLO gerado (train.txt/val.txt/visem.yaml)
+├── docs/                  # relatórios e análises exportadas
 ├── src/
+│   ├── db/                # ingestão dos CSVs num SQLite analítico (results/visem.db)
 │   ├── detection/         # detecção (baselines clássicos + YOLO)
 │   ├── flow/              # fluxo óptico (Farneback, RAFT)
 │   ├── tracking/          # SORT, DeepSORT, ByteTrack
@@ -97,6 +99,29 @@ python -m src.detection.run_detection --method yolo \
 ```
 
 Saídas: `results/<video>_<method>.csv`, `.mp4` e `_summary.csv` (com join clínico).
+
+## Banco de dados analítico (SQLite)
+
+O módulo `src/db` ingere todos os CSVs gerados pelo pipeline em um único SQLite
+local (`results/visem.db`) para consultas SQL rápidas, joins e plotagem via pandas.
+
+```bash
+python -m src.db.build_db
+# opcional: caminho customizado
+python -m src.db.build_db --db results/meu_banco.db
+```
+
+Tabelas criadas:
+
+| Tabela | Fonte | Descrição |
+|---|---|---|
+| `detections` | `results/**/<v>_<method>.csv` | todas as detecções e anotações GT |
+| `summaries` | `results/**/<v>_<method>_summary.csv` | uma linha por run (métricas agregadas) |
+| `clinical` | `data/raw/semen_analysis_data.csv` | dados laboratoriais por participante |
+| `counts_gt` | `data/tracked/sperm_counts_per_frame.csv` | contagem GT por frame |
+
+O build é atômico (gera `.db.tmp` e substitui), portanto não bloqueia leitores
+abertos no DB Browser for SQLite. `results/visem.db` está no `.gitignore`.
 
 ## Treino do YOLO no VISEM-Tracking
 
