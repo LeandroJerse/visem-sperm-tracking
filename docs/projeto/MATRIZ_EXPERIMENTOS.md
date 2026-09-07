@@ -21,7 +21,7 @@ impedem que duplicatas próximas sejam ignoradas.
 | Auditoria das regiões de agrupamento | Concluída; contagens, união exata das caixas e figura do GT |
 | Avaliador v3 e precisão de exportação | Implementados; suíte curta com 287 testes passou após seis regressões adicionais |
 | Smoke inicial: frames 0–2 de cada vídeo 11/12 | Executado; duas runs completas no commit 42ced6b, Git limpo; TP/FP/FN confirmados |
-| Fechamento do nível 2 | Pendente da repetição dos mesmos seis frames e da conferência das métricas reconstruídas dos CSVs |
+| Fechamento do nível 2 | Concluído após repetir os mesmos seis frames em duas novas runs de 6b0a1e9, Git limpo; 36 associações e 168 comparações espaciais independentes aprovadas |
 | Busca, seleção ou promoção de threshold na v3 | Não executadas |
 
 A auditoria encontrou 5.413 anotações de agrupamento em 4.056 quadros dos
@@ -108,18 +108,19 @@ foi validado com vetores conhecidos e pixels inválidos. A coluna ainda marca
 | LSTM com fluxo | ✓ | API; treino pendente | — | — | — | — | — | — |
 | Híbridos clássicos flow-aware | ✓ | ✓ | — | — | — | — | — | — |
 
-## Nível 2: conferir a precisão dos CSVs antes de fechar
+## Nível 2 concluído: precisão dos CSVs conferida
 
 O smoke inicial do contrato v3 está concluído. A verificação independente
 confirmou TP/FP/FN, mas identificou que os centros exportados em
 `detections.csv` eram arredondados a duas casas, impedindo reconstruir
 exatamente as somas de distâncias calculadas com os valores originais.
 A correção e seis regressões adicionais estão implementadas; a suíte curta
-completa passou com 287 testes. A repetição do smoke para conferir os CSVs
-ainda está pendente. Foram executados somente os frames 0–2 dos vídeos de treino
+completa passou com 287 testes. A repetição em novas runs confirmou os erros
+espaciais reconstruídos a 1e-9 px. Foram executados somente os frames 0–2 dos vídeos de treino
 11/12, com `protocol_smoke_v3.yaml`: 106 TP/29 FP/23 FN no vídeo 11 e
 73 TP/9 FP/10 FN no vídeo 12, a 10 px. Ambos os manifestos registram
-`status: complete`, commit `42ced6b` e `git_dirty: false`.
+`status: complete`, commit `6b0a1e9` e `git_dirty: false`. As duas runs
+iniciais de `42ced6b` permanecem preservadas junto às duas corrigidas.
 
 Nenhuma predição foi ignorada no smoke, inclusive nos frames com agrupamento
 do vídeo 12. Testes sintéticos cobrem ignorados, proteção de duplicatas e
@@ -129,9 +130,10 @@ de qualidade geral, ranking ou seleção de limiar. As runs locais estão em
 `data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
 
 O pesquisador autorizou continuidade autônoma. O próximo trabalho é
-**repetir os mesmos seis frames em novas runs e conferir as métricas
-reconstruídas dos CSVs**. O planejamento da busca prospectiva de threshold
-vem depois, com raio e política de classes já definidos. Formalizar a busca reproduzível e a avaliação por vídeo,
+**planejar a busca prospectiva de threshold**, com raio e política de classes
+já definidos. A repetição em `6b0a1e9` preservou parâmetros e contagens e
+confirmou os erros reconstruídos dos CSVs a 1e-9 px. Formalizar a amostragem,
+o espaço de busca, o orçamento e os critérios antes de executar a busca,
 mantendo a limitação de exposição histórica do teste. O roteiro anterior de
 teste isolado e folds permanece abaixo apenas como referência histórica.
 

@@ -236,6 +236,12 @@ verificação da precisão de exportação exige novas runs dos mesmos quadros,
 preservando as iniciais; contagens consistentes não bastam para declarar
 reconstrução exata dos erros de distância.
 
+A correção no commit `6b0a1e9` foi verificada repetindo os mesmos seis quadros
+em novas runs, com Git limpo e parâmetros iguais. O registro local
+`verification_20260907_full_precision.json`, no mesmo diretório `smoke/`,
+confirma 36 associações independentes e 168 comparações de erros espaciais
+a 1e-9 px. Os arquivos iniciais e sua verificação continuam preservados.
+
 ## 1. Detecção
 
 Implementações e famílias: [mapa da detecção](../src/detection/README.md).

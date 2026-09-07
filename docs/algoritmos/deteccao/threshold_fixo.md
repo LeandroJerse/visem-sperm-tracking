@@ -49,8 +49,9 @@ clusters. O baseline deve continuar puro; CLAHE/top-hat pertencem ao híbrido.
 
 O avaliador **`center_distance_v3_individuals_ignore_clusters_10px`** está
 implementado; a suíte curta passou com 287 testes após a correção da precisão
-de exportação e seis regressões adicionais. A conferência real dos CSVs
-após essa correção ainda está pendente.
+de exportação e seis regressões adicionais. A repetição dos mesmos seis
+quadros em `6b0a1e9`, com Git limpo, confirmou a reconstrução dos CSVs:
+36 associações independentes e 168 comparações espaciais a 1e-9 px.
 O contrato usa indivíduos das
 classes 0/2 como alvos, raio principal 10 px e sensibilidades obrigatórias
 15/20 px na resolução original de 640 × 480. A secundária
@@ -80,8 +81,10 @@ operacional, não uma estimativa de ótimo ou referência anatômica exata.
 A verificação independente confirmou TP/FP/FN nos seis frames, mas encontrou
 centros arredondados a duas casas em `detections.csv`, enquanto as métricas
 usavam os valores originais. A exportação foi corrigida; as runs iniciais
-permanecem imutáveis. O fechamento do nível 2 depende de **repetir os mesmos
-seis frames em novas runs e conferir a reconstrução das métricas pelos CSVs**.
+permanecem imutáveis. O nível 2 foi concluído após repetir os mesmos seis
+quadros em duas novas runs de `6b0a1e9`, sem alterar parâmetros ou contagens.
+O registro local `verification_20260907_full_precision.json`, no diretório
+`smoke/`, contém a conferência independente dos erros espaciais exportados.
 O pesquisador autorizou continuidade autônoma. O planejamento prospectivo
 de threshold virá depois, com raio e política de classes já definidos.
 

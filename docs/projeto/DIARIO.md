@@ -2,6 +2,32 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-07 — nível 2 concluído: métricas reconstruídas com precisão
+
+- Correção de exportação registrada em `6b0a1e9`, após 287 testes aprovados.
+  Repetidos os mesmos quadros 0, 1 e 2 dos vídeos de treino 11 e 12, com
+  configuração e oito hashes de entrada iguais aos iniciais; nenhuma seleção.
+- Duas novas runs completas, ambas com `git_dirty: false`. As duas runs
+  iniciais de `42ced6b` e a verificação que revelou o arredondamento continuam
+  preservadas. TP/FP/FN, contagens e métricas calculadas no processamento
+  permaneceram iguais; o CSV agora permite reconstruir os erros espaciais.
+- A conferência SciPy independente aprovou 36 associações e 168 comparações
+  de erros espaciais, com tolerância absoluta 1e-9 px. Maior diferença:
+  4,44 × 10⁻¹⁶ px. Registro local `verification_20260907_full_precision.json`
+  em `data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
+- Esses seis quadros verificam implementação e reprodutibilidade. Não há
+  promoção científica, estimativa da qualidade geral ou escolha de limiar.
+  Zero previsões foram ignoradas nesse recorte; os casos ignorados e de
+  fronteira permanecem cobertos pelos testes sintéticos.
+- Próximo marco: nível 3, registrar amostragem, espaço de busca, orçamento e
+  critérios de seleção antes da busca em treino. Validação, teste e folds
+  não foram processados nesta etapa; a exposição histórica continua registrada.
+- Mapa didático, guia de navegação, matriz, ficha e método LaTeX atualizados.
+  A fonte acadêmica ainda aguarda compilação; os PDFs anteriores permanecem
+  históricos. HTMLs e guias locais continuam fora dos commits.
+
+> As entradas seguintes preservam a descoberta e a resolução do problema.
+
 ## 2026-09-07 — precisão dos CSVs: fechamento do nível 2 pendente
 
 - A verificação independente confirmou as contagens TP/FP/FN dos seis

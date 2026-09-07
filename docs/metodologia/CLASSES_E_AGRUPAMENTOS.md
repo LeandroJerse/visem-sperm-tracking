@@ -215,3 +215,23 @@ de entrada. Documenta a limitação do erro de centro, sem declarar identidade
 numérica. As execuções `42ced6b` permanecem como registro do problema.
 A verificação final repetirá os mesmos seis quadros em novas runs, após
 commit da correção, sem mudança de parâmetros ou escolha de novos quadros.
+
+### Fechamento da verificação de precisão
+
+A correção foi registrada no commit `6b0a1e9`. Os mesmos seis quadros foram
+reprocessados em duas novas runs, ambas com `git_dirty: false`, configuração
+e hashes de entrada idênticos aos iniciais. TP/FP/FN permaneceram iguais.
+
+O arquivo local `verification_20260907_full_precision.json`, no diretório
+`smoke/`, registra 36 associações SciPy independentes e 168 comparações de
+erros espaciais, todas aprovadas com tolerância absoluta de 1e-9 px.
+A maior diferença observada foi 4,44 × 10⁻¹⁶ px. Foram conferidos soma,
+média, mediana e máximo por quadro; no resumo por vídeo, soma e média.
+Mediana e máximo agregados, ausentes dos summaries das runs, estão no JSON
+somente como reconstruções independentes, não como campos exportados.
+
+As quatro runs e os dois registros de verificação permanecem separados:
+duas execuções iniciais que revelaram o arredondamento e duas após a correção.
+O nível 2 está concluído quanto ao contrato de avaliação, testes e smoke.
+Isso não promove o threshold nem resolve a seleção ou a exposição histórica
+do teste. O nível 3 começará pelo planejamento prospectivo da busca em treino.
