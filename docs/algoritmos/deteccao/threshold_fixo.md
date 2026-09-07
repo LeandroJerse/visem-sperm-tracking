@@ -48,7 +48,10 @@ clusters. O baseline deve continuar puro; CLAHE/top-hat pertencem ao híbrido.
 ## Decisão atual
 
 O avaliador **`center_distance_v3_individuals_ignore_clusters_10px`** está
-implementado, com testes finais em curso. O contrato usa indivíduos das
+implementado; a suíte curta passou com 287 testes após a correção da precisão
+de exportação e seis regressões adicionais. A conferência real dos CSVs
+após essa correção ainda está pendente.
+O contrato usa indivíduos das
 classes 0/2 como alvos, raio principal 10 px e sensibilidades obrigatórias
 15/20 px na resolução original de 640 × 480. A secundária
 `binary_all_objects` compara todos os objetos, incluindo agrupamentos.
@@ -60,12 +63,27 @@ inclusive se receberem classe de agrupamento; a classe prevista não filtra
 candidatos. A auditoria de treino encontrou 4.250 centros individuais dentro
 de regiões de agrupamento, portanto o GT individual nessas regiões permanece.
 
-O pesquisador autorizou continuidade autônoma. O próximo marco é um **smoke
-de engenharia em três quadros dos vídeos de treino 11/12, ainda não executado**.
-Ele verificará o contrato, sem selecionar um limiar. Não há resultado de
-desempenho, busca, validação ou promoção de threshold no protocolo v3.
-O raio é uma convenção operacional, não uma estimativa de ótimo ou uma
-referência anatômica exata.
+O **smoke inicial de engenharia está concluído**: frames 0, 1 e 2 de cada vídeo
+de treino 11/12, seis frames ao todo. As duas runs usam o commit `42ced6b`,
+com `git_dirty: false` e `status: complete`. A 10 px, o vídeo 11 somou
+106 TP/29 FP/23 FN e o vídeo 12, 73 TP/9 FP/10 FN. Não houve predições
+ignoradas, inclusive nos frames com agrupamento do vídeo 12. Os testes
+sintéticos cobrem ignorados, duplicatas protegidas e ramos de quadros vazios.
+
+Saídas locais:
+`data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
+Os seis frames verificam a execução do contrato; seu F1 não estima a qualidade
+geral do threshold e não orienta seleção de parâmetros. Não há busca,
+validação científica ou promoção do método na v3. O raio é uma convenção
+operacional, não uma estimativa de ótimo ou referência anatômica exata.
+
+A verificação independente confirmou TP/FP/FN nos seis frames, mas encontrou
+centros arredondados a duas casas em `detections.csv`, enquanto as métricas
+usavam os valores originais. A exportação foi corrigida; as runs iniciais
+permanecem imutáveis. O fechamento do nível 2 depende de **repetir os mesmos
+seis frames em novas runs e conferir a reconstrução das métricas pelos CSVs**.
+O pesquisador autorizou continuidade autônoma. O planejamento prospectivo
+de threshold virá depois, com raio e política de classes já definidos.
 
 ## Decisão histórica preservada — avaliação de 15 px
 

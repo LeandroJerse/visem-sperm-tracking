@@ -19,8 +19,9 @@ impedem que duplicatas próximas sejam ignoradas.
 |---|---|
 | Auditoria de geometria dos 12 vídeos de treino | Concluída; descrição do GT, sem detector |
 | Auditoria das regiões de agrupamento | Concluída; contagens, união exata das caixas e figura do GT |
-| Avaliador v3 | Implementado; testes finais em curso |
-| Smoke de engenharia em três quadros dos vídeos 11/12 | Planejado, ainda não executado |
+| Avaliador v3 e precisão de exportação | Implementados; suíte curta com 287 testes passou após seis regressões adicionais |
+| Smoke inicial: frames 0–2 de cada vídeo 11/12 | Executado; duas runs completas no commit 42ced6b, Git limpo; TP/FP/FN confirmados |
+| Fechamento do nível 2 | Pendente da repetição dos mesmos seis frames e da conferência das métricas reconstruídas dos CSVs |
 | Busca, seleção ou promoção de threshold na v3 | Não executadas |
 
 A auditoria encontrou 5.413 anotações de agrupamento em 4.056 quadros dos
@@ -107,16 +108,30 @@ foi validado com vetores conhecidos e pixels inválidos. A coluna ainda marca
 | LSTM com fluxo | ✓ | API; treino pendente | — | — | — | — | — | — |
 | Híbridos clássicos flow-aware | ✓ | ✓ | — | — | — | — | — | — |
 
-## Próximo marco: smoke de engenharia do contrato v3
+## Nível 2: conferir a precisão dos CSVs antes de fechar
 
-O pesquisador autorizou continuidade autônoma. A sequência imediata é concluir
-os testes finais do avaliador e executar o smoke planejado em três quadros de
-treino dos vídeos 11/12, conferindo matching, ignorados, métricas principais e
-secundárias nos três raios. No momento desta atualização, **o smoke real ainda
-não foi executado**. Seus resultados serão registrados como verificação de
-engenharia, sem seleção de limiar ou promoção científica.
+O smoke inicial do contrato v3 está concluído. A verificação independente
+confirmou TP/FP/FN, mas identificou que os centros exportados em
+`detections.csv` eram arredondados a duas casas, impedindo reconstruir
+exatamente as somas de distâncias calculadas com os valores originais.
+A correção e seis regressões adicionais estão implementadas; a suíte curta
+completa passou com 287 testes. A repetição do smoke para conferir os CSVs
+ainda está pendente. Foram executados somente os frames 0–2 dos vídeos de treino
+11/12, com `protocol_smoke_v3.yaml`: 106 TP/29 FP/23 FN no vídeo 11 e
+73 TP/9 FP/10 FN no vídeo 12, a 10 px. Ambos os manifestos registram
+`status: complete`, commit `42ced6b` e `git_dirty: false`.
 
-Depois, formalizar a busca reproduzível e o desenho da avaliação por vídeo,
+Nenhuma predição foi ignorada no smoke, inclusive nos frames com agrupamento
+do vídeo 12. Testes sintéticos cobrem ignorados, proteção de duplicatas e
+ramos de quadros vazios; esses casos não foram todos exercitados no smoke.
+As métricas dos seis frames são diagnóstico de engenharia, não estimativa
+de qualidade geral, ranking ou seleção de limiar. As runs locais estão em
+`data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
+
+O pesquisador autorizou continuidade autônoma. O próximo trabalho é
+**repetir os mesmos seis frames em novas runs e conferir as métricas
+reconstruídas dos CSVs**. O planejamento da busca prospectiva de threshold
+vem depois, com raio e política de classes já definidos. Formalizar a busca reproduzível e a avaliação por vídeo,
 mantendo a limitação de exposição histórica do teste. O roteiro anterior de
 teste isolado e folds permanece abaixo apenas como referência histórica.
 

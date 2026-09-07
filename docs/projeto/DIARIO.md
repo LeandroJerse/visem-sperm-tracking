@@ -2,6 +2,67 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-07 — precisão dos CSVs: fechamento do nível 2 pendente
+
+- A verificação independente confirmou as contagens TP/FP/FN dos seis
+  frames do smoke inicial, mas identificou uma limitação de exportação:
+  `detections.csv` arredondava os centros a duas casas decimais, enquanto
+  `frame_metrics.csv` usava os valores originais. No frame 1 do vídeo 11,
+  a reconstrução da soma das distâncias divergiu aproximadamente 0,0278 px.
+- A exportação foi corrigida e recebeu seis testes de regressão adicionais.
+  A suíte curta completa passou: **287 testes em 22,37 s**. A repetição dos
+  mesmos frames 0–2 dos vídeos de treino 11/12 em novas runs ainda está
+  pendente, assim como a conferência das métricas reconstruídas dos CSVs.
+- O smoke inicial permanece concluído e seus artefatos são preservados.
+  O nível 2 permanece aberto até essa conferência; não há busca, seleção
+  ou promoção de algoritmo. O planejamento prospectivo de threshold virá
+  depois, mantendo o raio e a política de classes já definidos.
+
+> A entrada abaixo registra o estado anterior à conferência independente;
+> a declaração de fechamento foi superada pela limitação de exportação.
+
+## 2026-09-07 — smoke inicial: contrato v3 e execução real
+
+- Contrato `center_distance_v3_individuals_ignore_clusters_10px` verificado
+  estruturalmente e em smoke real. Na suíte curta, 280 testes de código
+  passaram; a única falha de link foi corrigida. A rechecagem de 31 testes
+  de configuração/documentação passou, completando a verificação dos 281
+  testes da suíte, sem contar a rechecagem como testes adicionais.
+- Executadas duas runs de engenharia com `protocol_smoke_v3.yaml`, usando
+  somente os frames 0, 1 e 2 de cada vídeo de treino 11/12: **seis frames**.
+  Ambos os manifestos registram `status: complete`, commit `42ced6b` e
+  `git_dirty: false`. Não foram abertas fontes de validação ou teste.
+
+| Vídeo | Predições | GT individual | GT agrupamentos | TP | FP | FN | Ignoradas |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 11 | 135 | 129 | 0 | 106 | 29 | 23 | 0 |
+| 12 | 82 | 83 | 3 | 73 | 9 | 10 | 0 |
+
+Contagens somadas nos três frames de cada vídeo, com raio principal de 10 px;
+não representam células únicas. Métricas principais/secundárias e os três
+raios foram exportados. O F1 desses seis frames é diagnóstico de engenharia,
+não estimativa da qualidade geral ou comparação para escolher limiares.
+
+- Nenhuma predição foi ignorada no smoke, inclusive no vídeo 12, que contém
+  agrupamentos. Os casos com ignorados, duplicatas protegidas e quadros
+  vazios/exclusivamente de agrupamentos estão cobertos pelos testes sintéticos;
+  o smoke real não exercitou todos esses ramos.
+- As duas runs ficam sob
+  `data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`:
+  `20260907T230907692812Z__42ced6b__cfg6d44ac336151__src38fc0c5da3__s42` (11) e
+  `20260907T230908566607Z__42ced6b__cfgff74f997d29b__src38fc0c5da3__s42` (12).
+  Cada uma preserva manifestos, detecções, métricas por frame e resumo.
+- **Nível 2 concluído como contrato e verificação de engenharia.** Não houve
+  busca, seleção ou promoção de threshold na v3. T200 a 15 px e v2 continuam
+  históricos. A próxima etapa é planejar a busca prospectiva de threshold,
+  com raio e política de classes já definidos.
+
+Configuração: [smoke de engenharia v3](../../configs/detection/threshold/protocol_smoke_v3.yaml).
+Comandos: [guia oficial](../../script/README.md#threshold-etapa-atual).
+
+> As entradas seguintes preservam o estado anterior à execução: o smoke
+> então planejado e os testes ainda em curso não são pendências atuais.
+
 ## 2026-09-07 — nível 2: contrato v3 e auditoria dos agrupamentos
 
 - O pesquisador autorizou a continuidade autônoma do desenvolvimento, com

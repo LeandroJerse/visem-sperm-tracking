@@ -224,6 +224,18 @@ uma run distinta sob `data/tests/detection/threshold/`, com dados brutos,
 pasta de uma execução para salvar outra. Validação, teste e folds não fazem
 parte deste smoke.
 
+Execução de 07/09/2026 concluída sob o commit `42ced6b`, com Git limpo:
+três quadros por vídeo, dados brutos preservados e nenhuma previsão ignorada
+nesse recorte. A configuração registra os oito hashes dos insumos antes da
+execução. As duas runs estão sob
+`data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
+Contagens e limites de interpretação estão na
+[verificação do contrato](../docs/metodologia/CLASSES_E_AGRUPAMENTOS.md#verificação-da-implementação--07092026).
+Essa primeira execução revelou arredondamento de coordenadas no CSV. A
+verificação da precisão de exportação exige novas runs dos mesmos quadros,
+preservando as iniciais; contagens consistentes não bastam para declarar
+reconstrução exata dos erros de distância.
+
 ## 1. Detecção
 
 Implementações e famílias: [mapa da detecção](../src/detection/README.md).

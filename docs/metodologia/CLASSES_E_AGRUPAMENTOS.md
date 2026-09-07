@@ -158,3 +158,60 @@ parâmetros fixos históricos, sem seleção; registro dos resultados. Só depoi
 se prepara a busca reproduzível, com orçamento e critério registrados antes
 de observar seus resultados. O histórico de exposição dos vídeos de teste
 continua uma limitação da avaliação interna; esta etapa não restaura cegueira.
+
+## Verificação da implementação — 07/09/2026
+
+O commit `42ced6b` registra o contrato, sua integração aos executores e os
+testes sintéticos. Foram conferidas as 281 verificações da suíte curta de
+código e navegação; o único link inválido detectado foi corrigido. Os casos
+incluem duplicatas, bordas, indivíduos dentro de agrupamentos, classes
+previstas, quadros sem referência, contagem e sensibilidades não monotônicas.
+Os 19 arquivos históricos protegidos conservaram seus hashes.
+
+O smoke real usou a configuração previamente registrada
+`configs/detection/threshold/protocol_smoke_v3.yaml`, com T200/o1/c2 fixo,
+seed 42 e apenas os quadros 0, 1 e 2 dos vídeos de treino 11 e 12. O YAML
+inclui hashes dos dois vídeos e seis arquivos GT usados. Ambos os manifestos
+registram o commit `42ced6b` e `git_dirty: false`.
+
+| Vídeo | Quadros | GT indivíduos | GT agrupamentos | Previsões brutas | TP a 10 px | FP | FN | Ignoradas |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 11 | 3 | 129 | 0 | 135 | 106 | 29 | 23 | 0 |
+| 12 | 3 | 83 | 3 | 82 | 73 | 9 | 10 | 0 |
+
+Esses totais somam observações nos três quadros de cada vídeo. Não são
+células únicas nem estimativas de desempenho do vídeo completo. Como não há
+previsões ignoradas nesse recorte, o smoke real não exercita esse ramo;
+os casos sintéticos fornecem sua verificação. Nenhum parâmetro foi escolhido
+ou modificado após os resultados, e nenhum vídeo de validação ou teste foi
+processado nesta etapa.
+
+As runs ficam separadas do histórico em
+`data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
+Cada pasta contém detecções e GT brutos, métricas por quadro, resumo, metadados
+e manifesto. O próximo marco é registrar a amostragem, o espaço de busca,
+o orçamento e os critérios de seleção antes da busca em treino.
+
+### Limitação encontrada na exportação inicial
+
+A reconstrução independente a partir de `detections.csv` confirmou TP/FP/FN
+dos seis quadros nos três raios, mas encontrou arredondamento das coordenadas
+a duas casas na exportação. O avaliador usa as coordenadas originais: no
+vídeo 11, quadro 1, a soma dos erros dos pares era aproximadamente 55,478819 px
+na métrica e 55,451045 px ao reconstruir o CSV. Portanto, preservar todas as
+linhas não significava preservar toda a precisão numérica.
+
+Uma diferença pequena pode alterar matching ou regras de região em casos
+próximos da fronteira. A exportação foi corrigida para preservar os valores
+de ponto flutuante das coordenadas, dimensões e confiança, sem arredondamento
+de apresentação. Seis regressões adicionais verificam tipos numéricos,
+cabeçalhos e IDs, distância 10,004 px que seria arredondada para 10 px,
+erro de um par válido e fronteira de agrupamento. A suíte curta completa
+passou: **287 testes**, em 22,37 s, antes de repetir o smoke.
+
+O registro `verification_20260907.json`, ao lado das duas runs iniciais,
+confere 36 associações com implementação SciPy independente e os oito hashes
+de entrada. Documenta a limitação do erro de centro, sem declarar identidade
+numérica. As execuções `42ced6b` permanecem como registro do problema.
+A verificação final repetirá os mesmos seis quadros em novas runs, após
+commit da correção, sem mudança de parâmetros ou escolha de novos quadros.

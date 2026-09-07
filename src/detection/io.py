@@ -221,7 +221,12 @@ def load_gt_for_frame(
 # CSV output
 # --------------------------------------------------------------------------- #
 def detection_to_row(video_id: str, frame_idx: int, source: str, det: Detection) -> dict:
-    """Build a unified-CSV row dict from a ``Detection``."""
+    """Build a unified-CSV row without rounding coordinates or confidence.
+
+    Python floats serialize with enough digits for an exact float round-trip.
+    Converting NumPy scalars explicitly also avoids their shorter display
+    formatting changing the values used by evaluation or tracking.
+    """
     return {
         "video_id": video_id,
         "frame": frame_idx,
@@ -229,13 +234,13 @@ def detection_to_row(video_id: str, frame_idx: int, source: str, det: Detection)
         "object_id": det.object_id,
         "class_id": det.class_id,
         "class_name": CLASS_NAMES.get(det.class_id, str(det.class_id)),
-        "cx": round(det.cx, 2),
-        "cy": round(det.cy, 2),
-        "w": round(det.w, 2),
-        "h": round(det.h, 2),
-        "x": round(det.x, 2),
-        "y": round(det.y, 2),
-        "score": round(det.score, 4),
+        "cx": float(det.cx),
+        "cy": float(det.cy),
+        "w": float(det.w),
+        "h": float(det.h),
+        "x": float(det.x),
+        "y": float(det.y),
+        "score": float(det.score),
     }
 
 

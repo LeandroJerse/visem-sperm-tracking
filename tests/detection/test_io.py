@@ -14,15 +14,19 @@ from src.detection.base import Detection
 from src.detection.classical.threshold import ThresholdContourDetector
 from src.detection.hybrid.enhanced_threshold import HybridThresholdDetector
 from src.detection.io import (
+    CSV_FIELDS,
+    detection_to_row,
     extract_frame_index,
     index_label_files,
     load_gt_frame,
     load_gt_for_frame,
     parse_label_line,
     pixels_to_yolo,
+    write_detections_csv,
     yolo_to_pixels,
 )
 from src.detection.runner import run_on_video
+from src.evaluation.detection import evaluate_frame
 
 IMG_W, IMG_H = 640, 480
 
@@ -123,6 +127,58 @@ def test_detection_corner_properties():
     assert d.x == 90
     assert d.y == 45
     assert d.xyxy == (90, 45, 110, 55)
+
+
+@pytest.mark.parametrize("scalar", [float, np.float32, np.float64])
+def test_detection_csv_roundtrip_preserves_numeric_precision_and_schema(tmp_path, scalar):
+    detection = Detection(
+        cx=scalar(10.004123456789), cy=scalar(23.0000001234567),
+        w=scalar(8.45678901234567), h=scalar(9.12345678901234),
+        score=scalar(0.100049123456789), class_id=2, object_id="track-0001",
+    )
+    path = write_detections_csv(
+        [detection_to_row("011", 7, "detection", detection)], tmp_path / "detections.csv",
+    )
+    with path.open(newline="", encoding="utf-8") as stream:
+        reader = csv.DictReader(stream)
+        row = next(reader)
+        assert reader.fieldnames == CSV_FIELDS
+    assert {key: row[key] for key in CSV_FIELDS[:6]} == {
+        "video_id": "011", "frame": "7", "source": "detection",
+        "object_id": "track-0001", "class_id": "2", "class_name": "pinhead",
+    }
+    for field in ("cx", "cy", "w", "h", "x", "y", "score"):
+        assert float(row[field]) == float(getattr(detection, field))
+
+
+@pytest.mark.parametrize(
+    ("prediction_x", "gt_class", "gt_width", "expected"),
+    [
+        (10.004, 0, 8, (0, 1, 1)),  # rounding to 10 would convert FP/FN into TP
+        (9.996, 0, 8, (1, 0, 0)),  # a valid pair must retain its exact centre error
+        (10.004, 1, 20, (0, 1, 0)),  # rounding would enter the inclusive cluster boundary
+    ],
+)
+def test_detection_csv_reproduces_gate_and_cluster_boundary_metrics(
+    tmp_path, prediction_x, gt_class, gt_width, expected,
+):
+    prediction = Detection(prediction_x, 0, 8, 8)
+    ground_truth = Detection(0, 0, gt_width, 20, class_id=gt_class)
+    before = evaluate_frame([prediction], [ground_truth])
+    path = write_detections_csv([
+        detection_to_row("11", 0, "detection", prediction),
+        detection_to_row("11", 0, "manual", ground_truth),
+    ], tmp_path / "detections.csv")
+    with path.open(newline="", encoding="utf-8") as stream:
+        restored = list(csv.DictReader(stream))
+    after = evaluate_frame([restored[0]], [restored[1]])
+    assert after == before  # includes every radius, centre error and secondary metric
+    assert (after["tp"], after["fp"], after["fn"]) == expected
+    assert after["n_predictions_ignored"] == 0
+    rounded = evaluate_frame(
+        [Detection(round(prediction_x, 2), 0, 8, 8)], [ground_truth],
+    )
+    assert rounded != before
 
 
 def test_threshold_detector_runs_on_synthetic_frame():
