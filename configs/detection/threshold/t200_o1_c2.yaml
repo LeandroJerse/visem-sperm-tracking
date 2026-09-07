@@ -1,0 +1,26 @@
+configuration_id: t200_o1_c2
+method: threshold
+params:
+  threshold_value: 200
+  adaptive: false
+  blur: 1
+  invert: false
+  morph_kernel: 3
+  morph_iterations: 1
+  close_iterations: 2
+  min_area: 3
+  max_area: 300
+search_space:
+  threshold_value: [190, 195, 200, 205]
+  morph_iterations: [1]
+  close_iterations: [1, 2]
+  min_area: [3, 5]
+  max_area: [200, 300]
+evaluation:
+  center_gate_px: 15
+  sensitivity_gates_px: [10, 20]
+  class_policy: binary
+run:
+  stage: screen
+  seed: 42
+  save_video: false

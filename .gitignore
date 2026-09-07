@@ -13,13 +13,44 @@ wandb/
 *.pt
 *.pth
 *.onnx
-data/raw/
-data/tracked/
-data/processed/frames/
-data/yolo/
-results/
-runs/
-.DS_Store
+# Dados-fonte e artefatos pesados locais
+data/sources/**
+!data/sources/**/
+!data/sources/**/README.md
+data/datasets/**
+!data/datasets/**/
+!data/datasets/**/README.md
+data/derived/**
+!data/derived/**/
+!data/derived/**/README.md
+data/tests/**
+!data/tests/**/
+!data/tests/**/README.md
+data/results/**
+!data/results/**/
+!data/results/**/README.md
+!data/results/**/selection/*.json
+!data/results/**/selection/*.csv
+data/models/**
+!data/models/**/
+!data/models/**/README.md
+data/catalog/*.db
+data/catalog/**/*.db
+data/quarantine/
 
-# Large reference PDFs (dataset papers — downloadable, not source)
+# Compatibilidade: nenhum executor novo deve recriar estas raízes.
+/results/
+/output/
+/runs/
+.DS_Store
+/tmp/
+
+# Local experiment environments/caches
+.venv/
+*.npy
+
+# Documentos e apresentações mantidos localmente
+*.html
 *.pdf
+*.docx
+*.zip

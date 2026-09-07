@@ -1,0 +1,86 @@
+video_id,filename,has_tracking,role
+1,1_09.09.02_SSW.avi,false,post_validation_application
+2,2_09.09.03_lots of debris_SSW.avi,false,post_validation_application
+3,3_11.01.21_JMA.avi,false,post_validation_application
+4,4_11.03.29_HH.avi,false,post_validation_application
+5,5_11.05.04_JMA.avi,false,post_validation_application
+6,6_12.02.08_drift_HH.avi,false,post_validation_application
+7,7_12.02.20_minor drift_HH.avi,false,post_validation_application
+8,8_12.02.21_minor drift_HH.avi,false,post_validation_application
+9,9_12.03.06_minor drift_HH.avi,false,post_validation_application
+10,10_12.03.12_minor drift_HH.avi,false,post_validation_application
+11,11_09.01.23_JMA.avi,true,development_validation
+12,12_09.01.23_SSW.avi,true,development_validation
+13,13_09.01.26_SSW.avi,true,development_validation
+14,14_09.01.27_SSW.avi,true,development_validation
+15,15_09.01.28_SSW.avi,true,development_validation
+16,16_09.01.28_SSW.avi,false,post_validation_application
+17,17_09.01.29_SSW.avi,false,post_validation_application
+18,18_09.01.29_SSW.avi,false,post_validation_application
+19,19_10.01.06_JMA.avi,true,development_validation
+20,20_09.02.02_JMA.avi,false,post_validation_application
+21,21_09.02.03_JMA.avi,true,development_validation
+22,22_09.02.04_SSW.avi,true,development_validation
+23,23_09.02.04_SSW.avi,true,development_validation
+24,24_09.02.04_SSW.avi,true,development_validation
+25,25_09.02.06_IVS.avi,false,post_validation_application
+26,26_09.02.12_IVS.avi,false,post_validation_application
+27,27_09.02.18_IVS.avi,false,post_validation_application
+28,28_09.06.05_SSW.avi,false,post_validation_application
+29,29_09.03.12_SSW.avi,true,development_validation
+30,30_09.03.25_SSW.avi,true,development_validation
+31,31_10.04.22_JMA.avi,false,post_validation_application
+32,32_09.06.23_OW.avi,false,post_validation_application
+33,33_09.06.25_OW.avi,false,post_validation_application
+34,34_09.06.26_OW.avi,false,post_validation_application
+35,35_09.06.29_OW.avi,true,development_validation
+36,36_09.07.01_OW.avi,true,development_validation
+37,37_09.07.27_SSW.avi,false,post_validation_application
+38,38_09.08.24_SSW.avi,true,development_validation
+39,39_09.09.16_SSW.avi,false,post_validation_application
+40,40_09.09.25_SSW.avi,false,post_validation_application
+41,41_09.10.12_minor drift_SSW.avi,false,post_validation_application
+42,42_09.10.13_minor drift_SSW.avi,false,post_validation_application
+43,43_09.10.14_drift_SSW.avi,false,post_validation_application
+44,44_09.10.14_drift_SSW.avi,false,post_validation_application
+45,45_09.10.16_SSW.avi,false,post_validation_application
+46,46_09.10.19_minor drift_SSW.avi,false,post_validation_application
+47,47_09.10.19_SSW.avi,true,development_validation
+48,48_09.10.20_SSW.avi,false,post_validation_application
+49,49_09.12.02_OW.avi,false,post_validation_application
+50,50_09.11.16_SSW.avi,false,post_validation_application
+51,51_09.11.25_SSW.avi,false,post_validation_application
+52,52_09.12.03_drift_SSW.avi,true,development_validation
+53,53_10.01.07_OW.avi,false,post_validation_application
+54,54_10.01.14_JMA.avi,true,development_validation
+55,55_10.12.13_JMA.avi,false,post_validation_application
+56,56_10.12.16_HH.avi,false,post_validation_application
+57,57_10.12.15_JMA.avi,false,post_validation_application
+58,58_11.01.27_JMA.avi,false,post_validation_application
+59,59_11.02.03_HH.avi,false,post_validation_application
+60,60_11.02.04_JMA.avi,true,development_validation
+61,61_11.02.04_JMA.avi,false,post_validation_application
+62,62_11.02.09_JMA.avi,false,post_validation_application
+63,63_11.02.10_JMA.avi,false,post_validation_application
+64,64_11.02.10_JMA.avi,false,post_validation_application
+65,65_11.02.15_HH.avi,false,post_validation_application
+66,66_11.02.16_HH.avi,false,post_validation_application
+67,67_11.02.16_JMA.avi,false,post_validation_application
+68,68_11.02.17_HH.avi,false,post_validation_application
+69,69_11.02.22_HH.avi,false,post_validation_application
+70,70_11.02.23_JMA.avi,false,post_validation_application
+71,71_11.02.24_HH.avi,false,post_validation_application
+72,72_11.02.24_JMA.avi,false,post_validation_application
+73,73_11.02.25_HH.avi,false,post_validation_application
+74,74_11.02.25_JMA.avi,false,post_validation_application
+75,75_11.03.09_JMA.avi,false,post_validation_application
+76,76_11.03.09_JMA.avi,false,post_validation_application
+77,77_11.03.11_JMA.avi,false,post_validation_application
+78,78_11.03.15_JMA.avi,false,post_validation_application
+79,79_11.03.17_JMA.avi,false,post_validation_application
+80,80_11.05.04_JMA.avi,false,post_validation_application
+81,81_11.05.26_HH.avi,false,post_validation_application
+82,82_11.06.23_JMA.avi,true,development_validation
+83,83_11.11.09_HH.avi,false,post_validation_application
+84,84_11.12.21_HH.avi,false,post_validation_application
+85,85_12.02.06_drift_HH.avi,false,post_validation_application

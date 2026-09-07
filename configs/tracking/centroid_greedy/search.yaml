@@ -1,0 +1,21 @@
+configuration_id: centroid_greedy_search
+method: centroid_greedy
+input_source: ground_truth
+params:
+  max_distance: 20.0
+  max_age: 2
+  min_hits: 1
+  class_aware: false
+  emit_predictions: false
+search_space:
+  max_distance: [8, 12, 16, 20, 25, 30]
+  max_age: [0, 1, 2, 3, 5]
+  min_hits: [1, 2, 3]
+evaluation:
+  primary: HOTA
+  complementary: [IDF1, MOTA, id_switches, fragmentations, track_recall]
+  class_policy: binary
+run:
+  stage: screen
+  split: train
+  seed: 42

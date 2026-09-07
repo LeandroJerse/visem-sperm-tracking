@@ -1,0 +1,21 @@
+configuration_id: flow_aware_constant_velocity_search
+method: flow_aware_constant_velocity
+params:
+  window: 5
+  method: median
+search_space:
+  window: [2, 3, 5, 10, 20]
+  method: [mean, median]
+data:
+  history_length: 20
+  horizons: [1, 5, 10]
+  trajectory_source: ground_truth
+  flow_source: frozen_flow
+  split_by_video: true
+evaluation:
+  primary: [ADE, FDE]
+  paired_baseline: constant_velocity
+run:
+  stage: screen
+  split: train
+  seed: 42

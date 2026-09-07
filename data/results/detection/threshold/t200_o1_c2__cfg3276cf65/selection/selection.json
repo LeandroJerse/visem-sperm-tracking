@@ -1,0 +1,34 @@
+{
+  "status": "frozen",
+  "selected_on": "2026-08-29",
+  "algorithm": "threshold",
+  "configuration_id": "t200_o1_c2",
+  "configuration_hash": "3276cf65afbe",
+  "frozen_config": "configs/frozen/detection/threshold/t200_o1_c2.yaml",
+  "validation_metrics": "data/results/detection/threshold/t200_o1_c2__cfg3276cf65/selection/validation_metrics.csv",
+  "primary_metric": "f1_center_15px",
+  "aggregation_unit": "video",
+  "validation_videos": [14, 19, 36, 52],
+  "macro_metrics": {
+    "f1": 0.6863377901864474,
+    "precision": 0.619228296488126,
+    "recall": 0.7935207561838641,
+    "count_mae": 4.750616496598639,
+    "center_error_mean_px": 3.325446702804037,
+    "detection_ms_median_mean": 1.641875
+  },
+  "alternative": {
+    "configuration_id": "t190_o1_c1",
+    "reason": "maior recall, porém menor F1 e maior erro de contagem"
+  },
+  "validation_runs_root": "data/tests/detection/threshold",
+  "confirmatory_test_executed": false,
+  "historical_holdout_exposure": {
+    "exposed": true,
+    "videos": [24, 38, 47, 54],
+    "frame_screening_summaries_per_video": 30,
+    "role": "legacy_exploratory_not_used_in_current_selection"
+  },
+  "five_fold_completed": false,
+  "application_completed": false
+}

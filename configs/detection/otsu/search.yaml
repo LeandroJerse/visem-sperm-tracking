@@ -1,0 +1,29 @@
+configuration_id: otsu_search
+method: threshold
+variant: otsu
+params:
+  threshold_value: null
+  adaptive: false
+  blur: 1
+  invert: false
+  morph_kernel: 3
+  morph_iterations: 1
+  close_iterations: 1
+  min_area: 3
+  max_area: 300
+search_space:
+  blur: [1, 3, 5]
+  invert: [false, true]
+  morph_kernel: [3, 5]
+  morph_iterations: [0, 1]
+  close_iterations: [0, 1, 2]
+  min_area: [2, 3, 5]
+  max_area: [200, 300, 500]
+evaluation:
+  center_gate_px: 15
+  sensitivity_gates_px: [10, 20]
+  class_policy: binary
+run:
+  stage: screen
+  seed: 42
+  save_video: false

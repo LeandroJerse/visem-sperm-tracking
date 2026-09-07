@@ -1,0 +1,28 @@
+configuration_id: lucas_kanade_search
+method: lucas_kanade
+params:
+  max_corners: 1200
+  quality_level: 0.01
+  min_distance: 5.0
+  block_size: 7
+  win_size: [21, 21]
+  max_level: 3
+  max_iterations: 30
+  epsilon: 0.01
+  forward_backward_threshold: 1.5
+  min_eigen_threshold: 0.0001
+search_space:
+  quality_level: [0.005, 0.01, 0.02]
+  min_distance: [3, 5, 7]
+  win_size: [[15, 15], [21, 21], [31, 31]]
+  max_level: [2, 3, 4]
+  forward_backward_threshold: [0.5, 1.0, 1.5, 2.0]
+evaluation:
+  primary: photometric_warp_error
+  complementary: [forward_backward_error, temporal_stability, latency]
+  epe_only_on_synthetic: true
+run:
+  stage: screen
+  split: train
+  seed: 42
+  cache: true

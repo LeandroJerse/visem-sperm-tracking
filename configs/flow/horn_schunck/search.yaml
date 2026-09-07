@@ -1,0 +1,19 @@
+configuration_id: horn_schunck_search
+method: horn_schunck
+params:
+  alpha: 0.08
+  iterations: 150
+  tolerance: 0.0001
+search_space:
+  alpha: [0.02, 0.05, 0.08, 0.15, 0.30]
+  iterations: [50, 100, 150, 300]
+  tolerance: [0.0, 0.0001, 0.001]
+evaluation:
+  primary: photometric_warp_error
+  complementary: [forward_backward_error, temporal_stability, latency]
+  epe_only_on_synthetic: true
+run:
+  stage: screen
+  split: train
+  seed: 42
+  cache: true

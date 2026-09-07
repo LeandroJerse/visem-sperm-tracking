@@ -1,0 +1,35 @@
+configuration_id: t200_o1_c2
+method: threshold
+
+# Configuração congelada após a validação completa nos vídeos 14, 19, 36 e 52.
+# Não alterar este arquivo depois de abrir o conjunto de teste.
+selection:
+  date: "2026-08-29"
+  primary_metric: f1_center_15px
+  macro_validation_f1: 0.6863377901864474
+  alternative_high_recall: t190_o1_c1
+
+params:
+  threshold_value: 200
+  adaptive: false
+  blur: 1
+  invert: false
+  morph_kernel: 3
+  morph_iterations: 1
+  close_iterations: 2
+  min_area: 3
+  max_area: 300
+
+evaluation:
+  center_gate_px: 15
+  sensitivity_gates_px: [10, 20]
+  class_policy: binary
+
+run:
+  stage: test
+  split: test
+  seed: 42
+  save_video: true
+  max_frames: null
+  draw_mode: both
+  frozen: true

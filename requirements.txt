@@ -13,3 +13,4 @@ wandb>=0.16
 pyyaml>=6.0
 tqdm>=4.66
 pytest>=7.4
+psutil>=5.9

@@ -1,0 +1,37 @@
+[project]
+name = "tcc-visem-pipeline"
+version = "0.1.0"
+description = "Pipeline reprodutível de detecção, tracking, fluxo e predição no VISEM"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.11",
+  "pandas>=2.0",
+  "opencv-python-headless>=4.8",
+  "PyYAML>=6.0",
+  "psutil>=5.9",
+]
+
+[project.optional-dependencies]
+ml = [
+  "torch>=2.1",
+  "torchvision>=0.16",
+  "ultralytics>=8.3",
+]
+analysis = [
+  "filterpy>=1.4",
+  "scikit-image>=0.21",
+  "matplotlib>=3.7",
+  "seaborn>=0.12",
+  "wandb>=0.16",
+  "tqdm>=4.66",
+]
+dev = ["pytest>=7.4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
+markers = [
+  "optional_ml: requer PyTorch/modelos ou pesos externos",
+  "slow: teste que não pertence à suíte curta",
+]
