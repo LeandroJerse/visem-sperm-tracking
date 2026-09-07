@@ -18,8 +18,10 @@ sampling:
   warmup_frames: 100
   scored_frames: 200
 evaluation:
-  center_gate_px: 15
-  class_policy: binary
+  protocol_id: center_distance_v3_individuals_ignore_clusters_10px
+  center_gate_px: 10
+  sensitivity_gates_px: [15, 20]
+  class_policy: individuals_ignore_clusters
 run:
   stage: screen
   split: train

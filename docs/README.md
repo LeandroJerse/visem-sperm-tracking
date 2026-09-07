@@ -18,6 +18,12 @@ e resultados não devem ser armazenados aqui.
 
 - [`metodologia/PROTOCOLO.md`](metodologia/PROTOCOLO.md): promoção de
   configurações, bloqueio de teste e ordem experimental.
+- [`metodologia/TOLERANCIA_ESPACIAL.md`](metodologia/TOLERANCIA_ESPACIAL.md):
+  decisão de 10 px principal e 15/20 px de sensibilidade obrigatória, com
+  auditoria descritiva das anotações dos 12 vídeos de treino, sem detector.
+- [`metodologia/CLASSES_E_AGRUPAMENTOS.md`](metodologia/CLASSES_E_AGRUPAMENTOS.md):
+  indivíduos 0/2, proteção contra duplicatas, regiões de agrupamento
+  ignoradas e avaliação complementar de todos os objetos, no protocolo v3.
 - [`metodologia/ESTATISTICA_E_PARETO.md`](metodologia/ESTATISTICA_E_PARETO.md):
   agregação por vídeo, testes pareados, IC95 e custo-benefício.
 - [`metodologia/METRICAS_TRACKING.md`](metodologia/METRICAS_TRACKING.md):

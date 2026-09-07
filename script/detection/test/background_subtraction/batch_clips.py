@@ -44,7 +44,14 @@ from src.detection.io import (
     write_detections_csv,
 )
 from src.detection.registry import build_detector
-from src.evaluation.detection import DetectionEvaluator, write_frame_metrics_csv
+from src.evaluation.detection import (
+    DEFAULT_CENTER_GATE_PX,
+    DEFAULT_CLASS_POLICY,
+    DEFAULT_EVALUATION_PROTOCOL_ID,
+    DEFAULT_SENSITIVITY_GATES_PX,
+    DetectionEvaluator,
+    write_frame_metrics_csv,
+)
 from src.experiments.config import ConfigError, canonical_json, resolve_config
 from src.experiments.dataset import load_split_spec
 from src.experiments.resources import ResourceMonitor
@@ -55,6 +62,7 @@ from src.experiments.sweep import deterministic_subset, parameter_grid
 
 SUPPORTED_METHODS = frozenset({"mog2", "knn"})
 MINIMUM_WARMUP_FRAMES = 100
+EVALUATION_PROTOCOL_ID = DEFAULT_EVALUATION_PROTOCOL_ID
 DEFAULTS: dict[str, Any] = {
     "configuration_id": "background_subtraction_screening",
     "method": None,
@@ -66,9 +74,10 @@ DEFAULTS: dict[str, Any] = {
         "scored_frames": 200,
     },
     "evaluation": {
-        "center_gate_px": 15.0,
-        "sensitivity_gates_px": [10.0, 20.0],
-        "class_policy": "binary",
+        "protocol_id": EVALUATION_PROTOCOL_ID,
+        "center_gate_px": DEFAULT_CENTER_GATE_PX,
+        "sensitivity_gates_px": list(DEFAULT_SENSITIVITY_GATES_PX),
+        "class_policy": DEFAULT_CLASS_POLICY,
     },
     "run": {
         "stage": "screen",
@@ -186,15 +195,26 @@ def _validate_sampling(sampling: Mapping[str, Any]) -> tuple[int, int, int]:
 
 def _validate_official_evaluation(evaluation: Mapping[str, Any]) -> None:
     try:
-        gate = float(evaluation.get("center_gate_px", 15.0))
+        gate = float(evaluation.get("center_gate_px", DEFAULT_CENTER_GATE_PX))
     except (TypeError, ValueError) as exc:
         raise ConfigError("evaluation.center_gate_px deve ser numérico.") from exc
-    policy = str(evaluation.get("class_policy", "binary")).strip().lower()
-    if gate != 15.0 or policy != "binary":
+    policy = str(evaluation.get("class_policy", DEFAULT_CLASS_POLICY)).strip().lower()
+    if gate != DEFAULT_CENTER_GATE_PX or policy != DEFAULT_CLASS_POLICY:
         raise ConfigError(
-            "A triagem oficial exige F1 binário com matching Húngaro a 15 px; "
+            "A triagem oficial exige GT individual e clusters ignorados a 10 px; "
             f"recebido gate={gate:g}, class_policy={policy!r}."
         )
+    try:
+        sensitivity = tuple(
+            float(value)
+            for value in evaluation.get("sensitivity_gates_px", DEFAULT_SENSITIVITY_GATES_PX)
+        )
+    except (TypeError, ValueError) as exc:
+        raise ConfigError("evaluation.sensitivity_gates_px deve ser uma lista numérica.") from exc
+    if sorted(sensitivity) != sorted(DEFAULT_SENSITIVITY_GATES_PX):
+        raise ConfigError("A triagem oficial exige sensibilidades de 15 e 20 px.")
+    if evaluation.get("protocol_id", EVALUATION_PROTOCOL_ID) != EVALUATION_PROTOCOL_ID:
+        raise ConfigError(f"A triagem oficial exige evaluation.protocol_id={EVALUATION_PROTOCOL_ID}.")
 
 
 def _portable_config_source(path: Path) -> str:
@@ -428,6 +448,11 @@ def run_video_configuration(
     params = config.get("params")
     if not isinstance(params, Mapping):
         raise ValueError("config.params deve ser um mapping.")
+    resolved = copy.deepcopy(dict(config))
+    evaluator_cfg = _require_mapping(resolved, "evaluation")
+    for key, value in DEFAULTS["evaluation"].items():
+        evaluator_cfg.setdefault(key, copy.deepcopy(value))
+    _validate_official_evaluation(evaluator_cfg)
     if not windows:
         raise ValueError("Ao menos um clipe é necessário.")
     for window in windows:
@@ -443,7 +468,6 @@ def run_video_configuration(
     if any(window.evaluation_stop > total_frames for window in windows):
         raise ValueError("Uma janela planejada ultrapassa o fim do vídeo.")
     label_index = index_label_files(gt_dir) if gt_dir is not None else None
-    resolved = copy.deepcopy(dict(config))
     resolved["configuration_id"] = configuration_label(method, params)
     resolved["input"] = {
         "video": str(video_path.resolve()),
@@ -468,13 +492,12 @@ def run_video_configuration(
         create_kwargs["output_root"] = output_root
     context = RunContext.create(**create_kwargs)
 
-    evaluator_cfg = resolved.get("evaluation") or {}
     evaluator = DetectionEvaluator(
-        center_gate_px=float(evaluator_cfg.get("center_gate_px", 15.0)),
-        class_policy=str(evaluator_cfg.get("class_policy", "binary")),
+        center_gate_px=float(evaluator_cfg["center_gate_px"]),
+        class_policy=str(evaluator_cfg.get("class_policy", DEFAULT_CLASS_POLICY)),
         sensitivity_gates_px=tuple(
             float(value)
-            for value in evaluator_cfg.get("sensitivity_gates_px", (10.0, 20.0))
+            for value in evaluator_cfg["sensitivity_gates_px"]
         ),
     )
     detector = build_detector(method, params=dict(params))
@@ -556,6 +579,7 @@ def run_video_configuration(
                     )
                     frame_metrics.update(
                         {
+                            "evaluation_protocol_id": EVALUATION_PROTOCOL_ID,
                             "clip_index": clip_index,
                             "clip_evaluation_offset": frame_idx - window.evaluation_start,
                             "warmup_excluded": True,
@@ -585,6 +609,7 @@ def run_video_configuration(
         evaluation = evaluator.summary(str(video_id))
         costs = monitor.summary()
         summary: dict[str, Any] = {
+            **evaluation,
             "run_id": context.run_id,
             "configuration_id": context.configuration_id,
             "configuration_hash": context.configuration_hash,
@@ -595,7 +620,12 @@ def run_video_configuration(
             "seed": seed,
             "video_id": str(video_id),
             "video": str(video_path.resolve()),
-            "metric_primary": "f1_center_15px",
+            "evaluation_protocol_id": EVALUATION_PROTOCOL_ID,
+            "metric_primary": f"f1_individuals_center_{DEFAULT_CENTER_GATE_PX:g}px",
+            "center_gate_px": DEFAULT_CENTER_GATE_PX,
+            "sensitivity_gates_px": list(DEFAULT_SENSITIVITY_GATES_PX),
+            "class_policy": DEFAULT_CLASS_POLICY,
+            "count_scope": "scored_predictions_minus_individually_annotated_gt",
             "clip_count": len(windows),
             "reset_policy": "reset_before_each_clip",
             "warmup_excluded_from_metrics": True,
@@ -620,11 +650,6 @@ def run_video_configuration(
             ),
             "detection_ms_p95": _percentile(scored_times_ms, 0.95),
             "detection_ms_max": max(scored_times_ms) if scored_times_ms else None,
-            **{
-                key: value
-                for key, value in evaluation.items()
-                if "_at_" in key
-            },
             **costs,
         }
         summary_csv = write_csv_exclusive(context.path / "summary.csv", summary)
@@ -689,15 +714,48 @@ def _aggregate_configurations(
             for row in records
             if row.get("count_mae") is not None
         ]
+        sensitivity_metrics: dict[str, float | None] = {}
+        measure_names = {
+            key for row in records for key in row
+            if key.startswith("secondary_all_objects_")
+            and any(key == f"secondary_all_objects_{metric}" or key.startswith(f"secondary_all_objects_{metric}_at_")
+                    for metric in ("precision", "recall", "f1", "count_mae", "count_bias", "center_error_mean_px"))
+        } | {f"f1_at_{gate:g}px" for gate in DEFAULT_SENSITIVITY_GATES_PX} | {
+            key for row in records for key in row if key.startswith(("count_mae", "count_bias"))
+        }
+        for metric in sorted(measure_names):
+            values = [
+                float(row[metric])
+                for row in records
+                if row.get(metric) is not None
+            ]
+            sensitivity_metrics[f"macro_video_{metric}"] = (
+                statistics.fmean(values) if values else None
+            )
+        total_fields = {
+            key for row in records for key in row
+            if key.startswith(("n_predictions_", "n_ground_truth_", "n_gt_", "frames_", "count_evaluated_frames", "count_error", "count_abs_error"))
+            or (key.startswith("secondary_all_objects_") and key not in measure_names)
+            or key.startswith(("tp_at_", "fp_at_", "fn_at_"))
+        }
         rows.append(
             {
                 "batch_id": batch_id,
                 "algorithm": method,
                 "configuration_id": configuration_id,
                 "configuration_hash": records[0]["configuration_hash"],
+                "evaluation_protocol_id": EVALUATION_PROTOCOL_ID,
+                "metric_primary": f"macro_video_f1_individuals_center_{DEFAULT_CENTER_GATE_PX:g}px",
+                "center_gate_px": DEFAULT_CENTER_GATE_PX,
+                "sensitivity_gates_px": json.dumps(DEFAULT_SENSITIVITY_GATES_PX),
+                "class_policy": DEFAULT_CLASS_POLICY,
+                "count_scope": "scored_predictions_minus_individually_annotated_gt",
                 "n_videos": len(records),
-                "n_videos_with_gt": len(f1_values),
+                "n_videos_with_gt": sum(bool(row.get("frames_annotated", row.get("annotated_frames", 0))) for row in records),
+                "n_videos_primary_evaluable": len(f1_values),
                 "macro_video_f1": statistics.fmean(f1_values) if f1_values else None,
+                **sensitivity_metrics,
+                **{f"total_{key}": sum(row.get(key) or 0 for row in records) for key in sorted(total_fields)},
                 "macro_video_count_mae": (
                     statistics.fmean(count_mae_values) if count_mae_values else None
                 ),
@@ -718,7 +776,12 @@ def _aggregate_configurations(
         "batch_id": batch_id,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "algorithm": method,
-        "metric_primary": "macro_video_f1_center_15px",
+        "evaluation_protocol_id": EVALUATION_PROTOCOL_ID,
+        "metric_primary": f"macro_video_f1_individuals_center_{DEFAULT_CENTER_GATE_PX:g}px",
+        "center_gate_px": DEFAULT_CENTER_GATE_PX,
+        "sensitivity_gates_px": list(DEFAULT_SENSITIVITY_GATES_PX),
+        "class_policy": DEFAULT_CLASS_POLICY,
+        "count_scope": "scored_predictions_minus_individually_annotated_gt",
         "statistical_unit": "video_id",
         "warmup_excluded_from_metrics": True,
         "invocation": dict(invocation),

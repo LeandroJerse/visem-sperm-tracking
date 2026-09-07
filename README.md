@@ -5,6 +5,13 @@ de trajetórias de espermatozoides. O fluxo óptico representa **movimento
 aparente da imagem**; não há medição física do fluido que permita tratá-lo
 como velocidade real da corrente.
 
+O escopo usa exclusivamente vídeos do **VISEM** e as anotações do
+**VISEM-Tracking**, uma extensão da mesma coleção. São 20 vídeos com trechos
+anotados para avaliação quantitativa e outros 65 para aplicação posterior.
+A aquisição descrita nos artigos não documenta contracorrente imposta por tubo
+ou bomba. A origem dos dados e os limites dessa interpretação estão no
+[protocolo experimental](docs/metodologia/PROTOCOLO.md#escopo-dos-dados-e-interpretação-do-movimento).
+
 ## Comece por aqui
 
 | Quero… | Abra |
@@ -23,9 +30,11 @@ como velocidade real da corrente.
    A classe `ThresholdContourDetector` contém segmentação, morfologia,
    componentes conexos e filtragem por área. Otsu e adaptativo usam variantes
    dessa mesma implementação.
-2. **Parâmetros de desenvolvimento:** [T200, abertura 1, fechamento 2](configs/detection/threshold/t200_o1_c2.yaml).
+2. **Referência histórica a 15 px:** [T200, abertura 1, fechamento 2](configs/detection/threshold/t200_o1_c2.yaml).
    A [cópia congelada](configs/frozen/detection/threshold/t200_o1_c2.yaml)
-   registra a seleção após validação.
+   registra a seleção após validação no protocolo antigo. O
+   [smoke v3](configs/detection/threshold/protocol_smoke_v3.yaml) verifica a
+   nova avaliação de indivíduos e agrupamentos; ainda não promove o threshold.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).

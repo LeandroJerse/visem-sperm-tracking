@@ -6,6 +6,40 @@ repositório; `API` significa apenas que construtor/configuração foram validad
 
 ## Detecção
 
+### Contrato ativo da retomada — 07/09/2026
+
+**`center_distance_v3_individuals_ignore_clusters_10px`**: indivíduos das
+classes 0/2 como alvos, regiões de agrupamentos para ignorados após o matching,
+raio principal 10 px e sensibilidades obrigatórias 15/20 px. A análise
+secundária `binary_all_objects` inclui todos os objetos. As predições não são
+filtradas pela classe prevista, e os discos de proteção dos indivíduos
+impedem que duplicatas próximas sejam ignoradas.
+
+| Marco atual | Estado |
+|---|---|
+| Auditoria de geometria dos 12 vídeos de treino | Concluída; descrição do GT, sem detector |
+| Auditoria das regiões de agrupamento | Concluída; contagens, união exata das caixas e figura do GT |
+| Avaliador v3 | Implementado; testes finais em curso |
+| Smoke de engenharia em três quadros dos vídeos 11/12 | Planejado, ainda não executado |
+| Busca, seleção ou promoção de threshold na v3 | Não executadas |
+
+A auditoria encontrou 5.413 anotações de agrupamento em 4.056 quadros dos
+vídeos 11/12/15/29. Há 4.250 centros individuais dentro das regiões e 6.277
+caixas individuais com interseção positiva; zero quadros contêm somente
+agrupamentos. A cobertura da união exata é, em média, 0,2869% considerando
+todos os quadros anotados e peso igual entre os 12 vídeos; condicionada a
+quadros com agrupamento, a média entre os quatro vídeos pertinentes é 1,1233%.
+São observações por quadro e geometria de caixas, não células únicas ou
+segmentações. Os artefatos locais ficam em
+`data/derived/detection/annotation_audit/retomada_20260907_nivel2/treino_agrupamentos/`.
+
+A versão `center_distance_v2_10px` e T200 sob a avaliação histórica de 15 px
+permanecem preservados. **Nenhum método está promovido no contrato v3.** A
+tabela seguinte mantém as evidências anteriores; suas marcas não indicam
+smoke, validação ou congelamento sob a nova política de agrupamentos.
+
+### Evidências históricas de detecção
+
 | Algoritmo | Código | Sintético/smoke | Busca treino | Refinar top 5 | 2 finalistas: val completa | Congelar | Teste 24/38/47/54 | 5-fold OOF | Aplicar 65 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Threshold fixo | ✓ | ✓ | piloto | duas finalistas preservadas | ✓ vídeos 14/19/36/52 | ✓ T200/o1/c2 | — | — | — |
@@ -73,7 +107,21 @@ foi validado com vetores conhecidos e pixels inválidos. A coluna ainda marca
 | LSTM com fluxo | ✓ | API; treino pendente | — | — | — | — | — | — |
 | Híbridos clássicos flow-aware | ✓ | ✓ | — | — | — | — | — | — |
 
-## Próxima sessão: teste isolado do threshold
+## Próximo marco: smoke de engenharia do contrato v3
+
+O pesquisador autorizou continuidade autônoma. A sequência imediata é concluir
+os testes finais do avaliador e executar o smoke planejado em três quadros de
+treino dos vídeos 11/12, conferindo matching, ignorados, métricas principais e
+secundárias nos três raios. No momento desta atualização, **o smoke real ainda
+não foi executado**. Seus resultados serão registrados como verificação de
+engenharia, sem seleção de limiar ou promoção científica.
+
+Depois, formalizar a busca reproduzível e o desenho da avaliação por vídeo,
+mantendo a limitação de exposição histórica do teste. O roteiro anterior de
+teste isolado e folds permanece abaixo apenas como referência histórica.
+
+<details>
+<summary>Roteiro anterior: teste isolado do threshold</summary>
 
 1. Conferir a seleção e o YAML congelado já registrados.
 2. Fazer commit do estado limpo e executar uma única bateria confirmatória nos
@@ -83,5 +131,7 @@ foi validado com vetores conhecidos e pixels inválidos. A coluna ainda marca
 4. Agregar o resultado por vídeo e registrar falhas visuais, latência e memória.
 5. Produzir a confirmação 5-fold congelada e, em seguida, iniciar o mesmo ciclo
    para Otsu e threshold adaptativo.
+
+</details>
 
 Os comandos vigentes estão em [`script/README.md`](../../script/README.md).

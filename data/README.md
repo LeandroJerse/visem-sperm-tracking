@@ -6,6 +6,7 @@
 
 | Procura | Abra |
 |---|---|
+| Retomada: conferir um quadro e suas anotações | [Inspeção de anotações](derived/detection/annotation_audit/README.md) |
 | Imagens, tabelas e métricas do threshold | Caminho local `tests/detection/threshold/` |
 | Ensaios Otsu separados do limiar fixo | Caminho local `tests/detection/otsu/` |
 | Entender as pastas do frame a frame | [Guia de detecção](tests/detection/README.md) |
@@ -21,6 +22,14 @@ As runs e subpastas específicas são criadas pelos executores, conforme a etapa
 Os artefatos locais não acompanham o código versionado.
 Código de teste fica em [tests/ na raiz](../tests/README.md); esta pasta guarda
 dados e saídas, não implementações dos algoritmos.
+
+Na retomada de 07/09/2026, o nível 1 conferiu um quadro do vídeo de treino 11.
+O nível 2 auditou a geometria e os agrupamentos nos 12 vídeos de treino,
+com saídas separadas em `derived/detection/annotation_audit/`. O novo contrato
+de detecção v3 distingue indivíduos e agrupamentos; seu smoke de engenharia
+fica em `tests/detection/threshold/`, com configuração própria e manifesto.
+Os dados-fonte e os experimentos anteriores em `tests/` e `results/` permanecem
+preservados. Nenhuma dessas auditorias ou do smoke promove um detector.
 
 ## Estrutura
 

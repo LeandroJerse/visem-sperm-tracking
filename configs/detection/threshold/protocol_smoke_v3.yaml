@@ -1,0 +1,46 @@
+configuration_id: protocol_smoke_t200_o1_c2_v3
+method: threshold
+params:
+  threshold_value: 200
+  adaptive: false
+  blur: 1
+  invert: false
+  morph_kernel: 3
+  morph_iterations: 1
+  close_iterations: 2
+  min_area: 3
+  max_area: 300
+evaluation:
+  protocol_id: center_distance_v3_individuals_ignore_clusters_10px
+  center_gate_px: 10
+  sensitivity_gates_px:
+  - 15
+  - 20
+  class_policy: individuals_ignore_clusters
+run:
+  stage: smoke
+  split: train
+  seed: 42
+  save_video: false
+  max_frames: 3
+  frozen: false
+provenance:
+  purpose: detection_evaluation_contract_verification
+  planned_training_video_ids:
+  - 11
+  - 12
+  planned_frames_per_video:
+  - 0
+  - 1
+  - 2
+  parameter_selection: none_existing_historical_parameters
+  interpretation: engineering_smoke_not_detector_validation_or_promotion
+  input_sha256:
+    data/sources/visem_tracking/dataset/Train/11/11.mp4: cdc9212d853aff3f13dbfe16c3ffe593704e3f34de72c8ebd0b43222497677ce
+    data/sources/visem_tracking/dataset/Train/11/labels_ftid/11_frame_0_with_ftid.txt: aae147b199caac650e4df98841678a607959ddf2baa8cb8bcce5c3d6e62ec9d0
+    data/sources/visem_tracking/dataset/Train/11/labels_ftid/11_frame_1_with_ftid.txt: b4a740213c267181b8e3b818286c388c40836d9bd4bf23e4e874d59e2a18f010
+    data/sources/visem_tracking/dataset/Train/11/labels_ftid/11_frame_2_with_ftid.txt: 57d4e4f27c62b2eaff20a6f3d3417d0d791830452b4a127d6320144f1a7f4856
+    data/sources/visem_tracking/dataset/Train/12/12.mp4: 7e108c959ff46c317db76c3ff60714270c53cb68278268a1bc20558259eb40b7
+    data/sources/visem_tracking/dataset/Train/12/labels_ftid/12_frame_0_with_ftid.txt: b98734684989e6bbeb5176407681dcca6a5b885ec52992acf87bb92d062ed248
+    data/sources/visem_tracking/dataset/Train/12/labels_ftid/12_frame_1_with_ftid.txt: 2a8d32b35458ed3776f7108d568d1a47b5e723e89baa4e4e881d141cf0e9ad17
+    data/sources/visem_tracking/dataset/Train/12/labels_ftid/12_frame_2_with_ftid.txt: e04156c39cef84b7e3bedc84f6c0d32c4f96aac5ed8f95ba7f044a2bd8d8b4b9

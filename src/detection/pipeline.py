@@ -31,6 +31,12 @@ from src.core.artifacts import (
     sha256_file,
     write_json_exclusive as _write_json_new,
 )
+from src.evaluation.detection import (
+    DEFAULT_CENTER_GATE_PX,
+    DEFAULT_CLASS_POLICY,
+    DEFAULT_EVALUATION_PROTOCOL_ID,
+    DEFAULT_SENSITIVITY_GATES_PX,
+)
 from src.experiments.config import ConfigError, resolve_config
 from src.experiments.dataset import load_split_spec
 from src.experiments.protocol import (
@@ -50,9 +56,9 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "method": None,
     "params": {},
     "evaluation": {
-        "center_gate_px": 15.0,
-        "sensitivity_gates_px": [10.0, 20.0],
-        "class_policy": "binary",
+        "center_gate_px": DEFAULT_CENTER_GATE_PX,
+        "sensitivity_gates_px": list(DEFAULT_SENSITIVITY_GATES_PX),
+        "class_policy": DEFAULT_CLASS_POLICY,
     },
     "run": {
         "stage": "development",
@@ -167,7 +173,20 @@ def resolve_cli_config(args: argparse.Namespace) -> dict[str, Any]:
         config["run"]["seed"] = args.seed
 
     # Explicit --set is intentionally the final/highest-precedence layer.
-    return resolve_config(defaults=config, overrides=_normalise_overrides(args.overrides))
+    config = resolve_config(defaults=config, overrides=_normalise_overrides(args.overrides))
+    evaluation = config["evaluation"]
+    current_policy = (
+        evaluation.get("class_policy") == DEFAULT_CLASS_POLICY
+        and evaluation.get("center_gate_px") == DEFAULT_CENTER_GATE_PX
+        and sorted(evaluation.get("sensitivity_gates_px") or []) == sorted(DEFAULT_SENSITIVITY_GATES_PX)
+    )
+    if current_policy:
+        if evaluation.get("protocol_id") not in (None, DEFAULT_EVALUATION_PROTOCOL_ID):
+            raise ConfigError("A política V3 resolvida não pode usar o protocol_id de outra avaliação.")
+        evaluation.setdefault("protocol_id", DEFAULT_EVALUATION_PROTOCOL_ID)
+    elif evaluation.get("protocol_id") == DEFAULT_EVALUATION_PROTOCOL_ID:
+        raise ConfigError("O protocol_id V3 não corresponde à política de classes ou aos raios resolvidos.")
+    return config
 
 
 def _assert_frozen_cli_is_operational(args: argparse.Namespace) -> None:
@@ -353,10 +372,12 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
             gt_dir=config["input"].get("gt_dir"),
             max_frames=max_frames,
             draw_mode=str(run_cfg.get("draw_mode", "both")),
-            center_gate_px=float(eval_cfg.get("center_gate_px", 15.0)),
-            class_policy=str(eval_cfg.get("class_policy", "binary")),
+            center_gate_px=float(eval_cfg.get("center_gate_px", DEFAULT_CENTER_GATE_PX)),
+            class_policy=str(eval_cfg.get("class_policy", DEFAULT_CLASS_POLICY)),
             sensitivity_gates_px=tuple(
-                float(value) for value in eval_cfg.get("sensitivity_gates_px", ())
+                float(value) for value in eval_cfg.get(
+                    "sensitivity_gates_px", DEFAULT_SENSITIVITY_GATES_PX
+                )
             ),
             warmup_frames=int(sampling_cfg.get("warmup_frames", 0)),
         )
@@ -373,6 +394,7 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
             "max_frames": max_frames,
             "dataset_id": dataset_id,
             **summary,
+            "evaluation_protocol_id": eval_cfg.get("protocol_id"),
             **clinical,
         }
 

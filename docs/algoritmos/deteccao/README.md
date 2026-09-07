@@ -19,6 +19,11 @@ hiperparâmetros distintos.
 | [Watershed](watershed.md) | clássico puro | separa regiões encostadas | sementes instáveis e sobre/subsegmentação |
 | [YOLO](yolo.md) | aprendido | aparência, classes e confiança | labels/GPU/treino e overfitting |
 
-Métrica principal comum: F1 binário por vídeo, com matching Húngaro de centros e
-gate de 15 px. O custo é medido junto; nenhuma variante híbrida ganha o nome do
-baseline que estende.
+Nova avaliação: F1 por vídeo, com matching Húngaro de centros a 10 px e
+sensibilidades de 15/20 px, conforme a
+[decisão sobre tolerância](../../metodologia/TOLERANCIA_ESPACIAL.md).
+A versão v3 avalia indivíduos 0/2, ignora previsões residuais em regiões
+cluster somente sem indivíduo próximo e mantém avaliação complementar de
+todos os objetos. Regra em [Classes e agrupamentos](../../metodologia/CLASSES_E_AGRUPAMENTOS.md).
+As métricas já registradas a 15 px permanecem históricas. O custo é medido
+junto; nenhuma variante híbrida ganha o nome do baseline que estende.

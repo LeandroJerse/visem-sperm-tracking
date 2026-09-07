@@ -23,9 +23,10 @@ search_space:
   min_area: [2, 3, 5]
   max_area: [200, 300, 500]
 evaluation:
-  center_gate_px: 15
-  sensitivity_gates_px: [10, 20]
-  class_policy: binary
+  protocol_id: center_distance_v3_individuals_ignore_clusters_10px
+  center_gate_px: 10
+  sensitivity_gates_px: [15, 20]
+  class_policy: individuals_ignore_clusters
 run:
   stage: screen
   seed: 42

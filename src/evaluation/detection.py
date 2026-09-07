@@ -2,9 +2,11 @@
 
 Predictions and manual annotations are associated one-to-one with the
 Hungarian algorithm.  A pair is valid only when its centre distance is at most
-``center_gate_px`` (15 px by default).  The main comparison collapses all VISEM
-classes into one object class; passing ``class_policy="class_aware"`` additionally
-requires equal class ids.
+``center_gate_px`` (10 px by default, with sensitivity at 15 and 20 px).
+The default target is individual annotations (classes 0 and 2). Unmatched
+predictions inside GT cluster boxes may be ignored only when they are outside
+every individual matching disk. Predictions are never filtered by their class.
+Explicit ``binary`` and ``class_aware`` policies preserve historical evaluation.
 
 Missing labels are *not* negative examples.  Call :func:`evaluate_frame` with
 ``ground_truth=None`` (or ``annotated=False``) and that frame is represented as
@@ -20,8 +22,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
-DEFAULT_CENTER_GATE_PX = 15.0
-CLASS_POLICIES = {"binary", "class_aware"}
+DEFAULT_CENTER_GATE_PX = 10.0
+DEFAULT_SENSITIVITY_GATES_PX = (15.0, 20.0)
+DEFAULT_CLASS_POLICY = "individuals_ignore_clusters"
+DEFAULT_EVALUATION_PROTOCOL_ID = "center_distance_v3_individuals_ignore_clusters_10px"
+CLASS_POLICIES = {"binary", "class_aware", DEFAULT_CLASS_POLICY}
 
 
 @dataclass(frozen=True)
@@ -40,6 +45,8 @@ class MatchingResult:
     matches: tuple[DetectionMatch, ...]
     unmatched_predictions: tuple[int, ...]
     unmatched_ground_truth: tuple[int, ...]
+    ignored_predictions: tuple[int, ...] = ()
+    ignored_ground_truth: tuple[int, ...] = ()
 
     @property
     def tp(self) -> int:
@@ -66,14 +73,52 @@ def _normalise_policy(class_policy: str) -> str:
 def _center_and_class(item: Any) -> tuple[float, float, int]:
     """Read ``(cx, cy, class_id)`` from a Detection, mapping or sequence."""
     if hasattr(item, "cx") and hasattr(item, "cy"):
-        return float(item.cx), float(item.cy), int(getattr(item, "class_id", 0))
-    if isinstance(item, Mapping):
-        return float(item["cx"]), float(item["cy"]), int(item.get("class_id", 0))
-    if isinstance(item, Sequence) and not isinstance(item, (str, bytes)):
+        raw = item.cx, item.cy, getattr(item, "class_id", 0)
+    elif isinstance(item, Mapping):
+        raw = item["cx"], item["cy"], item.get("class_id", 0)
+    elif isinstance(item, Sequence) and not isinstance(item, (str, bytes)):
         if len(item) < 2:
             raise ValueError("A centre sequence must contain at least (cx, cy)")
-        return float(item[0]), float(item[1]), int(item[2]) if len(item) > 2 else 0
-    raise TypeError(f"Unsupported detection representation: {type(item).__name__}")
+        raw = item[0], item[1], item[2] if len(item) > 2 else 0
+    else:
+        raise TypeError(f"Unsupported detection representation: {type(item).__name__}")
+    try:
+        cx, cy, class_value = (float(value) for value in raw)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Detection centres and class ids must be numeric") from exc
+    if not math.isfinite(cx) or not math.isfinite(cy):
+        raise ValueError("Detection centre coordinates must be finite")
+    if class_value not in (0, 1, 2):
+        raise ValueError("Unknown class id; expected VISEM class 0, 1 or 2")
+    return cx, cy, int(class_value)
+
+
+def _validate_gate(gate: float) -> float:
+    gate = float(gate)
+    if not math.isfinite(gate) or gate < 0:
+        raise ValueError("center/sensitivity gates must be finite and non-negative")
+    return gate
+
+
+def _cluster_bounds(item: Any) -> tuple[float, float, float, float]:
+    """Read a GT rectangle in pixels; no expansion or clipping is applied."""
+    cx, cy, _ = _center_and_class(item)
+    try:
+        if hasattr(item, "w") and hasattr(item, "h"):
+            width, height = float(item.w), float(item.h)
+        elif isinstance(item, Mapping):
+            width, height = float(item["w"]), float(item["h"])
+        else:
+            # Sequence convention extends (cx, cy, class_id) with width, height.
+            width, height = float(item[3]), float(item[4])
+    except (KeyError, IndexError, TypeError, ValueError) as exc:
+        raise ValueError("GT cluster boxes require finite positive w and h") from exc
+    if not all(math.isfinite(value) and value > 0 for value in (width, height)):
+        raise ValueError("GT cluster boxes require finite positive w and h")
+    bounds = cx - width / 2, cy - height / 2, cx + width / 2, cy + height / 2
+    if not all(math.isfinite(value) for value in bounds):
+        raise ValueError("GT cluster box bounds must be finite")
+    return bounds
 
 
 def _hungarian_min_cost(cost: list[list[float]]) -> list[tuple[int, int]]:
@@ -155,7 +200,7 @@ def match_detections(
     predictions: Sequence[Any],
     ground_truth: Sequence[Any],
     center_gate_px: float = DEFAULT_CENTER_GATE_PX,
-    class_policy: str = "binary",
+    class_policy: str = DEFAULT_CLASS_POLICY,
 ) -> MatchingResult:
     """Associate detections one-to-one using gated centre distance.
 
@@ -164,17 +209,16 @@ def match_detections(
     distance.  Thus a close invalid-class pair cannot displace a valid pair in
     class-aware mode.
     """
-    if center_gate_px < 0:
-        raise ValueError("center_gate_px must be non-negative")
+    center_gate_px = _validate_gate(center_gate_px)
     policy = _normalise_policy(class_policy)
     pred_values = [_center_and_class(item) for item in predictions]
-    gt_values = [_center_and_class(item) for item in ground_truth]
-    if not pred_values or not gt_values:
-        return MatchingResult(
-            matches=(),
-            unmatched_predictions=tuple(range(len(pred_values))),
-            unmatched_ground_truth=tuple(range(len(gt_values))),
-        )
+    all_gt_values = [_center_and_class(item) for item in ground_truth]
+    individual_policy = policy == DEFAULT_CLASS_POLICY
+    cluster_indices = tuple(i for i, (_, _, cls) in enumerate(all_gt_values) if cls == 1)
+    boxes = [_cluster_bounds(ground_truth[i]) for i in cluster_indices] if individual_policy else []
+    gt_indices = [i for i, (_, _, cls) in enumerate(all_gt_values)
+                  if not individual_policy or cls in (0, 2)]
+    gt_values = [all_gt_values[i] for i in gt_indices]
 
     distances: list[list[float]] = []
     valid: list[list[bool]] = []
@@ -183,7 +227,7 @@ def match_detections(
         valid_row: list[bool] = []
         for gx, gy, gt_class in gt_values:
             distance = math.hypot(px - gx, py - gy)
-            same_class = policy == "binary" or pred_class == gt_class
+            same_class = policy != "class_aware" or pred_class == gt_class
             distance_row.append(distance)
             valid_row.append(same_class and distance <= center_gate_px)
         distances.append(distance_row)
@@ -197,18 +241,29 @@ def match_detections(
     ]
     assigned = _hungarian_min_cost(costs)
     matches = tuple(
-        DetectionMatch(i, j, distances[i][j])
+        DetectionMatch(i, gt_indices[j], distances[i][j])
         for i, j in assigned
         if valid[i][j]
     )
     matched_predictions = {match.prediction_index for match in matches}
     matched_gt = {match.ground_truth_index for match in matches}
+    unmatched = [i for i in range(len(pred_values)) if i not in matched_predictions]
+    ignored: set[int] = set()
+    if individual_policy:
+        for i in unmatched:
+            # Even an already matched individual protects its entire disk:
+            # extra predictions inside it remain FP, including class-1 outputs.
+            if any(distance <= center_gate_px for distance in distances[i]):
+                continue
+            px, py, _ = pred_values[i]
+            if any(x0 <= px <= x1 and y0 <= py <= y1 for x0, y0, x1, y1 in boxes):
+                ignored.add(i)
     return MatchingResult(
         matches=matches,
-        unmatched_predictions=tuple(
-            i for i in range(len(pred_values)) if i not in matched_predictions
-        ),
-        unmatched_ground_truth=tuple(i for i in range(len(gt_values)) if i not in matched_gt),
+        unmatched_predictions=tuple(i for i in unmatched if i not in ignored),
+        unmatched_ground_truth=tuple(i for i in gt_indices if i not in matched_gt),
+        ignored_predictions=tuple(sorted(ignored)),
+        ignored_ground_truth=cluster_indices if individual_policy else (),
     )
 
 
@@ -229,6 +284,32 @@ def _gate_suffix(gate: float) -> str:
     return f"{float(gate):g}".replace(".", "p")
 
 
+_QUALITY_FIELDS = (
+    "tp", "fp", "fn", "precision", "recall", "f1", "center_error_mean_px",
+    "center_error_median_px", "center_error_max_px", "center_error_sum_px",
+    "count_error", "count_abs_error", "count_bias", "count_mae",
+)
+_PRIMARY_FIELDS = _QUALITY_FIELDS + (
+    "primary_evaluable", "n_predictions_scored", "n_predictions_ignored", "n_ground_truth_scored",
+)
+
+
+def _quality_metrics(result: MatchingResult, *, evaluable: bool = True) -> dict[str, Any]:
+    distances = [match.distance_px for match in result.matches]
+    precision, recall, f1 = _prf(result.tp, result.fp, result.fn) if evaluable else (None, None, None)
+    count_error = result.fp - result.fn
+    return {
+        "tp": result.tp, "fp": result.fp, "fn": result.fn,
+        "precision": precision, "recall": recall, "f1": f1,
+        "center_error_mean_px": statistics.fmean(distances) if distances else None,
+        "center_error_median_px": statistics.median(distances) if distances else None,
+        "center_error_max_px": max(distances) if distances else None,
+        "center_error_sum_px": sum(distances), "count_error": count_error,
+        "count_abs_error": abs(count_error), "count_bias": count_error,
+        "count_mae": abs(count_error),
+    }
+
+
 def evaluate_frame(
     predictions: Sequence[Any],
     ground_truth: Sequence[Any] | None,
@@ -237,13 +318,25 @@ def evaluate_frame(
     frame: int = 0,
     annotated: bool | None = None,
     center_gate_px: float = DEFAULT_CENTER_GATE_PX,
-    class_policy: str = "binary",
+    class_policy: str = DEFAULT_CLASS_POLICY,
     detection_ms: float | None = None,
-    sensitivity_gates_px: Sequence[float] = (),
+    sensitivity_gates_px: Sequence[float] = DEFAULT_SENSITIVITY_GATES_PX,
 ) -> dict[str, Any]:
-    """Evaluate one frame and return a flat, CSV/JSON-friendly record."""
+    """Evaluate without changing raw predictions or annotations.
+
+    ``n_predictions``/``n_ground_truth`` remain raw aliases. Primary count
+    error compares scored predictions with scored GT objects (individuals for
+    the default policy), never an inferred biological cell count. Cluster-only
+    frames without scored predictions have undefined primary PRF, but a zero
+    evaluated-count error; count MAE/bias use every annotated frame.
+    """
     policy = _normalise_policy(class_policy)
+    center_gate_px = _validate_gate(center_gate_px)
+    for item in predictions:
+        _center_and_class(item)
     is_annotated = ground_truth is not None if annotated is None else bool(annotated)
+    if is_annotated and ground_truth is None:
+        raise ValueError("annotated=True requires explicit ground truth; use [] for a true empty frame")
     base: dict[str, Any] = {
         "video_id": str(video_id),
         "frame": int(frame),
@@ -251,102 +344,75 @@ def evaluate_frame(
         "class_policy": policy,
         "center_gate_px": float(center_gate_px),
         "n_predictions": len(predictions),
+        "n_predictions_raw": len(predictions),
         "n_ground_truth": None,
-        "tp": None,
-        "fp": None,
-        "fn": None,
-        "precision": None,
-        "recall": None,
-        "f1": None,
-        "center_error_mean_px": None,
-        "center_error_median_px": None,
-        "center_error_max_px": None,
-        "center_error_sum_px": None,
-        "count_error": None,
-        "count_abs_error": None,
-        "count_bias": None,
-        "count_mae": None,
+        "n_ground_truth_raw": None,
+        "n_gt_individuals": None,
+        "n_gt_clusters": None,
+        "has_gt_clusters": None,
+        "count_error_raw": None,
+        "count_abs_error_raw": None,
         "detection_ms": detection_ms,
     }
-    sensitivity_gates = sorted(
-        {float(gate) for gate in sensitivity_gates_px if float(gate) != center_gate_px}
-    )
-    if any(gate < 0 for gate in sensitivity_gates):
-        raise ValueError("sensitivity gates must be non-negative")
-    for gate in sensitivity_gates:
-        suffix = _gate_suffix(gate)
-        for metric in ("tp", "fp", "fn", "precision", "recall", "f1"):
-            base[f"{metric}_at_{suffix}px"] = None
+    sensitivity_gates = sorted({_validate_gate(gate) for gate in sensitivity_gates_px} - {center_gate_px})
+    gates = [center_gate_px, *sensitivity_gates]
+    for i, gate in enumerate(gates):
+        suffix = "" if i == 0 else f"_at_{_gate_suffix(gate)}px"
+        base.update({f"{field}{suffix}": None for field in _PRIMARY_FIELDS})
+        base[f"primary_evaluable{suffix}"] = False
+        base.update({f"secondary_all_objects_{field}{suffix}": None for field in _QUALITY_FIELDS})
     if not is_annotated:
         return base
 
     gt = list(ground_truth or [])
-    result = match_detections(
-        predictions, gt, center_gate_px=center_gate_px, class_policy=policy
-    )
-    distances = [match.distance_px for match in result.matches]
-    precision, recall, f1 = _prf(result.tp, result.fp, result.fn)
-    count_error = len(predictions) - len(gt)
+    classes = [_center_and_class(item)[2] for item in gt]
+    n_clusters = classes.count(1)
+    n_individuals = len(gt) - n_clusters
+    raw_error = len(predictions) - len(gt)
     base.update(
         {
-            "n_ground_truth": len(gt),
-            "tp": result.tp,
-            "fp": result.fp,
-            "fn": result.fn,
-            "precision": precision,
-            "recall": recall,
-            "f1": f1,
-            "center_error_mean_px": statistics.fmean(distances) if distances else None,
-            "center_error_median_px": statistics.median(distances) if distances else None,
-            "center_error_max_px": max(distances) if distances else None,
-            "center_error_sum_px": sum(distances),
-            "count_error": count_error,
-            "count_abs_error": abs(count_error),
-            "count_bias": count_error,
-            "count_mae": abs(count_error),
+            "n_ground_truth": len(gt), "n_ground_truth_raw": len(gt),
+            "n_gt_individuals": n_individuals, "n_gt_clusters": n_clusters,
+            "has_gt_clusters": n_clusters > 0,
+            "count_error_raw": raw_error, "count_abs_error_raw": abs(raw_error),
         }
     )
-    for gate in sensitivity_gates:
-        alternative = match_detections(
-            predictions, gt, center_gate_px=gate, class_policy=policy
+    for i, gate in enumerate(gates):
+        suffix = "" if i == 0 else f"_at_{_gate_suffix(gate)}px"
+        result = match_detections(predictions, gt, center_gate_px=gate, class_policy=policy)
+        n_ignored = len(result.ignored_predictions)
+        n_scored = len(predictions) - n_ignored
+        gt_scored = len(gt) - len(result.ignored_ground_truth)
+        evaluable = not (policy == DEFAULT_CLASS_POLICY and n_clusters and not gt_scored and not n_scored)
+        primary = {
+            **_quality_metrics(result, evaluable=evaluable), "primary_evaluable": evaluable,
+            "n_predictions_scored": n_scored, "n_predictions_ignored": n_ignored,
+            "n_ground_truth_scored": gt_scored,
+        }
+        base.update({f"{field}{suffix}": value for field, value in primary.items()})
+        # Reuse the same assignment when the target/policy already is binary
+        # all-objects; otherwise compute a genuinely independent comparison.
+        secondary = result if policy == "binary" or (policy == DEFAULT_CLASS_POLICY and not n_clusters) else match_detections(
+            predictions, gt, center_gate_px=gate, class_policy="binary"
         )
-        alt_precision, alt_recall, alt_f1 = _prf(
-            alternative.tp, alternative.fp, alternative.fn
-        )
-        suffix = _gate_suffix(gate)
-        base.update(
-            {
-                f"tp_at_{suffix}px": alternative.tp,
-                f"fp_at_{suffix}px": alternative.fp,
-                f"fn_at_{suffix}px": alternative.fn,
-                f"precision_at_{suffix}px": alt_precision,
-                f"recall_at_{suffix}px": alt_recall,
-                f"f1_at_{suffix}px": alt_f1,
-            }
-        )
+        base.update({f"secondary_all_objects_{field}{suffix}": value
+                     for field, value in _quality_metrics(secondary).items()})
     return base
 
 
 def aggregate_frame_metrics(
     frame_metrics: Iterable[Mapping[str, Any]], *, video_id: str | None = None
 ) -> dict[str, Any]:
-    """Micro-aggregate annotated frames and report count error per frame."""
+    """Aggregate counts over all annotated frames, never mean frame F1.
+
+    Primary count MAE/bias always use the fixed annotated-frame universe,
+    including cluster-only frames with zero scored objects. Undefined primary
+    PRF does not remove a frame from that count-error denominator.
+    """
     records = list(frame_metrics)
     if video_id is not None:
         records = [row for row in records if str(row.get("video_id", "")) == str(video_id)]
     annotated = [row for row in records if bool(row.get("annotated"))]
-    tp = sum(int(row.get("tp") or 0) for row in annotated)
-    fp = sum(int(row.get("fp") or 0) for row in annotated)
-    fn = sum(int(row.get("fn") or 0) for row in annotated)
-    if annotated:
-        precision, recall, f1 = _prf(tp, fp, fn)
-    else:
-        # No manual evidence means no accuracy claim, even if predictions ran.
-        precision = recall = f1 = None
-    matched = sum(int(row.get("tp") or 0) for row in annotated)
-    center_sum = sum(float(row.get("center_error_sum_px") or 0.0) for row in annotated)
-    count_errors = [float(row.get("count_error") or 0.0) for row in annotated]
-    count_abs_errors = [float(row.get("count_abs_error") or 0.0) for row in annotated]
     detection_times = [
         float(row["detection_ms"])
         for row in records
@@ -361,43 +427,54 @@ def aggregate_frame_metrics(
         "frames_total": len(records),
         "frames_annotated": len(annotated),
         "frames_unannotated": len(records) - len(annotated),
-        "tp": tp,
-        "fp": fp,
-        "fn": fn,
-        "precision": precision,
-        "recall": recall,
-        "f1": f1,
-        "center_error_mean_px": center_sum / matched if matched else None,
-        "count_mae": statistics.fmean(count_abs_errors) if count_abs_errors else None,
-        "count_bias": statistics.fmean(count_errors) if count_errors else None,
+        "frames_with_clusters": sum(bool(row.get("n_gt_clusters")) for row in annotated),
+        "frames_with_individual_gt": sum(bool(row.get("n_gt_individuals")) for row in annotated),
+        "frames_true_empty_gt": sum(row.get("n_ground_truth_raw", row.get("n_ground_truth")) == 0 for row in annotated),
+        "frames_cluster_only_gt": sum(bool(row.get("n_gt_clusters")) and row.get("n_gt_individuals") == 0 for row in annotated),
+        "n_predictions_raw": sum(int(row.get("n_predictions_raw", row.get("n_predictions", 0)) or 0) for row in records),
+        "n_predictions_unannotated": sum(int(row.get("n_predictions_raw", row.get("n_predictions", 0)) or 0) for row in records if not row.get("annotated")),
+        "n_ground_truth_raw": sum(int(row.get("n_ground_truth_raw", row.get("n_ground_truth", 0)) or 0) for row in annotated),
+        "n_gt_individuals": sum(int(row.get("n_gt_individuals") or 0) for row in annotated),
+        "n_gt_clusters": sum(int(row.get("n_gt_clusters") or 0) for row in annotated),
         "detection_ms_mean": statistics.fmean(detection_times) if detection_times else None,
         "detection_ms_median": statistics.median(detection_times) if detection_times else None,
         "detection_ms_max": max(detection_times) if detection_times else None,
     }
-    gate_pattern = re.compile(r"^tp_at_(?P<suffix>.+px)$")
-    gate_suffixes = sorted(
-        {
-            match.group("suffix")
-            for row in annotated
-            for key in row
-            if (match := gate_pattern.match(str(key))) is not None
-        }
-    )
+    raw_errors = [float(row["count_error_raw"]) for row in annotated if row.get("count_error_raw") is not None]
+    result.update(count_error_raw=sum(raw_errors), count_abs_error_raw=sum(abs(value) for value in raw_errors),
+                  count_bias_raw=statistics.fmean(raw_errors) if raw_errors else None,
+                  count_mae_raw=statistics.fmean(abs(value) for value in raw_errors) if raw_errors else None)
+    gate_pattern = re.compile(r"^tp(?P<suffix>_at_.+px)$")
+    gate_suffixes = ["", *sorted({match.group("suffix") for row in records for key in row
+                                if (match := gate_pattern.match(str(key))) is not None})]
     for suffix in gate_suffixes:
-        gate_tp = sum(int(row.get(f"tp_at_{suffix}") or 0) for row in annotated)
-        gate_fp = sum(int(row.get(f"fp_at_{suffix}") or 0) for row in annotated)
-        gate_fn = sum(int(row.get(f"fn_at_{suffix}") or 0) for row in annotated)
-        gate_precision, gate_recall, gate_f1 = _prf(gate_tp, gate_fp, gate_fn)
-        result.update(
-            {
-                f"tp_at_{suffix}": gate_tp,
-                f"fp_at_{suffix}": gate_fp,
-                f"fn_at_{suffix}": gate_fn,
-                f"precision_at_{suffix}": gate_precision,
-                f"recall_at_{suffix}": gate_recall,
-                f"f1_at_{suffix}": gate_f1,
+        scored = [row for row in annotated if row.get(f"tp{suffix}") is not None]
+        effective = [row for row in scored if row.get(f"primary_evaluable{suffix}", True)]
+        result[f"frames_primary_evaluable{suffix}"] = len(effective)
+        result[f"frames_primary_unevaluable{suffix}"] = len(scored) - len(effective)
+        result[f"frames_with_ignored_predictions{suffix}"] = sum(bool(row.get(f"n_predictions_ignored{suffix}")) for row in scored)
+        for name in ("n_predictions_scored", "n_predictions_ignored", "n_ground_truth_scored"):
+            result[f"{name}{suffix}"] = sum(int(row.get(f"{name}{suffix}") or 0) for row in scored)
+        for prefix in ("", "secondary_all_objects_"):
+            evaluated = [row for row in annotated if row.get(f"{prefix}tp{suffix}") is not None]
+            tp, fp, fn = (sum(int(row.get(f"{prefix}{metric}{suffix}") or 0) for row in evaluated)
+                          for metric in ("tp", "fp", "fn"))
+            evidence = bool(evaluated) and (bool(prefix) or bool(effective) or tp + fp + fn > 0)
+            precision, recall, f1 = _prf(tp, fp, fn) if evidence else (None, None, None)
+            center_sum = sum(float(row.get(f"{prefix}center_error_sum_px{suffix}") or 0) for row in evaluated)
+            errors = [float(row[f"{prefix}count_error{suffix}"]) for row in evaluated
+                      if row.get(f"{prefix}count_error{suffix}") is not None]
+            absolute_errors = [abs(value) for value in errors]
+            quality = {
+                "tp": tp, "fp": fp, "fn": fn, "precision": precision, "recall": recall, "f1": f1,
+                "center_error_mean_px": center_sum / tp if tp else None,
+                "center_error_sum_px": center_sum, "count_error": sum(errors),
+                "count_abs_error": sum(absolute_errors),
+                "count_mae": statistics.fmean(absolute_errors) if absolute_errors else None,
+                "count_bias": statistics.fmean(errors) if errors else None,
+                "count_evaluated_frames": len(errors),
             }
-        )
+            result.update({f"{prefix}{field}{suffix}": value for field, value in quality.items()})
     return result
 
 
@@ -419,7 +496,9 @@ def write_frame_metrics_csv(
     records = [dict(row) for row in frame_metrics]
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    default_fields = list(evaluate_frame([], None).keys())
+    # Sensitivity columns come from the actual records. Injecting current
+    # defaults here would add a spurious 15 px column to historical 15/10/20.
+    default_fields = list(evaluate_frame([], None, sensitivity_gates_px=()).keys())
     extra_fields = sorted({key for row in records for key in row} - set(default_fields))
     fields = default_fields + extra_fields
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -435,16 +514,12 @@ class DetectionEvaluator:
     def __init__(
         self,
         center_gate_px: float = DEFAULT_CENTER_GATE_PX,
-        class_policy: str = "binary",
-        sensitivity_gates_px: Sequence[float] = (),
+        class_policy: str = DEFAULT_CLASS_POLICY,
+        sensitivity_gates_px: Sequence[float] = DEFAULT_SENSITIVITY_GATES_PX,
     ) -> None:
-        if center_gate_px < 0:
-            raise ValueError("center_gate_px must be non-negative")
-        self.center_gate_px = float(center_gate_px)
+        self.center_gate_px = _validate_gate(center_gate_px)
         self.class_policy = _normalise_policy(class_policy)
-        self.sensitivity_gates_px = tuple(float(gate) for gate in sensitivity_gates_px)
-        if any(gate < 0 for gate in self.sensitivity_gates_px):
-            raise ValueError("sensitivity gates must be non-negative")
+        self.sensitivity_gates_px = tuple(_validate_gate(gate) for gate in sensitivity_gates_px)
         self.frames: list[dict[str, Any]] = []
 
     def add_frame(

@@ -67,8 +67,11 @@ Cada chamada cria uma run imutável sob
 congelado, a raiz passa automaticamente a `data/results/`. A run contém
 manifesto, hashes dos pesos e do YAML, custo, `summary.csv/json` e
 `metrics_per_class.csv`. `map50` e `map50_95` são métricas secundárias do YOLO;
-não substituem o F1 binário com gate de centro de 15 px usado para promover e
-comparar todos os detectores.
+não substituem o F1 por centros da comparação comum. Na nova avaliação, o
+raio principal aprovado é 10 px e as sensibilidades são 15/20 px; a política
+binária existente será discutida antes das próximas baterias. Resultados
+históricos a 15 px mantêm sua definição original. Consulte a
+[decisão de tolerância](../../metodologia/TOLERANCIA_ESPACIAL.md).
 
 O treino também cria uma run nova em
 `data/tests/detection/yolo/<configuração>/training/<run_id>/`. A saída nativa do

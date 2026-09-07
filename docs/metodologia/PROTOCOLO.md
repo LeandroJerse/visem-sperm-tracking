@@ -1,12 +1,47 @@
 # Protocolo experimental mestre
 
-Este documento transforma o plano do TCC em uma fila de execução. O teste pode
-ser rodado pelo pesquisador em outra sessão; código, configuração e teste
-sintético precisam existir antes de uma bateria longa.
+Este documento registra decisões metodológicas e o planejamento das etapas.
+Na retomada de 07/09/2026, foram aprovados os centros como referência e o raio
+principal de 10 px, com sensibilidade obrigatória a 15/20 px, e a política
+principal de indivíduos com tratamento de agrupamentos descrita abaixo.
+O pesquisador autorizou a continuidade autônoma com registros e commits.
+Código, configuração, testes e orçamento prospectivo precisam existir antes
+de uma bateria longa. A seleção de parâmetros e o desenho confirmatório
+continuam pendentes; a etapa corrente verifica o contrato da avaliação.
+
+## Escopo dos dados e interpretação do movimento
+
+Decisão de escopo confirmada em 2026-09-07: o TCC utiliza exclusivamente
+vídeos do VISEM e anotações do VISEM-Tracking, que estende a mesma coleção.
+Os trechos iniciais de aproximadamente 30 segundos anotados em 20 vídeos
+compõem o desenvolvimento e a avaliação quantitativa; os outros 65 vídeos,
+sem tracking manual, destinam-se à aplicação posterior ao congelamento.
+Não há uma segunda coleção de vídeos
+com tubo no escopo deste trabalho.
+
+Os artigos descrevem gravação por câmera acoplada ao microscópio, mas não
+documentam tubo, bombeamento ou contracorrente imposta durante a aquisição.
+O artigo original menciona deriva em algumas gravações; isso não identifica
+sua causa nem demonstra uma contracorrente controlada. A ausência de um
+aparato documentado também não comprova ausência absoluta de movimento do
+líquido. Fontes: [VISEM, 2019](https://doi.org/10.1145/3304109.3325814) e
+[VISEM-Tracking, 2023](https://www.nature.com/articles/s41597-023-02173-4).
+
+A hipótese principal permanece: características locais de movimento aparente
+por fluxo óptico, combinadas ao histórico de posições, podem reduzir ADE e
+FDE em relação a preditores equivalentes que utilizem apenas posição e
+velocidade. Essa hipótese não pressupõe contracorrente. Sem ground truth
+físico correspondente, o fluxo óptico não mede a velocidade física do fluido.
+
+A correção da origem dos dados preservou os splits, configurações congeladas
+e resultados. A decisão posterior sobre a tolerância de detecção está
+versionada na seção de detecção; não reescreve o histórico.
 
 ## Regra comum de promoção
 
-Para cada algoritmo:
+O planejamento anterior registrou a seguinte sequência por algoritmo. A nova
+seleção e avaliação, inclusive a confirmação em folds, ainda precisam ser
+detalhadas e aprovadas; preservar a lista não a transforma em execução vigente:
 
 1. validar a implementação com caso sintético e smoke test;
 2. fazer busca grossa exclusivamente no treino;
@@ -45,9 +80,10 @@ Antes deste protocolo, a exploração frame a frame usou três frames dos 20
 vídeos, incluindo `24, 38, 47, 54` (30 summaries por vídeo na árvore
 histórica). Esses quatro vídeos não são, portanto, um holdout totalmente cego.
 As 120 observações permanecem marcadas como legado e não são usadas para a
-seleção retomada. A execução completa confirmatória continua única e só pode
-ocorrer após congelamento; a confirmação 5-fold é obrigatória para reduzir a
-dependência desse holdout previamente visto.
+seleção retomada. A execução confirmatória só pode ocorrer após congelamento
+e aprovação do desenho. A simples aplicação de uma configuração já escolhida
+a cinco grupos não remove a influência histórica nem estabelece avaliação
+independente da seleção. O desenho dos folds continua pendente.
 
 ## Fila 0 — infraestrutura
 
@@ -71,7 +107,7 @@ não deve ser confundida com a validação estrutural já concluída.
 Unidade de triagem: frame para threshold/Otsu/adaptativo/Blob/Watershed/YOLO;
 clipe com aquecimento para MOG2/KNN.
 
-Ordem de fechamento:
+Ordem de fechamento do planejamento anterior, a revisar antes de novas buscas:
 
 1. threshold fixo + morfologia (`T200/o1/c2` e `T190/o1/c1` obrigatórios);
 2. Otsu;
@@ -83,9 +119,51 @@ Ordem de fechamento:
 8. Watershed;
 9. YOLO com early stopping e três seeds.
 
-Métrica de promoção: F1 binário com matching Húngaro e gate de centro de 15 px.
-Complementares: gates 10/20 px, precision, recall, erro de centro, count MAE,
-bias, latência, RAM/VRAM; mAP e três classes são secundários no YOLO.
+### Avaliação por centros aprovada na retomada
+
+Identificador ativo: **`center_distance_v3_individuals_ignore_clusters_10px`** em
+`evaluation.protocol_id` de `configs/protocol/splits.yaml`.
+O gate principal é **10 px**, com matching Húngaro um-para-um. As análises de
+sensibilidade a **15 e 20 px são obrigatórias e iguais para todos os detectores**,
+mesmo quando alterarem a ordenação dos métodos. As distâncias usam a resolução
+original de **640 × 480 px**, desfazendo redimensionamento e padding antes da
+comparação. Essa decisão não altera os splits.
+
+A escolha é uma convenção operacional de precisão de localização, não um
+raio ótimo estimado ou uma medida do erro dos anotadores. O centro da caixa
+é referência geométrica, não ground truth anatômico exato. Fundamentação e
+limites: [Tolerância espacial](TOLERANCIA_ESPACIAL.md).
+
+F1 por centros dos indivíduos anotados nas classes 0 e 2 é a métrica principal
+de detecção (`f1_individuals_center_10px`). Todas as previsões participam do
+matching, independentemente de sua classe prevista. Após associar os
+indivíduos, previsões excedentes a até um raio de qualquer indivíduo são FP;
+das demais, somente as de centro dentro de uma caixa GT de classe 1 são
+ignoradas. Indivíduos anotados dentro de agrupamentos continuam avaliados.
+A regra é recalculada nos três raios, sem garantia de F1 monotônico.
+Nenhuma máscara manual é fornecida ao detector ou ao rastreador.
+
+O resultado complementar `secondary_all_objects_*` avalia todos os objetos
+anotados, com cada agrupamento contado como um objeto. Relatar contagens
+brutas, avaliadas e ignoradas e cobertura dos agrupamentos por vídeo.
+Precision, recall,
+erro de centro dos pares aceitos, count MAE, bias, latência e RAM/VRAM
+complementam a leitura; mAP é secundário no YOLO. O erro dos pares aceitos
+não substitui contar FP/FN. A MAE de contagem principal usa previsões
+avaliadas versus indivíduos GT, com denominador fixo de quadros anotados.
+Casos sem referência, duplicatas e limites estão formalizados em
+[Classes e agrupamentos](CLASSES_E_AGRUPAMENTOS.md).
+
+Referência histórica: **`center_distance_v1_15px`**, com 15 px principal e
+10/20 px de sensibilidade. Esse identificador retrospectivo não modifica
+manifestos ou resultados antigos. YAMLs históricos T200/T190 e configurações
+congeladas permanecem em 15 px; não são as configurações ativas da avaliação
+v3. A versão intermediária `center_distance_v2_10px` registrou a escolha do
+raio, antes da política de agrupamentos, sem novas runs de detector.
+Não misturar métricas entre versões nem promover uma seleção histórica por
+mudança de contrato. O smoke v3 usa somente parâmetros históricos fixos,
+três quadros dos vídeos de treino 11 e 12, para verificar a implementação.
+Ele não é busca, validação completa ou promoção de algoritmo.
 
 Saída: um vencedor congelado por método e dois detectores na fronteira de Pareto
 (melhor qualidade e melhor eficiência).

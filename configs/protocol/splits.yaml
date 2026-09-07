@@ -20,13 +20,17 @@ annotation_policy:
   exclude_unlabeled_from_training: true
   exclude_unlabeled_from_metrics: true
   align_by_frame_number: true
-  primary_class_policy: binary
+  primary_class_policy: individuals_ignore_clusters
   yolo_secondary_class_policy: class_aware
 
 evaluation:
-  primary_detection_metric: f1_center_15px
-  center_gate_px: 15
-  sensitivity_gates_px: [10, 20]
+  # Detection evaluation approved on 2026-09-07; split membership is unchanged.
+  protocol_id: center_distance_v3_individuals_ignore_clusters_10px
+  primary_detection_metric: f1_individuals_center_10px
+  class_policy: individuals_ignore_clusters
+  secondary_detection_policy: binary_all_objects
+  center_gate_px: 10
+  sensitivity_gates_px: [15, 20]
   primary_tracking_metric: HOTA
   prediction_horizons_frames: [1, 5, 10]
   prediction_history_frames: 20

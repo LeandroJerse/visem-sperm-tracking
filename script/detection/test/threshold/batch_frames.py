@@ -2,7 +2,7 @@
 
 Runs a fixed set of configurations on N frames of every tracked video and
 writes per-video ``comparisons.csv`` (via single_frame) plus a global
-``data/tests/detection/threshold/_comparisons/frame_screening/batch_<timestamp>.csv``
+``data/tests/detection/threshold/_comparisons/frame_screening/<evaluation_protocol_id>/batch_<timestamp>.csv``
 aggregating the official spatial F1 first by video, plus count diagnostics,
 per configuration.
 
@@ -24,15 +24,22 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import statistics
 from datetime import datetime
 from pathlib import Path
 
 from src.core.paths import EXPERIMENT_TESTS_ROOT, REPOSITORY_ROOT
 from src.detection.discovery import discover_tracked_ids
+from src.evaluation.detection import (
+    DEFAULT_CENTER_GATE_PX,
+    DEFAULT_CLASS_POLICY,
+    DEFAULT_SENSITIVITY_GATES_PX,
+    aggregate_frame_metrics,
+)
 from src.experiments.dataset import load_split_spec
 
-from .single_frame import main as run_single_frame
+from .single_frame import EVALUATION_PROTOCOL_ID, main as run_single_frame
 
 DEFAULT_TEST_ROOT = EXPERIMENT_TESTS_ROOT / "detection"
 
@@ -56,11 +63,14 @@ CONFIGS: list[tuple[str, dict]] = [
 
 GLOBAL_FIELDS = [
     "timestamp", "split", "config", "overrides",
+    "evaluation_protocol_id", "metric_primary", "center_gate_px", "sensitivity_gates_px",
     "n_runs", "n_videos", "n_frames_per_video",
     "mean_diff", "median_diff", "std_diff",
     "mean_ratio", "median_ratio",
     "mean_abs_diff", "median_abs_diff",
     "macro_video_f1", "mean_frame_f1", "total_tp", "total_fp", "total_fn",
+    "macro_video_f1_at_15px", "mean_frame_f1_at_15px", "total_tp_at_15px", "total_fp_at_15px", "total_fn_at_15px",
+    "macro_video_f1_at_20px", "mean_frame_f1_at_20px", "total_tp_at_20px", "total_fp_at_20px", "total_fn_at_20px",
 ]
 
 
@@ -108,7 +118,7 @@ def run_battery(
                     ratio  = summary["count_ratio"]
                     n_gt   = summary["n_ground_truth"]
                     n_det  = summary["n_detections"]
-                    gt_str = f"GT={n_gt}"
+                    gt_str = f"objetos GT brutos={n_gt}"
                     sign   = "+" if diff > 0 else ""
                     message = (
                         f"  [{run_n}/{total}] {vid} f{frame_idx}: "
@@ -119,13 +129,10 @@ def run_battery(
                     print(message)
                     results[label].append(
                         {
+                            **summary,
                             "video_id": vid,
                             "count_diff": diff,
                             "count_ratio": ratio,
-                            "tp": int(summary["tp"]),
-                            "fp": int(summary["fp"]),
-                            "fn": int(summary["fn"]),
-                            "f1": float(summary["f1"]),
                         }
                     )
                 except Exception as exc:  # noqa: BLE001
@@ -140,9 +147,10 @@ def _write_global_summary(
     video_ids: list[str],
     split_name: str,
 ) -> None:
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     out_path = (
         DEFAULT_TEST_ROOT / "threshold" / "_comparisons" / "frame_screening"
+        / EVALUATION_PROTOCOL_ID
         / f"batch_{ts}.csv"
     )
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -157,25 +165,49 @@ def _write_global_summary(
             if record["count_ratio"] is not None
         ]
         abs_diffs = [abs(d) for d in diffs]
-        video_f1: list[float] = []
-        for video_id in video_ids:
-            selected = [record for record in records if record["video_id"] == video_id]
-            tp = sum(record["tp"] for record in selected)
-            fp = sum(record["fp"] for record in selected)
-            fn = sum(record["fn"] for record in selected)
-            precision = tp / (tp + fp) if tp + fp else 1.0
-            recall = tp / (tp + fn) if tp + fn else 1.0
-            f1 = (
-                2.0 * precision * recall / (precision + recall)
-                if precision + recall else 0.0
-            )
-            if selected:
-                video_f1.append(f1)
+        video_summaries = [
+            aggregate_frame_metrics(records, video_id=video_id)
+            for video_id in video_ids
+            if any(record["video_id"] == video_id for record in records)
+        ]
+        spatial_metrics: dict = {}
+        for key in sorted({key for row in video_summaries for key in row
+                           if key.startswith(("count_mae", "count_bias"))}):
+            values = [float(row[key]) for row in video_summaries if row.get(key) is not None]
+            spatial_metrics[f"macro_video_{key}"] = statistics.mean(values) if values else ""
+        for suffix in ("", *(f"_at_{gate:g}px" for gate in DEFAULT_SENSITIVITY_GATES_PX)):
+            video_f1 = [row[f"f1{suffix}"] for row in video_summaries if row.get(f"f1{suffix}") is not None]
+            frame_f1 = [record[f"f1{suffix}"] for record in records if record.get(f"f1{suffix}") is not None]
+            spatial_metrics.update({
+                f"macro_video_f1{suffix}": round(statistics.mean(video_f1), 6) if video_f1 else "",
+                f"mean_frame_f1{suffix}": round(statistics.mean(frame_f1), 6) if frame_f1 else "",
+                f"n_videos_primary_evaluable{suffix}": len(video_f1),
+                f"total_tp{suffix}": sum(row.get(f"tp{suffix}") or 0 for row in video_summaries),
+                f"total_fp{suffix}": sum(row.get(f"fp{suffix}") or 0 for row in video_summaries),
+                f"total_fn{suffix}": sum(row.get(f"fn{suffix}") or 0 for row in video_summaries),
+            })
+        for key in sorted({key for row in video_summaries for key in row}):
+            if key.startswith(("n_predictions_", "n_ground_truth_", "n_gt_", "frames_", "count_evaluated_frames", "count_error", "count_abs_error")):
+                spatial_metrics[f"total_{key}"] = sum(int(row.get(key) or 0) for row in video_summaries)
+            if key.startswith("secondary_all_objects_"):
+                if any(key.startswith(f"secondary_all_objects_{metric}") for metric in (
+                    "precision", "recall", "f1", "count_mae", "count_bias", "center_error_mean_px",
+                )):
+                    values = [float(row[key]) for row in video_summaries if row.get(key) is not None]
+                    spatial_metrics[f"macro_video_{key}"] = statistics.mean(values) if values else ""
+                else:
+                    spatial_metrics[f"total_{key}"] = sum(row.get(key) or 0 for row in video_summaries)
 
         row: dict = {
             "timestamp": ts,
             "split": split_name,
             "config": label,
+            "evaluation_protocol_id": EVALUATION_PROTOCOL_ID,
+            "metric_primary": f"macro_video_f1_individuals_center_{DEFAULT_CENTER_GATE_PX:g}px",
+            "center_gate_px": DEFAULT_CENTER_GATE_PX,
+            "sensitivity_gates_px": json.dumps(DEFAULT_SENSITIVITY_GATES_PX),
+            "class_policy": DEFAULT_CLASS_POLICY,
+            "count_scope": "scored_predictions_minus_individually_annotated_gt",
             "overrides": str({k: v for k, v in sorted(
                 next((ov for lbl, ov in CONFIGS if lbl == label), {}).items()
             )}),
@@ -189,18 +221,13 @@ def _write_global_summary(
             "median_ratio":    round(statistics.median(ratios), 3)   if ratios  else "",
             "mean_abs_diff":   round(statistics.mean(abs_diffs), 3)  if abs_diffs else "",
             "median_abs_diff": round(statistics.median(abs_diffs), 3) if abs_diffs else "",
-            "macro_video_f1": round(statistics.mean(video_f1), 6) if video_f1 else "",
-            "mean_frame_f1": round(
-                statistics.mean(record["f1"] for record in records), 6
-            ) if records else "",
-            "total_tp": sum(record["tp"] for record in records),
-            "total_fp": sum(record["fp"] for record in records),
-            "total_fn": sum(record["fn"] for record in records),
+            **spatial_metrics,
         }
         rows.append(row)
 
-    with open(out_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=GLOBAL_FIELDS)
+    with open(out_path, "x", newline="", encoding="utf-8") as f:
+        extra_fields = sorted({key for row in rows for key in row} - set(GLOBAL_FIELDS))
+        writer = csv.DictWriter(f, fieldnames=GLOBAL_FIELDS + extra_fields)
         writer.writeheader()
         writer.writerows(rows)
 
@@ -210,8 +237,8 @@ def _write_global_summary(
         key=lambda row: (
             -float(row["macro_video_f1"])
             if row["macro_video_f1"] != "" else float("inf"),
-            float(row["mean_abs_diff"])
-            if row["mean_abs_diff"] != "" else float("inf"),
+            float(row["macro_video_count_mae"])
+            if row["macro_video_count_mae"] != "" else float("inf"),
         ),
     )
     print(f"\n{'='*60}")

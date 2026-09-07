@@ -14,9 +14,33 @@
 | Divisões de vídeos | [protocol/splits.yaml](protocol/splits.yaml) | [Protocolo](../docs/metodologia/PROTOCOLO.md) |
 | Configurações congeladas | [frozen/README.md](frozen/README.md) | [Matriz experimental](../docs/projeto/MATRIZ_EXPERIMENTOS.md) |
 
-Para retomar o threshold: [T200/o1/c2](detection/threshold/t200_o1_c2.yaml),
+Registros históricos do threshold a 15 px: [T200/o1/c2](detection/threshold/t200_o1_c2.yaml),
 [T190/o1/c1](detection/threshold/t190_o1_c1.yaml) e
 [T200 congelado](frozen/detection/threshold/t200_o1_c2.yaml).
+
+## Avaliação de detecção aprovada em 07/09/2026
+
+O bloco `evaluation` de [splits.yaml](protocol/splits.yaml) registra
+`center_distance_v3_individuals_ignore_clusters_10px`: F1 por centros dos
+indivíduos 0/2 a 10 px como critério principal, 15/20 px como sensibilidades
+e política `individuals_ignore_clusters`. Os pixels são medidos na resolução original.
+Os `search.yaml` da detecção e os padrões dos executores usam essa definição.
+As divisões de vídeos, os parâmetros dos detectores e seus espaços de busca
+não foram modificados por esta decisão. As regras de agrupamentos e a
+avaliação complementar estão em
+[Classes e agrupamentos](../docs/metodologia/CLASSES_E_AGRUPAMENTOS.md).
+O orçamento da busca ainda será registrado antes de sua execução.
+
+O [smoke v3](detection/threshold/protocol_smoke_v3.yaml) fixa T200/o1/c2 em
+três quadros dos vídeos de treino 11 e 12 para verificar o contrato. Ele não
+seleciona parâmetros, não é configuração congelada e não promove o detector.
+
+Os YAMLs nomeados T190/T200 acima e o arquivo congelado permanecem exatamente
+como registrados, com 15 px principal e 10/20 px de sensibilidade. Carregá-los
+explicitamente no executor geral reproduz a definição histórica; não os use
+como configuração da nova avaliação. Nenhuma configuração de threshold foi
+promovida a 10 px. Fundamentação e limites estão na
+[decisão sobre tolerância espacial](../docs/metodologia/TOLERANCIA_ESPACIAL.md).
 
 ## Como ler os YAMLs
 
@@ -39,7 +63,7 @@ esse nome curto com um hash científico calculado sem vídeo, split, seed ou
 estágio. Assim, todos os vídeos da mesma configuração ficam juntos, enquanto a
 configuração resolvida completa continua registrada no manifesto de cada run.
 
-Configuração congelada atual:
+Configuração congelada histórica, sob avaliação a 15 px:
 
 - `frozen/detection/threshold/t200_o1_c2.yaml` — selecionada na validação dos
   vídeos 14, 19, 36 e 52; a execução confirmatória no teste ainda não ocorreu.
@@ -47,5 +71,6 @@ Configuração congelada atual:
 Limitação: o piloto exploratório antigo examinou três frames de cada um dos 20
 vídeos, incluindo `24, 38, 47, 54`. Assim, o holdout atual não é totalmente
 cego, embora nenhuma bateria confirmatória com a configuração congelada tenha
-sido executada. O legado não participa da seleção atual e a confirmação 5-fold
-deve acompanhar obrigatoriamente o resultado isolado.
+sido executada. O desenho da nova seleção e avaliação, incluindo folds,
+continua pendente. Redistribuir os mesmos vídeos não desfaz a influência
+das explorações anteriores na escolha de parâmetros.

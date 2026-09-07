@@ -12,7 +12,14 @@ from pathlib import Path
 
 import cv2
 
-from src.evaluation.detection import DetectionEvaluator, write_frame_metrics_csv
+from src.evaluation.detection import (
+    DEFAULT_CENTER_GATE_PX,
+    DEFAULT_CLASS_POLICY,
+    DEFAULT_EVALUATION_PROTOCOL_ID,
+    DEFAULT_SENSITIVITY_GATES_PX,
+    DetectionEvaluator,
+    write_frame_metrics_csv,
+)
 from src.experiments.resources import ResourceMonitor
 
 from .base import Detector
@@ -48,9 +55,9 @@ def run_on_video(
     draw_mode: str = "both",
     verbose: bool = True,
     out_frames_csv: str | Path | None = None,
-    center_gate_px: float = 15.0,
-    class_policy: str = "binary",
-    sensitivity_gates_px: tuple[float, ...] | list[float] = (),
+    center_gate_px: float = DEFAULT_CENTER_GATE_PX,
+    class_policy: str = DEFAULT_CLASS_POLICY,
+    sensitivity_gates_px: tuple[float, ...] | list[float] = DEFAULT_SENSITIVITY_GATES_PX,
     warmup_frames: int = 0,
 ) -> dict:
     """Run ``detector`` over ``video_path``.
@@ -85,6 +92,13 @@ def run_on_video(
         center_gate_px=center_gate_px,
         class_policy=class_policy,
         sensitivity_gates_px=sensitivity_gates_px,
+    )
+    evaluation_protocol_id = (
+        DEFAULT_EVALUATION_PROTOCOL_ID
+        if evaluator.class_policy == DEFAULT_CLASS_POLICY
+        and evaluator.center_gate_px == DEFAULT_CENTER_GATE_PX
+        and sorted(evaluator.sensitivity_gates_px) == sorted(DEFAULT_SENSITIVITY_GATES_PX)
+        else None
     )
     resources = ResourceMonitor()
 
@@ -127,7 +141,7 @@ def run_on_video(
             gt = list(gt_frame.detections)
             for d in gt:
                 rows.append(detection_to_row(video_id, frame_idx, "manual", d))
-        evaluator.add_frame(
+        frame_metrics = evaluator.add_frame(
             dets,
             gt if annotated else None,
             video_id=video_id,
@@ -135,6 +149,7 @@ def run_on_video(
             annotated=annotated,
             detection_ms=detection_ms,
         )
+        frame_metrics["evaluation_protocol_id"] = evaluation_protocol_id
 
         if writer is not None:
             vis = frame.copy()
@@ -163,6 +178,7 @@ def run_on_video(
     median_pf = statistics.median(per_frame_counts) if per_frame_counts else 0.0
     evaluation = evaluator.summary(video_id)
     summary = {
+        **evaluation,
         "video_id": video_id,
         "method": detector.name,
         "frames": frame_idx,
@@ -176,6 +192,19 @@ def run_on_video(
         "csv": str(out_csv),
         "frames_csv": str(out_frames_csv),
         "video": str(out_video) if out_video else None,
+        "class_policy": evaluator.class_policy,
+        "center_gate_px": evaluator.center_gate_px,
+        "sensitivity_gates_px": list(evaluator.sensitivity_gates_px),
+        "evaluation_protocol_id": evaluation_protocol_id,
+        "metric_primary": (
+            f"f1_individuals_center_{evaluator.center_gate_px:g}px"
+            if evaluator.class_policy == DEFAULT_CLASS_POLICY
+            else f"f1_center_{evaluator.center_gate_px:g}px"
+        ),
+        "count_scope": (
+            "scored_predictions_minus_individually_annotated_gt"
+            if evaluator.class_policy == DEFAULT_CLASS_POLICY else "all_annotated_objects"
+        ),
         "annotated_frames": evaluation["frames_annotated"],
         "unannotated_frames": evaluation["frames_unannotated"],
         "tp": evaluation["tp"],
@@ -195,9 +224,6 @@ def run_on_video(
         "detection_ms_max": round(max(detection_times_ms), 4)
         if detection_times_ms else 0.0,
     }
-    summary.update(
-        {key: value for key, value in evaluation.items() if "_at_" in key}
-    )
     summary.update(resources.summary())
     if verbose:
         print(

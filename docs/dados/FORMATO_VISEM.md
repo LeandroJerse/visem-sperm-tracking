@@ -41,9 +41,14 @@ Cada linha de `labels/` segue o formato YOLO normalizado:
 class_id center_x center_y width height
 ```
 
-As coordenadas e dimensões estão normalizadas pelo tamanho do frame. A análise
-principal colapsa as classes em um único tipo `objeto`; a análise secundária do
-YOLO preserva `0 = normal`, `1 = cluster` e `2 = small_or_pinhead`.
+As coordenadas e dimensões estão normalizadas pelo tamanho do frame.
+As classes originais são `0 = normal`, `1 = cluster` e `2 = small_or_pinhead`.
+A avaliação principal v3 reúne os indivíduos 0/2 e usa agrupamentos como
+regiões ignoradas somente para previsões residuais sem indivíduo próximo.
+A avaliação complementar reúne todos os objetos anotados; um cluster é um
+objeto agrupamento, não uma célula. As linhas originais permanecem nos dados
+e a análise morfológica YOLO preserva as três classes. Regra completa em
+[Classes e agrupamentos](../metodologia/CLASSES_E_AGRUPAMENTOS.md).
 
 ### Labels com identidade
 
@@ -87,9 +92,12 @@ O split é por vídeo. Frames e clipes do mesmo vídeo nunca podem aparecer em
 papéis diferentes. Os 502 clipes extraídos são derivados e não constituem 502
 amostras independentes.
 
-Depois do congelamento, cada configuração é confirmada em cinco folds fora da
-amostra. Somente então os 65 vídeos sem tracking são processados como aplicação
-sem validação quantitativa contra IDs inexistentes.
+O planejamento de cinco folds ainda exige um desenho que separe seleção e
+avaliação; aplicar a mesma configuração já escolhida a cinco grupos não
+estabelece, por si só, previsões independentes da seleção. O piloto histórico
+já expôs os vídeos do teste. Essa limitação permanece documentada no
+[protocolo](../metodologia/PROTOCOLO.md). Os 65 vídeos sem tracking ficam
+reservados para aplicação posterior ao congelamento, sem acurácia de IDs.
 
 ## Catálogo e validação
 

@@ -38,8 +38,14 @@ import cv2
 from src.detection.io import detection_to_row, write_detections_csv
 from src.detection.registry import DETECTORS
 from src.detection.visualization import COLORS, draw_detections, draw_legend
-from src.evaluation.detection import evaluate_frame
-from src.core.paths import EXPERIMENT_TESTS_ROOT, REPOSITORY_ROOT
+from src.evaluation.detection import (
+    DEFAULT_CENTER_GATE_PX,
+    DEFAULT_CLASS_POLICY,
+    DEFAULT_EVALUATION_PROTOCOL_ID,
+    DEFAULT_SENSITIVITY_GATES_PX,
+    evaluate_frame,
+)
+from src.core.paths import EXPERIMENT_TESTS_ROOT, REPOSITORY_ROOT, VISEM_TRACKING_TRAIN_ROOT
 from src.experiments.config import config_hash
 from src.experiments.dataset import load_split_spec
 from src.experiments.resources import ResourceMonitor
@@ -49,6 +55,7 @@ from .frames import load_gt, read_frame, resolve_source
 
 
 DEFAULT_TEST_ROOT = EXPERIMENT_TESTS_ROOT / "detection"
+EVALUATION_PROTOCOL_ID = DEFAULT_EVALUATION_PROTOCOL_ID
 
 
 def _cast(value: str):
@@ -162,9 +169,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 COMPARISON_FIELDS = [
     "timestamp", "method", "video", "frame", "warmup",
+    "evaluation_protocol_id", "metric_primary", "center_gate_px", "sensitivity_gates_px",
     "n_detections", "n_ground_truth", "count_diff", "count_ratio",
     "tp", "fp", "fn", "precision", "recall", "f1",
     "center_error_mean_px",
+    "tp_at_15px", "fp_at_15px", "fn_at_15px", "precision_at_15px", "recall_at_15px", "f1_at_15px",
+    "tp_at_20px", "fp_at_20px", "fn_at_20px", "precision_at_20px", "recall_at_20px", "f1_at_20px",
     "overrides", "run_dir",
 ]
 
@@ -173,19 +183,28 @@ def _append_comparison(summary: dict, out_root: Path) -> None:
     """Append one row to the canonical cross-configuration comparison table."""
     csv_path = (
         out_root / "threshold" / "_comparisons" / "frame_screening"
+        / EVALUATION_PROTOCOL_ID
         / "by_video" / f"video_{Path(summary['video']).stem}.csv"
     )
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     write_header = not csv_path.exists()
+    spatial_fields = [key for key in evaluate_frame([], None) if key not in {"video_id", "frame"}]
+    fields = list(dict.fromkeys(COMPARISON_FIELDS + ["count_scope"] + spatial_fields))
     row = {
+        **{key: summary.get(key) for key in spatial_fields},
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "method": summary["method"],
         "video": Path(summary["video"]).stem,
         "frame": summary["frame"],
         "warmup": summary["warmup"],
+        "evaluation_protocol_id": summary["evaluation_protocol_id"],
+        "metric_primary": summary["metric_primary"],
+        "center_gate_px": summary["center_gate_px"],
+        "sensitivity_gates_px": json.dumps(summary["sensitivity_gates_px"]),
         "n_detections": summary["n_detections"],
         "n_ground_truth": summary["n_ground_truth"],
         "count_diff": summary["count_diff"],
+        "count_scope": summary["count_scope"],
         "count_ratio": summary["count_ratio"] if summary["count_ratio"] is not None else "",
         "tp": summary["tp"],
         "fp": summary["fp"],
@@ -197,30 +216,53 @@ def _append_comparison(summary: dict, out_root: Path) -> None:
             summary["center_error_mean_px"]
             if summary["center_error_mean_px"] is not None else ""
         ),
+        **{
+            key: summary[key]
+            for key in COMPARISON_FIELDS
+            if "_at_" in key
+        },
         "overrides": json.dumps(summary["overrides"], ensure_ascii=False),
         "run_dir": Path(summary["out_dir"]).relative_to(out_root).as_posix(),
     }
     with open(csv_path, "a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=COMPARISON_FIELDS)
+        writer = csv.DictWriter(f, fieldnames=fields)
         if write_header:
             writer.writeheader()
         writer.writerow(row)
+
+
+def _known_tracking_video_id(video_path: Path) -> str | None:
+    """Identify files inside the known VISEM-Tracking acquisition directories."""
+    try:
+        relative = video_path.resolve().relative_to(VISEM_TRACKING_TRAIN_ROOT.resolve())
+    except ValueError:
+        return None
+    if len(relative.parts) >= 2 and relative.parts[0].isdigit():
+        return relative.parts[0]
+    return None
+
+
+def _assert_screening_video_allowed(video_id: str | None, blocked_ids) -> None:
+    if video_id in blocked_ids:
+        raise ValueError(
+            f"O vídeo {video_id} pertence ao teste bloqueado. "
+            "A bancada de tuning frame a frame não pode abri-lo."
+        )
 
 
 def main(argv: list[str] | None = None) -> dict:
     args = parse_args(argv)
     overrides = parse_overrides(args.overrides)
 
-    video_path, gt_dir, stem = resolve_source(args.video, args.video_id)
     split_spec = load_split_spec(REPOSITORY_ROOT / "configs" / "protocol" / "splits.yaml")
-    if args.video_id in split_spec.test:
-        raise ValueError(
-            f"O vídeo {args.video_id} pertence ao teste bloqueado. "
-            "A bancada de tuning frame a frame não pode abri-lo."
-        )
-    if args.video_id in split_spec.train:
+    _assert_screening_video_allowed(args.video_id, split_spec.test)
+    video_path, gt_dir, stem = resolve_source(args.video, args.video_id)
+    known_id = _known_tracking_video_id(video_path)
+    _assert_screening_video_allowed(known_id, split_spec.test)
+    source_id = args.video_id or known_id
+    if source_id in split_spec.train:
         split_name = "train"
-    elif args.video_id in split_spec.val:
+    elif source_id in split_spec.val:
         split_name = "val"
     else:
         split_name = "external_unannotated"
@@ -241,6 +283,12 @@ def main(argv: list[str] | None = None) -> dict:
         "configuration_id": config_id.split("__cfg", 1)[0],
         "method": args.method,
         "params": resolved_params,
+        "evaluation": {
+            "protocol_id": EVALUATION_PROTOCOL_ID,
+            "center_gate_px": DEFAULT_CENTER_GATE_PX,
+            "sensitivity_gates_px": list(DEFAULT_SENSITIVITY_GATES_PX),
+            "class_policy": DEFAULT_CLASS_POLICY,
+        },
         "run": {
             "stage": "frame_screening",
             "split": split_name,
@@ -301,20 +349,23 @@ def main(argv: list[str] | None = None) -> dict:
 
         n_det = len(dets)
         n_gt = len(gt) if metrics_valid else None
-        diff = n_det - len(gt) if metrics_valid else None
-        ratio = n_det / len(gt) if metrics_valid and gt else None
         spatial = evaluate_frame(
             dets,
             gt if metrics_valid else None,
             video_id=stem,
             frame=args.frame,
             annotated=metrics_valid,
-            center_gate_px=15.0,
-            class_policy="binary",
-            sensitivity_gates_px=(10.0, 20.0),
+            center_gate_px=DEFAULT_CENTER_GATE_PX,
+            class_policy=DEFAULT_CLASS_POLICY,
+            sensitivity_gates_px=DEFAULT_SENSITIVITY_GATES_PX,
         )
+        diff = spatial["count_error"]
+        scored_gt = spatial["n_ground_truth_scored"]
+        scored_predictions = spatial["n_predictions_scored"]
+        ratio = scored_predictions / scored_gt if scored_gt else None
         resources = monitor.summary()
         summary = {
+            **spatial,
             "run_id": context.run_id,
             "algorithm": algorithm,
             "config_id": context.configuration_id,
@@ -335,8 +386,13 @@ def main(argv: list[str] | None = None) -> dict:
             "n_detections": n_det,
             "n_ground_truth": n_gt,
             "count_diff": diff,
+            "count_scope": "scored_predictions_minus_individually_annotated_gt",
+            "count_diff_raw": n_det - n_gt if n_gt is not None else None,
             "count_ratio": round(ratio, 3) if ratio is not None else None,
-            "metric_primary": "f1_center_15px",
+            "evaluation_protocol_id": EVALUATION_PROTOCOL_ID,
+            "metric_primary": f"f1_individuals_center_{DEFAULT_CENTER_GATE_PX:g}px",
+            "center_gate_px": DEFAULT_CENTER_GATE_PX,
+            "sensitivity_gates_px": list(DEFAULT_SENSITIVITY_GATES_PX),
             "tp": spatial["tp"],
             "fp": spatial["fp"],
             "fn": spatial["fn"],
@@ -344,14 +400,6 @@ def main(argv: list[str] | None = None) -> dict:
             "recall": spatial["recall"],
             "f1": spatial["f1"],
             "center_error_mean_px": spatial["center_error_mean_px"],
-            "tp_at_10px": spatial["tp_at_10px"],
-            "fp_at_10px": spatial["fp_at_10px"],
-            "fn_at_10px": spatial["fn_at_10px"],
-            "f1_at_10px": spatial["f1_at_10px"],
-            "tp_at_20px": spatial["tp_at_20px"],
-            "fp_at_20px": spatial["fp_at_20px"],
-            "fn_at_20px": spatial["fn_at_20px"],
-            "f1_at_20px": spatial["f1_at_20px"],
             "detections": [
                 {
                     "cx": round(item.cx, 2),
@@ -393,23 +441,28 @@ def main(argv: list[str] | None = None) -> dict:
         print("  overrides:", overrides)
     print(f"  etapas:", ", ".join(n for n, _ in stages) or "(nenhuma)")
 
-    if metrics_valid and n_gt and n_gt > 0:
+    print(f"\n  saídas brutas: {n_det}; objetos anotados: {n_gt}")
+    if metrics_valid and scored_gt and scored_gt > 0:
         sign = "+" if diff > 0 else ""
         bar_len = 20
-        filled = round(min(n_det / n_gt, 2.0) * (bar_len / 2))
+        filled = round(min(scored_predictions / scored_gt, 2.0) * (bar_len / 2))
         bar = "#" * filled + "-" * (bar_len - filled)
-        print(f"\n  contagem")
-        print(f"    detectado : {n_det:>4}")
-        print(f"    GT        : {n_gt:>4}")
-        print(f"    diferença : {sign}{diff:>4}  ({sign}{diff/n_gt*100:.1f}%)")
+        print(f"\n  contagem avaliada (não estima células ocultas em clusters)")
+        print(f"    previsões pontuadas : {scored_predictions:>4}")
+        print(f"    GT individual      : {scored_gt:>4}")
+        print(f"    previsões ignoradas: {summary['n_predictions_ignored']:>4}")
+        print(f"    diferença : {sign}{diff:>4}  ({sign}{diff/scored_gt*100:.1f}%)")
         print(f"    ratio     : {ratio:.3f}  [{bar}]")
         print(
-            "    F1@15px   : "
+            f"    F1@{DEFAULT_CENTER_GATE_PX:g}px   : "
             f"{summary['f1']:.4f}  "
             f"(P={summary['precision']:.4f}, R={summary['recall']:.4f})"
         )
     elif metrics_valid:
-        print(f"\n  detectado: {n_det}  GT: 0  diferença: +{diff}")
+        print(
+            f"\n  previsões pontuadas: {scored_predictions}; GT individual: 0; "
+            f"ignoradas: {summary['n_predictions_ignored']}; diferença: {diff}"
+        )
     else:
         print(f"\n  detectado: {n_det}  (sem GT disponível)")
 

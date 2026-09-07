@@ -12,6 +12,8 @@ do repositório. Para entender um algoritmo, abra sua implementação em
 
 - [Entender arquivos curtos e os três lugares chamados teste](#como-ler-esta-pasta)
 - [0. Verificações de código antes de uma bateria](#0-verificação-antes-de-uma-bateria)
+- [Retomada: inspeção de anotações em um quadro de treino](#inspecao-de-anotacoes)
+- [Retomada: geometria das anotações dos 12 vídeos de treino](#geometria-das-anotacoes)
 - [1. Detecção](#1-detecção): [threshold frame a frame](#threshold-frame-a-frame), [execução por vídeo/split](#threshold-por-video), [outros detectores](#outros-detectores), [YOLO](#yolo)
 - [2. Tracking](#2-tracking)
 - [3. Movimento aparente por fluxo e integração com tracks](#3-movimento-aparente-por-fluxo)
@@ -84,6 +86,143 @@ O mesmo YAML é obrigatório nos folds A-E, sempre com `--frozen` e etapa
 validação. Em uma run congelada, parâmetros do algoritmo e da métrica não
 podem ser alterados por `--set`; somente stage, split, seed, vídeo e opções de
 renderização permanecem operacionais.
+
+<a id="inspecao-de-anotacoes"></a>
+
+## Inspeção de anotações
+
+O nível 1 da retomada confere um quadro de treino com suas caixas manuais,
+antes de testar qualquer limiar. O executor
+[`inspect_annotations.py`](project/test/inspect_annotations.py) aceita somente
+vídeos do treino, não executa detector e recusa sobrescrever saídas existentes.
+
+```powershell
+.\.venv\Scripts\python.exe -m script.project.test.inspect_annotations `
+  --video-id 11 --frame 0 --audit-id retomada_20260907_nivel1
+```
+
+Saída local:
+`data/derived/detection/annotation_audit/retomada_20260907_nivel1/video_11/frame_000000/`.
+O primeiro quadro tem índice `0`. As imagens, a tabela de anotações e o
+manifesto são explicados no
+[guia dos artefatos de inspeção](../data/derived/detection/annotation_audit/README.md).
+São derivados para conferir o gabarito; não substituem as runs históricas em
+`data/tests/` e `data/results/` nem aprovam uma bateria de detecção.
+
+O exemplo do nível 1 foi compreendido pelo pesquisador. No nível 2, foi
+aprovada a prioridade à localização dos centros e o raio principal de 10 px,
+com sensibilidade obrigatória a 15/20 px na resolução original de 640 × 480 px,
+igual para todos os detectores. A política posterior de classes está abaixo.
+Essas decisões não certificam todas as anotações da coleção.
+
+<a id="geometria-das-anotacoes"></a>
+
+## Geometria das anotações dos vídeos de treino
+
+A auditoria descritiva do nível 2 examina as anotações dos 12 vídeos do treino
+registrado, para discutir o tamanho das caixas e a proximidade entre centros.
+O executor [`analyze_annotation_geometry.py`](project/test/analyze_annotation_geometry.py)
+confere o split antes de acessar as fontes. Lê os arquivos de anotações e os
+JPEGs para dimensões e hashes, sem decodificar os vídeos, executar detector,
+fazer matching ou selecionar parâmetros. Não lê fontes de validação ou teste.
+
+```powershell
+.\.venv\Scripts\python.exe -m script.project.test.analyze_annotation_geometry --run
+```
+
+Saída local fixa:
+`data/derived/detection/annotation_audit/retomada_20260907_nivel2/treino_geometria/`.
+O executor recusa a execução se essa pasta já existir. Para reproduzir esta
+auditoria, use uma cópia do repositório com as fontes disponíveis e a saída
+ausente; não apague a saída anterior para refazer. Uma nova auditoria exige
+um destino distinto, definido em uma etapa própria.
+
+Depois da auditoria, o executor
+[`render_annotation_geometry.py`](project/test/render_annotation_geometry.py)
+gera uma figura a partir dos CSVs derivados, sem abrir os dados-fonte:
+
+```powershell
+.\.venv\Scripts\python.exe -m script.project.test.render_annotation_geometry --run
+```
+
+Ele salva `tolerancias_geometria.png` e `figure_manifest.json` na mesma pasta
+da auditoria e recusa sobrescrever esses arquivos. O manifesto da figura
+registra sua proveniência separadamente do manifesto da auditoria.
+
+As tabelas descrevem anotações por frame, não células únicas: uma identidade
+presente em vários frames participa várias vezes. Os grupos `class0`, `class1`
+e `class2` são descritos separadamente, além de `cells0_2` (classes 0 e 2) e
+`all` (classes 0, 1 e 2). Esses recortes não definem quais classes contar na
+avaliação futura. Lacunas de anotação são excluídas, nunca tratadas como
+negativos; arquivos anotados vazios têm registro próprio.
+
+Os raios 10, 15 e 20 px descrevem a geometria das anotações, sem medir erros do
+detector. A auditoria foi concluída antes da aprovação de 10 px principal;
+seus CSVs e manifestos permanecem imutáveis. Os resultados são resumidos
+primeiro por vídeo. Consulte o
+[guia dos artefatos](../data/derived/detection/annotation_audit/README.md)
+para os CSVs, o resumo e o manifesto, e a
+[decisão sobre a tolerância espacial](../docs/metodologia/TOLERANCIA_ESPACIAL.md)
+para sua interpretação.
+
+<a id="agrupamentos-no-treino"></a>
+
+### Auditoria das regiões de agrupamento
+
+[`audit_cluster_regions.py`](project/test/audit_cluster_regions.py) confere
+as anotações dos mesmos 12 vídeos contra os hashes e contagens da auditoria
+de geometria. Calcula a área da união das caixas cluster, recortada à imagem,
+sem contar sobreposições duas vezes. A figura usa o primeiro quadro com
+cluster de cada vídeo pertinente, sem resultados de detector.
+
+```powershell
+.\.venv\Scripts\python.exe -m script.project.test.audit_cluster_regions --run
+```
+
+Saída nova: `data/derived/detection/annotation_audit/retomada_20260907_nivel2/treino_agrupamentos/`.
+O executor recusa sobrescrever a pasta. As coberturas têm denominadores
+explícitos por vídeo e por quadro; a auditoria não mede erros do detector.
+
+### Versão vigente da avaliação
+
+A avaliação usa `center_distance_v3_individuals_ignore_clusters_10px`:
+indivíduos GT 0/2 como alvos, regiões cluster para ignorar previsões residuais
+sem indivíduo próximo, 10 px principal e sensibilidades obrigatórias 15/20.
+As coordenadas são as da imagem original de 640 × 480 px. A regra completa,
+incluindo proteção de duplicatas e comparação com todos os objetos, está em
+[Classes e agrupamentos](../docs/metodologia/CLASSES_E_AGRUPAMENTOS.md).
+
+`center_distance_v1_15px` é a referência histórica para as métricas antigas
+a 15 px. Os YAMLs históricos T200/T190 e as configurações congeladas mantêm
+seus valores. A versão intermediária v2 registrou apenas a mudança de raio,
+antes da política de classes. Resultados e manifestos anteriores permanecem
+imutáveis. O orçamento da busca e o desenho confirmatório ainda precisam
+ser registrados prospectivamente.
+
+<a id="smoke-contrato-v3"></a>
+
+### Smoke real do contrato v3
+
+A configuração [protocol_smoke_v3.yaml](../configs/detection/threshold/protocol_smoke_v3.yaml)
+fixa T200/o1/c2 e somente os quadros 0, 1 e 2 dos vídeos de treino 11 e 12.
+O propósito é conferir processamento, contagens e arquivos; o resultado não
+seleciona parâmetros nem promove o detector. Execute após os testes de código
+e o commit, para registrar a versão da implementação em cada manifesto:
+
+```powershell
+foreach ($trainingVideoId in @(11, 12)) {
+  .\.venv\Scripts\python.exe -m src.detection.pipeline `
+    --config configs/detection/threshold/protocol_smoke_v3.yaml `
+    --video "data/sources/visem_tracking/dataset/Train/$trainingVideoId/$trainingVideoId.mp4" `
+    --gt-dir "data/sources/visem_tracking/dataset/Train/$trainingVideoId/labels_ftid"
+}
+```
+
+Os caminhos devem corresponder à fonte local inventariada. Cada execução cria
+uma run distinta sob `data/tests/detection/threshold/`, com dados brutos,
+`frame_metrics.csv`, configuração resolvida e manifesto. Nunca reutilize a
+pasta de uma execução para salvar outra. Validação, teste e folds não fazem
+parte deste smoke.
 
 ## 1. Detecção
 

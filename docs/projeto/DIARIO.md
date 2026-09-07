@@ -2,6 +2,205 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-07 — nível 2: contrato v3 e auditoria dos agrupamentos
+
+- O pesquisador autorizou a continuidade autônoma do desenvolvimento, com
+  explicação das decisões e preservação da rastreabilidade. Os pedidos de
+  autorização por etapa registrados anteriormente pertencem ao histórico.
+- Auditoria de agrupamentos concluída somente no treino: 5.413 anotações
+  de classe 1 em 4.056 quadros dos vídeos 11, 12, 15 e 29. Zero quadros
+  contêm exclusivamente agrupamentos. Foram examinados os 17.466 quadros
+  anotados, mantendo excluídas as 174 lacunas já registradas.
+- Há 4.250 observações individuais com centro dentro de caixas de agrupamento
+  e 6.277 caixas individuais com interseção de área positiva. São observações
+  por quadro, não células únicas; a classe 0 responde pelos 4.250 centros.
+- A cobertura foi calculada pela união geométrica exata dos retângulos,
+  limitada à imagem. Média com peso igual dos 12 vídeos sobre todos os
+  quadros anotados: 0,2869%. Média condicionada a quadros com agrupamentos,
+  com peso igual entre os quatro vídeos pertinentes: 1,1233%. Não são
+  segmentações nem estimativas da quantidade de células em agrupamentos.
+- Artefatos separados em
+  `data/derived/detection/annotation_audit/retomada_20260907_nivel2/treino_agrupamentos/`:
+  CSVs por vídeo/quadro, exemplos determinísticos, inventário com hashes,
+  resumo, manifesto e `agrupamentos_primeiros_quadros.png`. A figura mostra
+  quatro JPEGs de treino com o GT manual. Os testes sintéticos da união e
+  as conferências de hashes/contagens passaram; nenhum detector foi executado
+  nesta auditoria, nem foram abertas fontes de validação ou teste.
+- Contrato ativo: **`center_distance_v3_individuals_ignore_clusters_10px`**,
+  política **`individuals_ignore_clusters`**, raio principal de 10 px e
+  sensibilidades obrigatórias de 15/20 px na resolução original 640 × 480.
+  Classes 0/2 são alvos individuais; agrupamentos delimitam regiões de
+  ignorados. Primeiro ocorre o matching de todos os candidatos com os
+  indivíduos. Uma predição restante só pode ser ignorada se estiver dentro
+  de uma caixa de agrupamento e fora dos discos de proteção de todos os
+  indivíduos, inclusive dos já pareados. Duplicatas próximas continuam FP.
+- A classe prevista não filtra candidatos. A análise secundária
+  `binary_all_objects` avalia todas as classes como objetos, sem ignorar
+  agrupamentos. Contagens brutas, pontuadas e ignoradas ficam separadas.
+- O avaliador v3 está implementado; os testes finais estão em curso.
+  **Smoke real de engenharia planejado em três quadros dos vídeos 11/12,
+  ainda não executado.** Não há promoção de threshold ou resultado novo
+  de desempenho no protocolo v3. A versão v2 e T200 sob a avaliação antiga
+  de 15 px permanecem históricos, sem recálculo ou sobrescrita.
+
+Próximo marco: concluir os testes finais do contrato de avaliação e executar
+o smoke de engenharia. Busca de limiares e avaliação científica dependem de
+um desenho explícito; a exposição histórica do teste continua documentada.
+Estado do código: [avaliador de detecção](../../src/evaluation/detection.py).
+
+> As entradas abaixo preservam etapas anteriores: a aprovação do raio na v2,
+> a proposta então pendente e os limites de autonomia vigentes em cada momento.
+
+## 2026-09-07 — nível 2: aprovado raio principal de 10 px
+
+- O pesquisador aprovou **10 px como raio principal**, com **15 e 20 px de
+  sensibilidade obrigatória**, iguais para todos os detectores. A avaliação
+  usa centros na resolução original de 640 × 480 px, desfazendo eventuais
+  redimensionamento e padding antes de calcular distâncias.
+- Registrada a versão **`center_distance_v2_10px`** para a nova avaliação,
+  em `evaluation.protocol_id` de `configs/protocol/splits.yaml`, sem mudar
+  os splits. **`center_distance_v1_15px`** é a referência histórica dos
+  resultados anteriores a 15 px; o nome não foi inserido em manifestos antigos.
+- O raio é uma convenção operacional de precisão de localização. Não foi
+  demonstrado como ótimo, não estima o ruído dos anotadores e não transforma
+  centros de caixas em ground truth anatômico exato.
+- A documentação passa a distinguir a avaliação ativa dos YAMLs históricos
+  T200/T190 e configurações congeladas, que preservam 15 px. Os resultados
+  das duas versões não devem ser misturados como se usassem a mesma métrica.
+- Os artefatos da auditoria, as fontes e as runs anteriores permanecem
+  imutáveis. Esta decisão não executou detectores em vídeos reais, criou novos resultados científicos ou
+  promoveu algoritmos; as entradas anteriores preservam o estado da discussão
+  antes da aprovação.
+- Alinhados os padrões do avaliador, runner, pipeline e bancadas de threshold
+  e MOG2/KNN. Os oito `search.yaml` de detecção adotam a nova avaliação;
+  parâmetros dos algoritmos e espaços de busca permanecem como estavam.
+  Os novos comparativos de threshold usam a subpasta
+  `frame_screening/center_distance_v2_10px/`, com raio, versão e sensibilidades
+  registrados. A agregação por vídeo preserva os resultados dos três raios.
+- Validação: **165 testes passaram** nos módulos de detecção, configuração,
+  documentação e infraestrutura experimental. Foram usados casos sintéticos,
+  incluindo distância de 12 px, fronteira inclusiva de 10 px, sensibilidades,
+  agregação por vídeo e reprodução explícita da configuração histórica.
+- Conferidos hashes de 19 arquivos preservados: YAMLs T190/T200 e congelados,
+  artefatos locais e executores da auditoria. Divisões, folds e seeds mantidos.
+  Atualizado o texto-fonte do método; o PDF acadêmico ainda requer compilação.
+
+Decisão e justificativa: [Tolerância espacial](../metodologia/TOLERANCIA_ESPACIAL.md).
+Próxima discussão: **política de classes e agrupamentos**, antes de debater
+busca de limiares. Seleção e desenho da avaliação, inclusive folds, continuam
+pendentes e não autorizam uma próxima execução automática.
+
+> As entradas seguintes são históricas. Menções a raio ainda pendente ou
+> configurações ativas em 15 px descrevem o momento anterior à aprovação acima.
+
+## 2026-09-07 — nível 2: auditoria de geometria concluída, raio pendente
+
+- Concluída a auditoria descritiva das anotações dos 12 vídeos de treino:
+  17.466 quadros anotados e 368.487 observações válidas. São anotações por
+  quadro, não células únicas ou amostras independentes.
+- Excluídas 174 lacunas do vídeo 23 como `unlabeled`. Zero linhas inválidas
+  no formato primário e zero divergências de classe/coordenadas entre os
+  formatos comparados. Os 17.466 `.npy` enumerados como nomes inesperados
+  foram ignorados; não são erros de anotação e seus conteúdos não foram lidos.
+- Descritos tamanhos das caixas e proximidade entre centros por classe, nas
+  classes 0/2 e em todas as classes. O resumo foi agregado primeiro por vídeo.
+  A política de classes da nova avaliação continua em discussão.
+- Em `all`, a média com peso igual por vídeo da fração com regiões de
+  tolerância sobrepostas foi 7,38% a 10 px, 16,75% a 15 px e 26,84% a 20 px.
+  A condição é distância entre centros menor que dois raios; essas frações
+  descrevem geometria, não erros medidos de detecção ou tracking.
+- Artefatos separados em
+  `data/derived/detection/annotation_audit/retomada_20260907_nivel2/treino_geometria/`:
+  CSVs, resumo, inventário com hashes e manifesto. A figura
+  `tolerancias_geometria.png` deriva dos CSVs e tem `figure_manifest.json`
+  próprio; o manifesto original da auditoria foi preservado.
+- Não foram executados detectores nem abertas fontes de validação/teste.
+  A leitura usou anotações e JPEGs para dimensões e hashes, sem decodificar
+  pixels ou abrir MP4s. As fontes e runs anteriores foram preservadas.
+- **Proposta pendente: 10 px principal e 15/20 px de sensibilidade. Ainda
+  não aprovada.** É uma convenção operacional de precisão da localização,
+  não um raio ótimo estimado, uma medida de incerteza dos anotadores ou uma
+  escolha baseada em F1. As configurações continuam com 15 px principal;
+  os resultados anteriores não foram recalculados ou promovidos.
+
+Fundamentação, limites e fontes: [Tolerância espacial](../metodologia/TOLERANCIA_ESPACIAL.md).
+Os comandos ficam exclusivamente no [guia oficial](../../script/README.md#geometria-das-anotacoes).
+Próximo passo: discutir a proposta com o pesquisador antes de alterar a
+avaliação. Busca de limiares, novo protocolo e desenho de folds continuam
+pendentes; esta auditoria não restaura o desconhecimento histórico do teste.
+
+## 2026-09-07 — retomada, nível 2: prioridade aos centros
+
+- O pesquisador confirmou a compreensão da caixa anotada e de seu centro no
+  exemplo do nível 1. A conferência continua limitada ao quadro 0 do vídeo 11;
+  não certifica toda a coleção.
+- Aprovada a localização dos centros como critério principal da avaliação da
+  detecção. Tamanho e formato das caixas ficam como aspectos complementares.
+- A tolerância espacial ainda não foi aprovada nesta retomada. Os valores
+  existentes em `configs/protocol/splits.yaml` — 15 px como gate principal e
+  10/20 px para sensibilidade — permanecem em discussão no nível 2.
+- O novo protocolo de seleção/avaliação e a execução de limiares ainda não
+  foram autorizados. Esta entrada registra uma decisão conceitual, sem
+  alterar configurações, código, dados ou resultados.
+
+Próximo passo: explicar o significado da tolerância espacial e revisar os
+valores existentes com o pesquisador antes de decidir como aplicá-los.
+
+## 2026-09-07 — retomada, nível 1: conferir o gabarito
+
+- Autorizada a inspeção de um único quadro do vídeo de treino 11, antes de
+  testar limiares. A etapa é entender imagem, caixas, centros, classes e IDs;
+  o nível 1 permanece em revisão com o pesquisador.
+- Preservados os vídeos, as anotações originais, as configurações e todos os
+  resultados históricos. Não foram apagadas ou sobrescritas runs. Reiniciar
+  o desenvolvimento não apaga a influência de observações anteriores sobre
+  vídeos de teste, e não foi aprovado um novo protocolo de avaliação.
+- Criada uma área própria de derivados:
+  `data/derived/detection/annotation_audit/retomada_20260907_nivel1/video_11/frame_000000/`.
+  Ela reúne quadro original decodificado, sobreposição de anotações, exemplo
+  ampliado, tabela e manifesto, sem executar detector ou calcular seu
+  desempenho. O comando fica no [guia oficial](../../script/README.md#inspecao-de-anotacoes).
+- Conferidos somente `11_frame_0.txt` e `11_frame_0_with_ftid.txt`: 43 linhas
+  em cada formato, todas da classe 0, com classes e coordenadas exatamente
+  iguais na mesma ordem; o formato FTID contém 43 IDs únicos. O leitor
+  existente retorna as mesmas caixas e preserva os IDs textuais.
+- Na referência de imagem 640 × 480 px, nenhuma caixa ultrapassa os limites
+  (tolerância de 10⁻⁹ px); uma caixa toca a borda direita. Classe 0 é um
+  rótulo do dataset, não um diagnóstico clínico. Não há `cluster` ou
+  `pinhead` anotados nesse quadro.
+- A igualdade dos formatos não certifica completude do gabarito nem
+  continuidade das identidades. Não foram inspecionados outros vídeos para
+  esta conferência, promovidos algoritmos ou alterados métricas e splits.
+
+Próximo passo: discutir a imagem e o significado de uma anotação com o
+pesquisador. A definição da avaliação e da busca de parâmetros é uma etapa
+posterior, que exige nova autorização.
+
+## 2026-09-07 — correção da origem dos dados e do escopo
+
+- Confirmado com o pesquisador o uso exclusivo dos vídeos VISEM e das
+  anotações VISEM-Tracking, provenientes da mesma coleção: 20 vídeos com
+  trechos anotados para desenvolvimento/avaliação e outros 65 sem tracking
+  manual para aplicação posterior.
+- Retirada do escopo a segunda coleção descrita como vídeos com
+  contracorrente gerada por tubo. Os artigos de aquisição não documentam
+  essa condição experimental. A deriva mencionada no VISEM original não
+  demonstra sua causa nem implica contracorrente controlada.
+- Mantida a hipótese principal de redução de ADE/FDE com características
+  locais de fluxo e histórico de posições, comparadas a preditores
+  equivalentes sem fluxo. Movimento aparente da imagem não equivale a
+  velocidade física do fluido sem ground truth correspondente.
+- Alinhados o protocolo, os documentos de navegação e o texto acadêmico local
+  (resumo, abstract, introdução, fundamentação e método). A fonte LaTeX foi
+  verificada estaticamente, mas ainda não recompilada por indisponibilidade de
+  compilador neste ambiente. O PDF assinado e as entregas foram preservados.
+- Esta revisão não executou experimentos, promoveu algoritmos nem alterou
+  splits ou resultados.
+
+Fontes primárias: [VISEM, 2019](https://doi.org/10.1145/3304109.3325814) e
+[VISEM-Tracking, 2023](https://www.nature.com/articles/s41597-023-02173-4).
+Descrição vigente: [escopo no protocolo](../metodologia/PROTOCOLO.md#escopo-dos-dados-e-interpretação-do-movimento).
+
 ## 2026-09-07 — navegação do projeto e auditoria de arquivos
 
 - A entrada do projeto passou a priorizar o algoritmo threshold, a bancada
