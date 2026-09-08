@@ -18,7 +18,8 @@ Ainda não há pasta de runs específica deste método; o link abre a área do d
 O baseline puro calcula deslocamentos recentes e usa mediana, média ou o último
 vetor para extrapolar. A mediana reduz o efeito de jitter do tracking. A versão
 `flow_aware` subtrai de cada deslocamento o fluxo aparente amostrado na célula,
-estima a velocidade residual de nado e soma o fluxo previsto a cada passo.
+estima o deslocamento residual na imagem e soma o fluxo previsto a cada passo.
+Essa decomposição não identifica velocidade física do fluido ou de nado.
 
 ## Parâmetros a testar
 
@@ -41,5 +42,8 @@ estima a velocidade residual de nado e soma o fluxo previsto a cada passo.
 
 ## Custo e decisão
 
-CPU desprezível. Manter baseline puro e híbrido como linhas separadas. Promover
-se alcançar boa relação ADE/FDE × latência. Resultado: **pendente**.
+Custo baixo. Manter baseline puro e híbrido como linhas separadas. O
+[protocolo v1](../../metodologia/BASELINES_PREDICAO_V1.md) fixa mediana das últimas
+cinco diferenças antes de avaliar as janelas GT do treino; não é busca de janela
+ou seleção de estimador. A API em lote usa float64 e recebe somente histórico.
+Resultado da execução v1: **pendente**; nenhum híbrido é avaliado nesta bateria.

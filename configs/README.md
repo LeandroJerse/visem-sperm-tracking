@@ -96,3 +96,8 @@ das explorações anteriores na escolha de parâmetros.
 - [Referência individual v1](protocol/individual_trajectories_v1.yaml): coorte
   de treino, regras de segmentação, histórico 20, futuro 10 e orçamento,
   registrados antes da preparação. Não é configuração de um preditor.
+
+- [Baselines de predição v1](protocol/prediction_baselines_v1.yaml): persistência
+  e velocidade constante median5 fixas, mesma referência GT do treino,
+  avaliação densa, agregação por ID original/vídeo, artefatos e orçamento.
+  Não é busca, seleção de modelo ou autorização de teste.

@@ -20,6 +20,7 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
 | Inspecionar um frame e as etapas da detecção | [Threshold frame a frame: comandos e menu](script/README.md#threshold-frame-a-frame) |
 | Acompanhar a busca atual de threshold no treino | [Plano prospectivo v3](docs/metodologia/BUSCA_THRESHOLD_V3.md) · [Executor e comandos](script/README.md#busca-threshold-v3) |
 | Conferir alinhamento e próxima avaliação | [Revisão geral](docs/projeto/REVISAO_GERAL_20260908.md) · [Validação de duas finalistas](docs/metodologia/VALIDACAO_THRESHOLD_V3.md) |
+| Acompanhar a primeira avaliação de predição | [Baselines com referência individual](docs/metodologia/BASELINES_PREDICAO_V1.md) · [Comando oficial](script/README.md#baselines-causais-de-predição-no-treino) |
 | Encontrar todos os outros algoritmos | [Mapa do código](src/README.md) |
 | Entender um método e seus parâmetros | [Catálogo de algoritmos](docs/algoritmos/README.md) |
 | Saber o que realmente foi avaliado | [Matriz de experimentos](docs/projeto/MATRIZ_EXPERIMENTOS.md) |

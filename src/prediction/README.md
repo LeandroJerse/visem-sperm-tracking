@@ -70,5 +70,10 @@ gera segmentos contínuos e índices de janelas. O código é puro: não abre ar
 executa modelo ou usa fluxo. Segmento não é uma nova identidade biológica.
 Consulte o [contrato v1](../../docs/metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md)
 e os [comandos oficiais](../../script/README.md#referência-de-trajetórias-individuais-do-treino).
-O consumo desses índices pelos preditores e o ADE denso por horizonte continuam
-pendentes; o executor antigo não deve ser apresentado como essa comparação.
+O [consumidor da referência](reference.py) fornece históricos e alvos separados,
+confere a cadeia e o índice exato. O novo [coordenador dos baselines](../experiments/prediction_baselines.py)
+usa `predict_batch` float64 nas duas classes clássicas e
+`dense_trajectory_metrics` de [metrics.py](metrics.py). A avaliação é registrada
+no [protocolo de baselines v1](../../docs/metodologia/BASELINES_PREDICAO_V1.md).
+O executor genérico antigo conserva seu contrato histórico e não deve ser
+apresentado como essa comparação de janelas comuns e ADE denso.

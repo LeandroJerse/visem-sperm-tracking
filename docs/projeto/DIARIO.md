@@ -683,3 +683,28 @@ Nenhum modelo temporal foi avaliado. Próximo: consumo de índices comuns,
 ADE denso e causalidade nos baselines; contrato HOTA separado e hipótese de
 fluxo ainda pendentes. HTML, guia permanente, instruções locais e fonte LaTeX
 foram atualizados localmente; o PDF não foi recompilado.
+
+## 2026-09-08 — protocolo do nível 6: baselines causais com GT
+
+Registrado o [plano de baselines](../metodologia/BASELINES_PREDICAO_V1.md) antes
+da avaliação: persistência e CV com mediana componente a componente das últimas
+cinco diferenças, fixos sem busca. Todas as 343.776 janelas do pai entram em
+ambos; são 687.552 avaliações de janela. O preditor recebe somente histórico,
+em float64, e produz todos os passos 1..10. ADE_H usa todos os erros 1..H.
+
+A agregação principal reúne janelas de todos os segmentos do mesmo ID original,
+depois dá peso igual aos IDs dentro de cada vídeo e aos 12 vídeos. A secundária
+usa média de janelas dentro de vídeo. Horizonte em segundos é H/FPS nominal;
+20 posições de histórico abrangem 19 intervalos. Não há reamostragem ou clipping.
+
+O contrato CSV largo preserva dez pares de coordenadas por janela; alvos ficam
+referenciados no pai. O consumidor confere a cadeia, o índice exato e as
+restrições de elegibilidade. A revisão prévia acrescentou rejeição de cobertura
+impossível, janelas repetidas/trocadas e deriva para float32, antes de dados reais.
+Resultados desta bateria serão registrados em entrada separada, após execução
+com Git limpo e conferência independente. Nenhum resultado de fluxo ou HOTA
+é produzido por esta etapa.
+
+Antes da execução real, a suíte `not optional_ml and not slow` aprovou
+**1.362 testes, em 144,75 s**. As regressões novas cobrem leitor da referência,
+causalidade, precisão, métricas densas, agregação e certificação da cobertura.

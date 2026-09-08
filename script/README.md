@@ -635,3 +635,26 @@ decodificação integral de pixels. A run nova fica sob
 O [T218 congelado para desenvolvimento](../configs/frozen/detection/threshold/t218_o0_c2_v3.yaml)
 é a referência de detecção v3. Seu escopo bloqueia teste, folds e aplicação,
 mesmo quando uma chamada tenta trocar flags ou o arquivo de splits.
+
+## Baselines causais de predição no treino
+
+Plano: [prediction_baselines_v1.yaml](../configs/protocol/prediction_baselines_v1.yaml).
+Método e aceitação: [protocolo de baselines v1](../docs/metodologia/BASELINES_PREDICAO_V1.md).
+Executar com Git limpo, após o registro e os testes do código:
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -B -m script.prediction.test.evaluate_baselines
+```
+
+O comando não recebe overrides: avalia persistência e velocidade constante com
+mediana das últimas cinco diferenças nas mesmas janelas do pai conferido.
+Lotes de 512 recebem apenas histórico; alvos ficam separados. Predições e
+erros usam float64, futuro denso 1..10 e ADE/FDE nos horizontes 1, 5 e 10.
+Não reexecuta a preparação ou lê fontes originais/validação/teste.
+
+A saída nova fica sob `data/tests/prediction/baselines/`. Cada pasta de vídeo e
+método contém `predictions.csv` (uma linha por janela e vinte coordenadas),
+`window_metrics.csv`, `track_metrics.csv` e `summary.json`. O alvo é localizado
+no pai pelo mesmo `window_id`. O manifesto, as médias e as diferenças por vídeo
+ficam no topo do lote. O esquema largo é explícito e preserva os dez passos;
+não substitui silenciosamente o CSV longo histórico do executor genérico.

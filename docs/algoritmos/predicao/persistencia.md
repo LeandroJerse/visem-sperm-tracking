@@ -15,8 +15,9 @@ Ainda não há pasta de runs específica deste método; o link abre a área do d
 
 ## Teoria
 
-Repete a última posição em todos os horizontes. É o limite mínimo que qualquer
-preditor útil deve superar e não usa velocidade, fluxo ou treinamento.
+Repete a última posição em todos os horizontes. É uma referência para medir
+o valor da extrapolação; outro método não necessariamente a supera quando a
+velocidade é ruidosa ou o movimento muda. Não usa fluxo ou treinamento.
 
 ## Pontos fortes
 
@@ -31,5 +32,8 @@ preditor útil deve superar e não usa velocidade, fluxo ou treinamento.
 
 ## Custo e decisão
 
-CPU desprezível, sem treino. Não é candidato ao pipeline final, mas deve estar
-em toda tabela como referência. Resultado: **pendente**.
+Custo baixo, sem treino; deve constar das comparações como referência. O
+[protocolo v1](../../metodologia/BASELINES_PREDICAO_V1.md) registra sua avaliação
+no treino, usando `predict_batch` float64, janelas comuns e ADE denso.
+Não será escolhido ou descartado para a pipeline final por esta bateria.
+Resultado da execução v1: **pendente**.

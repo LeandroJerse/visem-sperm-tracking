@@ -68,3 +68,4 @@ temporariamente fora de `docs/`.
 
 - [Congelamento do threshold v3 para desenvolvimento](metodologia/CONGELAMENTO_THRESHOLD_V3.md).
 - [Referência de trajetórias individuais v1](metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md).
+- [Baselines de predição com referência individual](metodologia/BASELINES_PREDICAO_V1.md).
