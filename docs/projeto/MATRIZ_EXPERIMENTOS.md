@@ -25,10 +25,17 @@ impedem que duplicatas próximas sejam ignoradas.
 | Busca grossa e seleção de treino na v3 | Concluídas: 171 × 144 avaliações; cinco candidatos para refinamento; nenhuma promoção |
 | Plano prospectivo de busca — 08/09 | Registrado antes da execução em 9940337; otimização 3f73a52; 442 testes aprovados e conferência independente da busca |
 | Refinamento e seleção de treino v3 — 08/09 | Concluídos em da057ef, Git limpo: 117 × 576 = 67.392 avaliações; 502 testes aprovados; conferência independente aprovada na primeira execução |
-| Dois finalistas de treino | T219/o0/c2 e T218/o0/c2; nenhuma validação completa, teste ou promoção na v3 |
+| Dois finalistas de treino | T219/o0/c2 e T218/o0/c2; comparados posteriormente na validação completa |
 | Revisão geral de alinhamento | Aprovada com controles documentados; 3.248 arquivos e 17.753 conferências de integridade, 502 testes antes das alterações |
-| Preparação da validação v3 | Plano e executor estrito implementados para 2 × 5.850 = 11.700 avaliações; fontes ainda não abertas nesta etapa |
-| Próximo marco | Executar a validação registrada depois do commit e conferir as oito runs, sem congelamento automático |
+| Validação v3 completa | 11.700 avaliações em 7f47afb, Git limpo; 824 testes antes da execução; conferência independente aprovada |
+| Seleção de validação | T218/o0/c2: F1 macro 0,658959; T219: 0,657819; sem congelamento, teste ou folds |
+| Próximo marco | Registrar critérios de congelamento e contrato de trajetórias individuais; preparar tracking com GT e janelas causais comuns |
+
+[Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
+Cada finalista vence em dois vídeos; a diferença macro de 0,11403 ponto
+percentual não demonstra superioridade geral. A conferência verificou 46
+arquivos, 1.772.878 campos/valores e 144 matchings. As duas correções do
+verificador e as tentativas iniciais estão preservadas; as runs não mudaram.
 
 A [busca grossa v3](../metodologia/BUSCA_THRESHOLD_V3.md) selecionou para refinamento
 T224/o0/c2, T208/o0/c2, T224/o0/c1, T200/o1/c2 e T208/o1/c2.

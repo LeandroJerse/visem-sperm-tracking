@@ -48,6 +48,23 @@ clusters. O baseline deve continuar puro; CLAHE/top-hat pertencem ao híbrido.
 
 ## Decisão atual
 
+A validação completa das duas finalistas terminou em `7f47afb`, após 824
+testes: oito runs, 11.700 avaliações, Git limpo, conferência independente
+aprovada (46 arquivos, 1.772.878 comparações e 144 matchings).
+
+| Configuração | F1 macro 10 px | Precisão macro | Revocação macro | MAE de contagem macro |
+|---|---:|---:|---:|---:|
+| t218_o0_c2 | 0,658959 | 0,590922 | 0,794711 | 4,408433 |
+| t219_o0_c2 | 0,657819 | 0,591304 | 0,791474 | 4,435930 |
+
+**T218/o0/c2 foi selecionada na validação**, sem congelamento ou teste.
+Cada candidata vence em dois vídeos; a diferença macro é 0,11403 ponto
+percentual, sem inferência de significância. Tempo total 166,657535 s e
+RSS amostrado 236,594 MiB. Os detalhes e limites estão no
+[relatório de validação](../../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
+
+## Histórico do refinamento no treino
+
 O refinamento registrado da seleção de treino foi **concluído em 08/09/2026**:
 117 configurações nos mesmos 48 quadros de cada um dos 12 vídeos de treino,
 totalizando 576 quadros por configuração e **67.392 avaliações**. A bateria
@@ -87,11 +104,11 @@ A conferência reconstruiu a aritmética de todos os quadros e as médias por
 vídeo; o matching independente foi amostral e usou somente CSVs das runs,
 sem reabrir fontes de vídeo, anotações originais ou pixels do cache.
 
-O próximo marco é **executar a validação registrada das duas finalistas**.
+A etapa seguinte foi a **validação registrada das duas finalistas**, concluída acima.
 O [protocolo prospectivo](../../metodologia/VALIDACAO_THRESHOLD_V3.md) e o
 executor estrito fixam 11.700 avaliações em oito runs completas, critérios
 de seleção, orçamento e hashes. O vídeo 52 possui 1.440 quadros; os outros
-três, 1.470. Fontes de validação ainda não foram abertas nesta preparação.
+três, 1.470. As fontes foram abertas somente após registrar plano e executor em `7f47afb`.
 Referência: [protocolo mestre](../../metodologia/PROTOCOLO.md).
 
 ### Busca grossa preservada — primeira seleção de treino

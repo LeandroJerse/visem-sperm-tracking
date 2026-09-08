@@ -10,7 +10,10 @@ de uma bateria longa. Em 08/09, a busca grossa e o refinamento do threshold
 concluíram a seleção de dois finalistas de treino. A conferência independente
 do refinamento foi aprovada. A revisão geral confirmou o alinhamento com o
 projeto assinado e originou o [protocolo de validação](VALIDACAO_THRESHOLD_V3.md),
-registrado antes da execução. O desenho confirmatório posterior continua pendente.
+registrado antes da execução. A bateria completa posteriormente selecionou
+T218/o0/c2, com F1 macro 0,658959, sem congelamento, teste ou folds; os
+[resultados conferidos](VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026)
+estão separados das regras prospectivas. O desenho confirmatório continua pendente.
 
 O [parecer de revisão](../projeto/REVISAO_GERAL_20260908.md) orienta a prioridade:
 fechar a linha de base e avançar à comparação pareada da predição com e sem

@@ -1,5 +1,9 @@
 # Validação completa das finalistas do threshold v3
 
+Resultado posterior: [validação concluída e conferida](#resultados-da-validação--08092026),
+com T218/o0/c2 selecionada, ainda sem congelamento. O protocolo prospectivo
+abaixo permanece preservado.
+
 ## Estado e finalidade
 
 Protocolo prospectivo registrado em 08/09/2026, antes de abrir os vídeos e
@@ -179,3 +183,81 @@ Depois da conferência, o resultado será registrado na matriz, diário e ficha
 do algoritmo. O congelamento e qualquer avaliação posterior exigem seus
 próprios critérios e registros. A exposição histórica dos quatro vídeos de
 teste continua sendo uma limitação; preservá-los bloqueados agora não a apaga.
+
+
+## Resultados da validação — 08/09/2026
+
+Protocolo e executor registrados em **`7f47afb`**, antes da abertura das
+fontes desta bateria, após **824 testes em 110,00 s**. A run concluiu os
+oito pares previstos, com Git limpo e rechecagem de fontes, pais, saídas,
+código e ambiente. Foram **11.700 avaliações em 5.850 quadros físicos**,
+166,657535 s totais e pico amostrado de RSS de 236,594 MiB. Os artefatos
+somavam 63.093.945 bytes antes da escrita do manifesto final, dentro do
+orçamento. Tempo e memória não participaram da seleção.
+
+**T218/o0/c2 foi selecionada na validação**, com abertura zero e dois
+fechamentos. Os demais parâmetros permaneceram idênticos aos do treino.
+
+| Configuração | F1 macro 10 px | Precisão macro | Revocação macro | MAE de contagem macro |
+|---|---:|---:|---:|---:|
+| t218_o0_c2 | 0,658959 | 0,590922 | 0,794711 | 4,408433 |
+| t219_o0_c2 | 0,657819 | 0,591304 | 0,791474 | 4,435930 |
+
+| Vídeo | Quadros | F1 T218 | F1 T219 |
+|---|---:|---:|---:|
+| 14 | 1470 | 0,628657 | 0,630831 |
+| 19 | 1470 | 0,559725 | 0,557932 |
+| 36 | 1470 | 0,794239 | 0,789071 |
+| 52 | 1440 | 0,653215 | 0,653441 |
+
+A diferença de F1 macro é **0,0011402996734879**, ou **0,11403 ponto
+percentual**, a favor de T218. T218 vence nos vídeos 19/36; T219, em 14/52.
+A escolha segue a regra previamente fixada, sem evidência de superioridade
+geral ou significância estatística. Os valores da amostra de treino e dos
+vídeos completos de validação pertencem a universos distintos; sua diferença
+não mede isoladamente melhora ou piora do algoritmo.
+
+As sensibilidades preservaram a mesma ordem: T218 teve F1 macro
+0,663448/0,664873 a 15/20 px; T219, 0,662237/0,663842. Cada configuração
+usou o mesmo GT exportado: 123.242 objetos, sendo 115.629 indivíduos e
+7.613 anotações de agrupamento. São ocorrências ao longo dos quadros, não
+células únicas. Foram ignoradas 16.147 previsões de T218 e 15.792 de T219
+a 10 px, mantendo todas as previsões e anotações brutas nos CSVs. A métrica
+secundária conta cada agrupamento como um objeto, sem inferir quantas células
+ele contém. A grande variação entre vídeos merece análise futura, sem
+atribuir uma causa visual que esta bateria quantitativa não verificou.
+
+### Conferência e limitações
+
+A conferência independente aprovou **46 arquivos**, **1.772.878 comparações
+de campos/valores**, todos os registros e agregados e **144 verificações
+SciPy** nos casos previamente definidos. O ranking foi reconstruído e o GT
+exportado coincidiu entre candidatos. Essa conferência não reabriu fontes:
+hashes dos MP4/anotações e EOF são evidência registrada pelo executor;
+o matching independente foi amostral, não integral.
+
+Duas tentativas iniciais do verificador falharam por suposições de formato:
+tamanho opcional nas referências e igualdade literal entre inteiros e
+decimais das sensibilidades. Corrigiu-se somente o verificador local; as
+falhas foram preservadas e a terceira tentativa foi aprovada. Nenhuma run
+científica, configuração ou fonte foi alterada ou reexecutada para isso.
+
+O resultado é uma **seleção de validação ainda não congelada**. Não houve
+teste, folds ou nova busca após observar estes resultados. A hipótese de
+predição com fluxo continua pendente. O próximo marco é registrar critérios
+de congelamento e o contrato de trajetórias individuais, preparando tracking
+com GT e janelas causais comuns para a futura ablação.
+
+### Artefatos locais preservados
+
+- [Manifesto da bateria](../../data/tests/detection/threshold/threshold_validation_v3_20260908_batch__cfg56af058b/validation/20260908T175445014964Z__7f47afb__cfg72861b847a20__src71c12fae0d__s42/manifest.json),
+  [seleção](../../data/tests/detection/threshold/threshold_validation_v3_20260908_batch__cfg56af058b/validation/20260908T175445014964Z__7f47afb__cfg72861b847a20__src71c12fae0d__s42/selection.json),
+  [ranking](../../data/tests/detection/threshold/threshold_validation_v3_20260908_batch__cfg56af058b/validation/20260908T175445014964Z__7f47afb__cfg72861b847a20__src71c12fae0d__s42/ranking.csv) e
+  [oito resumos por vídeo](../../data/tests/detection/threshold/threshold_validation_v3_20260908_batch__cfg56af058b/validation/20260908T175445014964Z__7f47afb__cfg72861b847a20__src71c12fae0d__s42/video_metrics.csv).
+- [Conferência aprovada](../../data/tests/detection/threshold/threshold_validation_v3_20260908_batch__cfg56af058b/validation/verification_20260908_retry2.json) e
+  [histórico das três tentativas](../../data/tests/detection/threshold/threshold_validation_v3_20260908_batch__cfg56af058b/validation/verification_attempts_20260908.json).
+- [Figura PNG](../../data/derived/detection/validation_reports/threshold_validation_v3_20260908/revision_02/validacao_threshold_completa.png), [SVG](../../data/derived/detection/validation_reports/threshold_validation_v3_20260908/revision_02/validacao_threshold_completa.svg)
+  e [revisão visual](../../data/derived/detection/validation_reports/threshold_validation_v3_20260908/revision_02/visual_review.json).
+
+SHA-256 do manifesto: `ce0a391b792b8a8081f1ea41aaa7678fcae4973c48cc6a5ce159a27147b3cd55`.
+SHA-256 da conferência: `9f6b79f5d68b5db59cda035d93036752801b77568d2a24fff8c265865037ffd7`.

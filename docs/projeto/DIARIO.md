@@ -2,6 +2,27 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — validação completa v3 concluída; T218 selecionada
+
+- Bateria científica executada uma vez, após commit `7f47afb` e 824 testes,
+  com Git limpo. Oito runs completas, 11.700 avaliações, 5.850 quadros físicos.
+  Fontes, pais, planos, métricas exportadas e saídas conferidos antes da seleção.
+- Tempo total 166,657535 s; pico amostrado de RSS 236,594 MiB; 63.093.945
+  bytes de artefatos antes do manifesto final. Todos os limites respeitados.
+- T218/o0/c2: F1 macro 0,658959, recall 0,794711, MAE de contagem 4,408433.
+  T219/o0/c2: F1 macro 0,657819. Diferença 0,11403 ponto percentual;
+  cada configuração vence em dois vídeos. Sem inferência de significância.
+- Conferência independente aprovada: 46 arquivos, 1.772.878 comparações,
+  11.700 registros e 144 matchings SciPy. Duas tentativas anteriores falharam
+  por suposições do verificador sobre metadados/serialização numérica; foram
+  preservadas e corrigidas somente no verificador. Runs científicas intactas.
+- Figura PNG/SVG revisada, com a primeira renderização preservada; mapa,
+  ficha, matriz, guia local e fonte da monografia atualizados. PDF não recompilado.
+- [Resultados, figura, hashes e histórico das conferências](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
+  Seleção de validação, sem congelamento, teste ou folds. Próximo marco:
+  critérios de congelamento e elegibilidade de trajetórias individuais,
+  preparando tracking com GT e a comparação causal de predição com/sem fluxo.
+
 ## 2026-09-08 — revisão geral aprovada e validação v3 preparada antes dos dados
 
 - A [revisão geral](REVISAO_GERAL_20260908.md) confirmou alinhamento com o
