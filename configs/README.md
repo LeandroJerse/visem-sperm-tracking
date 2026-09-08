@@ -87,3 +87,12 @@ cego, embora nenhuma bateria confirmatória com a configuração congelada tenha
 sido executada. O desenho da nova seleção e avaliação, incluindo folds,
 continua pendente. Redistribuir os mesmos vídeos não desfaz a influência
 das explorações anteriores na escolha de parâmetros.
+
+## Linha de base v3 e trajetórias individuais
+
+- [T218/o0/c2 v3](frozen/detection/threshold/t218_o0_c2_v3.yaml): parâmetros
+  fixos para desenvolvimento; teste/folds não liberados. A seleção original
+  e os hashes da conferência permanecem registrados.
+- [Referência individual v1](protocol/individual_trajectories_v1.yaml): coorte
+  de treino, regras de segmentação, histórico 20, futuro 10 e orçamento,
+  registrados antes da preparação. Não é configuração de um preditor.

@@ -613,3 +613,25 @@ respectivo YAML em `configs/frozen/`, contendo `stage: application`,
 `split: application` e `run.frozen: true`. A saída irá para `data/results/`.
 Esses vídeos não possuem tracking manual: exporte trajetórias e indicadores,
 mas não declare acurácia quantitativa real.
+
+## Referência de trajetórias individuais do treino
+
+Plano: [individual_trajectories_v1.yaml](../configs/protocol/individual_trajectories_v1.yaml).
+Contrato: [trajetórias individuais v1](../docs/metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md).
+Executar somente com Git limpo, após os testes do código:
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -B -m script.prediction.test.prepare_ground_truth
+```
+
+O comando não aceita substituição de split, vídeo ou parâmetros. Prepara os
+12 vídeos de treino registrados, preserva GT bruto e observações 0/2, separa
+segmentos contínuos e exporta índices de janelas 20+10. Não executa modelo,
+fluxo ou métrica de predição. Só consulta metadados e hash do MP4; não certifica
+decodificação integral de pixels. A run nova fica sob
+`data/derived/prediction/ground_truth_individuals/`, com `manifest.json`,
+`summary.json` e sete artefatos em `by_video/<id>/`. Falhas ficam preservadas.
+
+O [T218 congelado para desenvolvimento](../configs/frozen/detection/threshold/t218_o0_c2_v3.yaml)
+é a referência de detecção v3. Seu escopo bloqueia teste, folds e aplicação,
+mesmo quando uma chamada tenta trocar flags ou o arquivo de splits.

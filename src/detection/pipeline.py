@@ -43,6 +43,7 @@ from src.experiments.protocol import (
     ProtocolViolation,
     assert_frozen_config_source,
     assert_frozen_overrides,
+    assert_frozen_release,
     assert_protocol_access,
 )
 from src.experiments.runs import RunContext
@@ -186,6 +187,13 @@ def resolve_cli_config(args: argparse.Namespace) -> dict[str, Any]:
         evaluation.setdefault("protocol_id", DEFAULT_EVALUATION_PROTOCOL_ID)
     elif evaluation.get("protocol_id") == DEFAULT_EVALUATION_PROTOCOL_ID:
         raise ConfigError("O protocol_id V3 não corresponde à política de classes ou aos raios resolvidos.")
+    assert_frozen_release(
+        args.config,
+        stage=config["run"].get("stage", "development"),
+        split=config["run"].get("split", "unspecified"),
+        frozen=config["run"].get("frozen", False),
+        splits_config=config["protocol"].get("splits_config"),
+    )
     return config
 
 
@@ -284,7 +292,7 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
     args = parse_args(argv)
     try:
         config = resolve_cli_config(args)
-    except ConfigError as exc:
+    except (ConfigError, ProtocolViolation) as exc:
         raise SystemExit(str(exc)) from exc
 
     method = config.get("method")

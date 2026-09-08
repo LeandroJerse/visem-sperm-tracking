@@ -29,6 +29,7 @@ from src.experiments.protocol import (
     ProtocolViolation,
     assert_frozen_config_source,
     assert_frozen_overrides,
+    assert_frozen_release,
     assert_protocol_access,
     assert_video_ids_in_split,
 )
@@ -278,6 +279,12 @@ def resolve_cli_config(args: argparse.Namespace) -> dict[str, Any]:
 
     config = resolve_config(
         defaults=config, overrides=_normalise_overrides(args.overrides)
+    )
+    assert_frozen_release(
+        args.config, stage=config["run"].get("stage", "development"),
+        split=config["run"].get("split", "unspecified"),
+        frozen=config["run"].get("frozen", False),
+        splits_config=(config.get("protocol") or {}).get("splits_config"),
     )
     source_value = config["input"].get("source")
     if source_value is None:
@@ -663,7 +670,7 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
     args = parse_args(argv)
     try:
         config = resolve_cli_config(args)
-    except ConfigError as exc:
+    except (ConfigError, ProtocolViolation) as exc:
         raise SystemExit(str(exc)) from exc
 
     method = str(config.get("method") or "")

@@ -6,10 +6,12 @@ from pathlib import Path
 from typing import Any
 
 from src.experiments.dataset import load_split_spec
+from src.experiments.config import ConfigError
 from src.experiments.protocol import (
     ProtocolViolation,
     assert_frozen_config_source,
     assert_frozen_overrides,
+    assert_frozen_release,
     assert_protocol_access,
 )
 
@@ -103,6 +105,14 @@ def _validate_wrapper_overrides(overrides: list[str], *, frozen: bool) -> None:
 def main(argv: list[str] | None = None) -> list[dict[str, Any]]:
     args = parse_args(argv)
     _validate_wrapper_overrides(args.overrides, frozen=bool(args.frozen))
+    stage = args.stage or _default_stage(args.split)
+    try:
+        assert_frozen_release(
+            args.config, stage=stage, split=args.split, frozen=args.frozen,
+            splits_config=args.splits_config,
+        )
+    except (ConfigError, ProtocolViolation) as exc:
+        raise SystemExit(str(exc)) from exc
     spec = load_split_spec(args.splits_config)
     try:
         selected = list(spec.ids_for(args.split))
@@ -119,7 +129,6 @@ def main(argv: list[str] | None = None) -> list[dict[str, Any]]:
     if not selected:
         raise SystemExit("Nenhum vídeo selecionado.")
 
-    stage = args.stage or _default_stage(args.split)
     try:
         assert_protocol_access(stage=stage, split=args.split, frozen=args.frozen)
         if args.frozen:

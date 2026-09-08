@@ -62,3 +62,13 @@ das avaliações científicas. Criar uma LSTM sem carregar PyTorch não verifica
 treino ou sua inferência; a [matriz](../../docs/projeto/MATRIZ_EXPERIMENTOS.md)
 registra a etapa experimental efetivamente alcançada.
 Os [comandos oficiais](../../script/README.md#4-predição) ficam em `script/README.md`.
+
+## Referência individual antes dos modelos
+
+[ground_truth.py](ground_truth.py) preserva observações GT 0/2 e o ID original,
+gera segmentos contínuos e índices de janelas. O código é puro: não abre arquivos,
+executa modelo ou usa fluxo. Segmento não é uma nova identidade biológica.
+Consulte o [contrato v1](../../docs/metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md)
+e os [comandos oficiais](../../script/README.md#referência-de-trajetórias-individuais-do-treino).
+O consumo desses índices pelos preditores e o ADE denso por horizonte continuam
+pendentes; o executor antigo não deve ser apresentado como essa comparação.

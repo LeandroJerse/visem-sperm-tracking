@@ -26,6 +26,7 @@ from src.experiments.config import ConfigError, load_config
 from src.experiments.protocol import (
     ProtocolViolation,
     assert_frozen_config_source,
+    assert_frozen_release,
     assert_protocol_access,
 )
 from src.experiments.resources import ResourceMonitor
@@ -82,6 +83,11 @@ def _resolve_cli(args: argparse.Namespace) -> dict[str, Any]:
             raise ConfigError(f"A seção YAML {name!r} deve ser um mapping.")
 
     frozen = bool(args.frozen or run_cfg.get("frozen", False))
+    assert_frozen_release(
+        args.config, stage=args.stage or run_cfg.get("stage") or "validation",
+        split=args.split or run_cfg.get("split") or "val", frozen=frozen,
+        splits_config=(raw.get("protocol") or {}).get("splits_config"),
+    )
     if frozen:
         source = assert_frozen_config_source(args.config)
         if str(raw.get("method", "")).strip().lower() not in {"yolo", "yolo_val"}:

@@ -57,7 +57,9 @@ aprovada (46 arquivos, 1.772.878 comparações e 144 matchings).
 | t218_o0_c2 | 0,658959 | 0,590922 | 0,794711 | 4,408433 |
 | t219_o0_c2 | 0,657819 | 0,591304 | 0,791474 | 4,435930 |
 
-**T218/o0/c2 foi selecionada na validação**, sem congelamento ou teste.
+**T218/o0/c2 está congelada para desenvolvimento**, após a seleção na validação.
+O [registro de congelamento v3](../../metodologia/CONGELAMENTO_THRESHOLD_V3.md)
+fixa parâmetros e avaliação; teste e folds continuam bloqueados.
 Cada candidata vence em dois vídeos; a diferença macro é 0,11403 ponto
 percentual, sem inferência de significância. Tempo total 166,657535 s e
 RSS amostrado 236,594 MiB. Os detalhes e limites estão no

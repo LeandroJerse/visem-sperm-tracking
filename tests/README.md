@@ -6,6 +6,12 @@ entrada/saída, proteção dos splits e registro das execuções. Os arquivos
 o pacote. Passar nesses testes não demonstra desempenho científico nos vídeos
 do VISEM nem conclui a validação de um algoritmo.
 
+O marco de referência individual adiciona
+[elegibilidade e segmentos](integration/test_individual_ground_truth.py),
+[preparação e falhas de integridade](experiments/test_individual_preparation.py)
+e [escopo do congelamento](experiments/test_frozen_release.py).
+Antes da primeira preparação v1, a suíte curta passou em 1.026 testes.
+
 **Procurando a inspeção visual frame a frame?** Ela está em
 [`script/detection/test/threshold/`](../script/detection/test/threshold/README.md).
 Os [três modos e comandos oficiais](../script/README.md#threshold-frame-a-frame)

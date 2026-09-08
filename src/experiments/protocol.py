@@ -7,9 +7,11 @@ split/configuration mistakes fail closed at the command-line boundary.
 from __future__ import annotations
 
 from collections.abc import Iterable
+import hashlib
 from pathlib import Path
 
 from src.core.paths import REPOSITORY_ROOT
+from src.experiments.config import load_config
 from src.experiments.dataset import load_split_spec
 
 
@@ -113,6 +115,87 @@ def assert_frozen_overrides(
             "Configuração congelada não permite alterar parâmetros científicos "
             f"via --set: {forbidden}. Crie/promova outro YAML."
         )
+
+
+def assert_frozen_release(
+    config_path: str | Path | None,
+    *,
+    stage: str,
+    split: str,
+    frozen: bool,
+    splits_config: str | Path | None = None,
+) -> None:
+    """Enforce a scoped release from the original YAML before input access.
+
+    A development baseline freezes parameters without authorizing test, OOF
+    or application. Read the source rather than the merged configuration so
+    CLI overrides cannot erase its scope or disable its frozen status. YAMLs
+    without a ``freeze`` block retain the historical guard contract.
+    """
+    if config_path in (None, ""):
+        return
+    source = Path(config_path)
+    if not source.is_absolute():
+        source = REPOSITORY_ROOT / source
+    raw = load_config(source)
+    if "freeze" not in raw:
+        return
+    release = raw["freeze"]
+    if (
+        not isinstance(release, dict)
+        or set(release) != {"scope", "allowed_splits", "confirmatory_plan"}
+        or release.get("scope") != "development_only"
+        or release.get("confirmatory_plan") is not None
+    ):
+        raise ProtocolViolation(
+            "Bloco freeze inválido: somente development_only, allowed_splits e "
+            "confirmatory_plan: null estão autorizados. Confirmação exige plano próprio."
+        )
+    allowed = release["allowed_splits"]
+    if (
+        not isinstance(allowed, list)
+        or not allowed
+        or any(not isinstance(value, str) or value not in {"train", "val"} for value in allowed)
+        or len(set(allowed)) != len(allowed)
+    ):
+        raise ProtocolViolation("freeze.allowed_splits deve conter apenas train/val, sem repetição.")
+    assert_frozen_config_source(source)
+    raw_run = raw.get("run")
+    if not isinstance(raw_run, dict) or raw_run.get("frozen") is not True or frozen is not True:
+        raise ProtocolViolation(
+            "Baseline development_only exige run.frozen=true na fonte e na execução; "
+            "não é permitido desativar o congelamento via CLI."
+        )
+    pair = (_normalize(stage), _normalize(split))
+    allowed_pairs = {("development", "train"), ("smoke", "train"), ("validation", "val")}
+    if pair not in allowed_pairs or pair[1] not in allowed:
+        raise ProtocolViolation(
+            "Baseline development_only permite somente development/train, smoke/train "
+            "ou validation/val. Teste, folds, all e aplicação continuam bloqueados."
+        )
+    protocol = raw.get("protocol") or {}
+    if not isinstance(protocol, dict):
+        raise ProtocolViolation("A seção protocol do baseline deve ser um mapping.")
+    registered_split = protocol.get("splits_config", "configs/protocol/splits.yaml")
+    if not isinstance(registered_split, str) or not registered_split:
+        raise ProtocolViolation("protocol.splits_config do baseline deve identificar o YAML dos splits.")
+
+    def resolved(value: str | Path) -> Path:
+        path = Path(value)
+        return (path if path.is_absolute() else REPOSITORY_ROOT / path).resolve()
+
+    effective_split = splits_config if splits_config is not None else registered_split
+    if resolved(effective_split) != resolved(registered_split):
+        raise ProtocolViolation("Baseline development_only não permite trocar protocol.splits_config.")
+    registered_hash = protocol.get("splits_sha256")
+    if registered_hash is not None:
+        split_path = resolved(registered_split)
+        if (
+            not isinstance(registered_hash, str)
+            or not split_path.is_file()
+            or hashlib.sha256(split_path.read_bytes()).hexdigest() != registered_hash
+        ):
+            raise ProtocolViolation("O hash dos splits diverge do baseline development_only.")
 
 
 def assert_protocol_access(*, stage: str, split: str, frozen: bool) -> None:

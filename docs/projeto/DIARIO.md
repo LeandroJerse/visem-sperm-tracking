@@ -637,3 +637,25 @@ permanece preservado em
 - [ ] Módulo de fluxo óptico (`src/flow`): Farneback → RAFT.
 - [ ] Rastreamento (`src/tracking`): SORT → ByteTrack.
 - [ ] Predição (`src/prediction`): Kalman → LSTM.
+
+## 2026-09-08 — linha de base fixa e protocolo de referência individual
+
+Após a autorização para continuar, T218/o0/c2 foi materializada como configuração
+congelada para desenvolvimento, sem nova busca nem acesso às fontes. Foram
+reconferidos 46 artefatos da validação, seus pais e a identidade dos componentes
+de detecção/avaliação. As runs continuam atribuídas a 7f47afb; o recibo de decisão
+fica em `data/derived/project_audits/general_20260908/freeze_t218_development_20260908.json`.
+O escopo executável bloqueia teste/folds e não restaura a cegueira histórica.
+
+Registrado o protocolo de referência individual do treino: classes 0/2,
+IDs originais, interrupções explícitas, todos os segmentos preservados,
+janelas 20+10/stride 1 e exclusões por falta de futuro contabilizadas.
+Módulo puro, executor e testes sintéticos precedem a primeira preparação.
+A preparação real e sua conferência serão registradas em entrada separada.
+Não há neste marco resultado de rastreamento, fluxo ou predição.
+
+Antes da preparação real, a suíte `not optional_ml and not slow` passou em
+**1.026 testes, em 108,58 s**. As novas regressões cobrem elegibilidade,
+causalidade do prefixo, cobertura, preservação de precisão/IDs, falhas de
+proveniência e recusas de liberação confirmatória. A configuração congelada
+também teve sua correspondência com a seleção conferida separadamente.

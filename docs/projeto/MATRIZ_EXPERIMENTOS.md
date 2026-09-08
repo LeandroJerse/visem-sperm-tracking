@@ -29,7 +29,8 @@ impedem que duplicatas próximas sejam ignoradas.
 | Revisão geral de alinhamento | Aprovada com controles documentados; 3.248 arquivos e 17.753 conferências de integridade, 502 testes antes das alterações |
 | Validação v3 completa | 11.700 avaliações em 7f47afb, Git limpo; 824 testes antes da execução; conferência independente aprovada |
 | Seleção de validação | T218/o0/c2: F1 macro 0,658959; T219: 0,657819; sem congelamento, teste ou folds |
-| Próximo marco | Registrar critérios de congelamento e contrato de trajetórias individuais; preparar tracking com GT e janelas causais comuns |
+| Congelamento v3 | T218/o0/c2 fixa para desenvolvimento; teste e folds bloqueados pelo escopo executável |
+| Próximo marco | Preparar referência individual do treino e índices de janelas 20+10, sem modelo; depois contrato de tracking e predição causal |
 
 [Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
 Cada finalista vence em dois vídeos; a diferença macro de 0,11403 ponto

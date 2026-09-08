@@ -13,7 +13,10 @@ projeto assinado e originou o [protocolo de validação](VALIDACAO_THRESHOLD_V3.
 registrado antes da execução. A bateria completa posteriormente selecionou
 T218/o0/c2, com F1 macro 0,658959, sem congelamento, teste ou folds; os
 [resultados conferidos](VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026)
-estão separados das regras prospectivas. O desenho confirmatório continua pendente.
+estão separados das regras prospectivas. Posteriormente, o
+[congelamento para desenvolvimento](CONGELAMENTO_THRESHOLD_V3.md) fixou T218
+sem liberar teste/folds. A [referência de trajetórias individuais v1](TRAJETORIAS_INDIVIDUAIS_V1.md)
+é preparada somente no treino. O desenho confirmatório continua pendente.
 
 O [parecer de revisão](../projeto/REVISAO_GERAL_20260908.md) orienta a prioridade:
 fechar a linha de base e avançar à comparação pareada da predição com e sem

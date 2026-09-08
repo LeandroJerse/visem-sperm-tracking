@@ -63,3 +63,8 @@ híbrida nunca compartilham a mesma ficha ou configuração.
 Documentos substituídos não permanecem misturados à documentação vigente.
 Quando uma remoção definitiva depender de revisão humana, o arquivo é isolado
 temporariamente fora de `docs/`.
+
+## Marco atual: linha de base e referência individual
+
+- [Congelamento do threshold v3 para desenvolvimento](metodologia/CONGELAMENTO_THRESHOLD_V3.md).
+- [Referência de trajetórias individuais v1](metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md).
