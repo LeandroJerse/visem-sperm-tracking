@@ -34,8 +34,8 @@ class Sample:
 def setup(monkeypatch, tmp_path_factory):
     for module in (search, runs):
         monkeypatch.setattr(module, "_git_dirty", lambda _: False)
-        monkeypatch.setattr(module, "_git_sha", lambda _: "1234567")
         monkeypatch.setattr(module, "_source_hash", lambda _: "stable-source")
+    monkeypatch.setattr(runs, "_git_sha", lambda _: "1234567")
     monkeypatch.setattr(runs, "environment_snapshot", lambda: {"synthetic": True})
     plan = search.load_config(search.REPOSITORY_ROOT / search.DEFAULT_PLAN)
     plan["search_space"] = {"threshold_value": [200, 255], "morph_iterations": [0], "close_iterations": [0]}
@@ -66,6 +66,7 @@ def test_complete_benchmark_then_coarse_exports_every_frame_and_raw_gt(tmp_path,
     assert set(report["artifacts"]) == set(report["artifact_hashes"]) == benchmark_artifacts
     assert report["summary"]["frame_evaluations"] == 24
     assert report["summary"]["selection_allowed"] is False
+    assert report["provenance_verification"]["status"] == "verified"
     coarse = batch(tmp_path, setup, "coarse", benchmark={"path": str(benchmark)})
     manifest = json.loads(coarse.read_text())
     assert manifest["config"]["input"] == {"sample_hash": sample.sample_hash, **expected_reference}
@@ -81,10 +82,18 @@ def test_complete_benchmark_then_coarse_exports_every_frame_and_raw_gt(tmp_path,
     assert [float(row["macro_video_f1"]) for row in ranked] == [1, 0]
     for record in manifest["candidate_manifests"]:
         child = Path(record["path"])
-        provenance = json.loads(child.read_text())["config"]["provenance"]
+        child_manifest = json.loads(child.read_text())
+        provenance = child_manifest["config"]["provenance"]
         assert {key: provenance[key] for key in expected_reference} == expected_reference
         assert provenance["sample_hash"] == sample.sample_hash
         assert provenance["batch_manifest_path"] == str(coarse.resolve())
+        shared = child_manifest["provenance_capture"]
+        assert shared["mode"] == "shared_batch" and shared["per_candidate_recheck"] is False
+        assert shared["origin_batch_manifest"] == str(coarse.resolve())
+        assert shared["snapshot_sha256"] == manifest["provenance_capture"]["snapshot_sha256"]
+        assert shared["captured_at"] == manifest["provenance_capture"]["captured_at"]
+        assert child_manifest["environment"] == manifest["environment"] == {"synthetic": True}
+        assert "provenance_verification" not in child_manifest
         per_video = list(csv.DictReader(child.with_name("video_summary.csv").open()))
         assert len(per_video) == 12
         assert {int(row["frames_total"]) for row in per_video} == {2}
@@ -165,7 +174,7 @@ def test_unavailable_failure_manifests_cannot_replace_original_exception(tmp_pat
     assert not list(tmp_path.rglob("shortlist.json"))
 
 
-@pytest.mark.parametrize("fault", ["missing_frame", "duplicate_frame", "too_many_predictions", "source_changed"])
+@pytest.mark.parametrize("fault", ["missing_frame", "duplicate_frame", "too_many_predictions", "source_changed", "environment_changed"])
 def test_failed_batch_preserves_manifest_without_ranking(tmp_path, setup, monkeypatch, fault):
     plan, sample = setup
     if fault in {"missing_frame", "duplicate_frame"}:
@@ -176,19 +185,26 @@ def test_failed_batch_preserves_manifest_without_ranking(tmp_path, setup, monkey
         monkeypatch.setattr(sample, "frames", invalid)
     elif fault == "too_many_predictions":
         plan["budget"]["max_predictions_per_frame"] = 0
+    elif fault == "source_changed":
+        sources = iter(("stable-source", "changed-source"))
+        monkeypatch.setattr(runs, "_source_hash", lambda _: next(sources))
     else:
-        monkeypatch.setattr(search, "_source_hash", lambda _: "changed-source")
+        environments = iter(({"synthetic": True}, {"synthetic": "changed"}))
+        monkeypatch.setattr(runs, "environment_snapshot", lambda: next(environments))
     with pytest.raises((ValueError, RuntimeError)):
         batch(tmp_path, setup)
     manifests = [json.loads(path.read_text()) for path in tmp_path.rglob("manifest.json")]
     batches = [item for item in manifests if item["method"] == "threshold_search"]
     assert len(batches) == 1 and batches[0]["status"] == "failed"
     assert batches[0]["selection_allowed"] is False
+    assert batches[0]["provenance_verification"]["status"] == (
+        "failed" if fault in {"source_changed", "environment_changed"} else "not_performed"
+    )
     assert not list(tmp_path.rglob("ranking.csv"))
     assert not list(tmp_path.rglob("shortlist.json"))
 
 
-@pytest.mark.parametrize("fault", ["artifact", "batch_artifact", "manifest", "plan", "sample", "budget"])
+@pytest.mark.parametrize("fault", ["artifact", "batch_artifact", "manifest", "plan", "sample", "budget", "snapshot_unverified"])
 def test_coarse_refuses_changed_or_over_budget_benchmark(tmp_path, setup, fault):
     plan, sample = setup
     path = batch(tmp_path, setup)
@@ -204,6 +220,9 @@ def test_coarse_refuses_changed_or_over_budget_benchmark(tmp_path, setup, fault)
         plan["run"]["seed"] = 43
     elif fault == "sample":
         sample.sample_hash = "changed"
+    elif fault == "snapshot_unverified":
+        manifest["provenance_verification"]["status"] = "not_performed"
+        path.write_text(json.dumps(manifest))
     else:
         manifest["summary"]["projected_coarse_seconds"] = 999999
         path.write_text(json.dumps(manifest))

@@ -105,6 +105,14 @@ grossa completa produz `ranking.csv` e `shortlist.json`; estes selecionam
 candidatos para refinamento no treino, sem promover o detector. O refinamento
 está descrito no plano e ainda não tem modo executável nesta CLI.
 
+As runs da bateria compartilham uma captura explícita de commit, estado do
+Git e ambiente, evitando centenas de consultas idênticas. Cada manifesto
+registra a origem e o instante dessa captura; a bateria confere novamente
+esses dados antes de aceitar a comparação. Um benchmark anterior a uma
+mudança de código não habilita a nova busca: repita-o em outra run, preservando
+a execução anterior. O cache pode ser reutilizado quando plano, fontes e
+amostra continuam idênticos e passam na validação de hashes.
+
 ## 0. Verificação antes de uma bateria
 
 ```powershell

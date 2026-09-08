@@ -4,6 +4,10 @@
 · [Configuração registrada](../../configs/detection/threshold/search_v3.yaml)
 · [Comandos oficiais](../../script/README.md#busca-threshold-v3)
 
+As regras a seguir foram registradas antes do processamento. O
+[registro de execução](#estado-deste-registro) distingue o plano dos
+resultados e das revisões operacionais posteriores.
+
 ## Pergunta, alcance e limite
 
 Qual configuração de limiar fixo e morfologia apresenta o melhor F1 de
@@ -159,3 +163,29 @@ explicitada. A hipótese sobre fluxo óptico e predição não é testada nesta 
 Plano e executores em preparação, antes da formação do cache e de qualquer
 resultado de benchmark ou busca grossa. Os resultados e commits de execução
 serão registrados abaixo após as verificações correspondentes.
+
+### Primeiro benchmark e revisão operacional — 08/09/2026
+
+O plano foi registrado em `9940337` antes da preparação real. A amostra foi
+concluída em 19,29 s: 576 quadros, 532.540.304 bytes, com hashes verificados
+e pico amostrado de RSS de 156,473 MiB. Seu identificador é
+`77ad9cbda76c03d61f3b28dd99520d0c1d6e285452929d847742bc6331473478`.
+
+O benchmark inicial terminou todas as 2.052 avaliações, com Git limpo e sem
+classificação. O laço levou 131,7403 s; pela fórmula registrada, a projeção
+foi 3.167,83 s, superior ao limite de 1.200 s. A busca grossa não foi iniciada
+com esse benchmark. Detector, avaliação e exportação somaram respectivamente
+6,569 s, 11,236 s e 2,823 s; o restante inclui a criação repetida das runs.
+
+Um perfil de três contextos sintéticos, sem imagens reais, confirmou custo
+dominante nas consultas ao Git: 1,998 s totais, dos quais 1,161 s na consulta
+do estado, 0,378 s na consulta do commit e 0,218 s nos snapshots de ambiente.
+A revisão operacional captura esses metadados uma vez por bateria, explicita
+essa origem comum e confere o código e o Git ao encerramento. O plano,
+os candidatos, os quadros, as métricas e o orçamento permanecem iguais.
+O benchmark completo será repetido após um novo commit, em novas runs;
+nenhuma métrica de qualidade foi usada para decidir essa otimização.
+
+O primeiro benchmark e a análise de custo permanecem em
+`data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfg1eb41e0e/benchmark/`,
+com `cost_review_20260908.json` como índice da revisão operacional.

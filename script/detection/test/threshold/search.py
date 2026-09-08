@@ -27,7 +27,7 @@ from src.experiments.detection_search import (
     expand_coarse_candidates, rank_candidates, summarize_candidate,
 )
 from src.experiments.resources import ResourceMonitor
-from src.experiments.runs import RunContext, _git_dirty, _git_sha, _source_hash
+from src.experiments.runs import RunContext, RunSnapshot, _git_dirty, _source_hash
 
 
 DEFAULT_PLAN = "configs/detection/threshold/search_v3.yaml"
@@ -71,6 +71,10 @@ def _check_benchmark(path: Path, plan: dict, sample: Any) -> dict:
     summary = manifest.get("summary", {})
     if manifest.get("status") != "complete" or summary.get("mode") != "benchmark":
         raise ValueError("É obrigatório um benchmark completo antes da busca grossa.")
+    verification = manifest.get("provenance_verification", {})
+    if (verification.get("status") != "verified"
+            or verification.get("snapshot_sha256") != manifest.get("provenance_capture", {}).get("snapshot_sha256")):
+        raise ValueError("Benchmark sem conferência final do snapshot compartilhado.")
     if (summary.get("plan_hash") != config_hash(plan, 64)
             or summary.get("sample_hash") != sample.sample_hash
             or manifest.get("source_hash") != _source_hash(REPOSITORY_ROOT)):
@@ -116,7 +120,8 @@ def _check_benchmark(path: Path, plan: dict, sample: Any) -> dict:
 def run_candidate(candidate: dict, sample: Any, plan: dict, mode: str,
                   batch_id: str, batch_start: float, batch_monitor: ResourceMonitor,
                   output_root: Path | None = None, *,
-                  batch_manifest_path: Path | None = None) -> dict:
+                  batch_manifest_path: Path | None = None,
+                  provenance_snapshot: RunSnapshot | None = None) -> dict:
     config = copy.deepcopy(candidate)
     config.setdefault("run", {}).update(stage="benchmark" if mode == "benchmark" else "search")
     config.setdefault("provenance", {}).update(
@@ -131,7 +136,8 @@ def run_candidate(candidate: dict, sample: Any, plan: dict, mode: str,
     context = RunContext.create(
         module="detection", method="threshold", algorithm="threshold",
         stage=config["run"]["stage"], seed=int(plan["run"]["seed"]), config=config,
-        output_root=output_root,
+        output_root=output_root, provenance_snapshot=provenance_snapshot,
+        snapshot_origin_batch_manifest=batch_manifest_path if provenance_snapshot is not None else None,
     )
     evaluation = plan["evaluation"]
     evaluator = DetectionEvaluator(
@@ -250,10 +256,12 @@ def run_batch(plan: dict, sample: Any, mode: str, *, cache_validation_seconds: f
     random.Random(int(plan["run"]["seed"])).shuffle(candidates)
     started = time.perf_counter()
     monitor = ResourceMonitor()
+    provenance_snapshot = RunSnapshot.capture(REPOSITORY_ROOT)
     batch = RunContext.create(
         module="detection", method="threshold_search", algorithm="threshold",
         stage="benchmark" if mode == "benchmark" else "search",
         seed=int(plan["run"]["seed"]), output_root=output_root,
+        provenance_snapshot=provenance_snapshot,
         config={"configuration_id": plan["plan_id"] + "_batch", "plan": plan,
                 "input": {"sample_hash": sample.sample_hash, **_sample_manifest_reference(sample)}, "mode": mode,
                 "provenance": {"benchmark": benchmark}},
@@ -264,13 +272,15 @@ def run_batch(plan: dict, sample: Any, mode: str, *, cache_validation_seconds: f
     write_json_exclusive(batch.path / "planned_frames.json", expected_pairs)
     summaries = []
     artifact_bytes = 0
+    provenance_verification = {"status": "not_performed", "scope": "batch_end_before_ranking"}
     loop_start = time.perf_counter()
     try:
         for i, candidate in enumerate(candidates, 1):
             _check_budget(plan, mode, started, monitor, artifact_bytes)
             summary = run_candidate(candidate, sample, plan, mode, batch.run_id,
                                     started, monitor, output_root,
-                                    batch_manifest_path=batch.path / "manifest.json")
+                                    batch_manifest_path=batch.path / "manifest.json",
+                                    provenance_snapshot=provenance_snapshot)
             summaries.append(summary)
             artifact_bytes += _artifact_bytes(Path(summary["manifest_path"]).parent)
             write_json_exclusive(batch.path / f"candidate_{i:03d}.json", summary)
@@ -278,10 +288,12 @@ def run_batch(plan: dict, sample: Any, mode: str, *, cache_validation_seconds: f
                               "elapsed_seconds": round(time.perf_counter() - started, 2)}, ensure_ascii=False), flush=True)
         loop_seconds = time.perf_counter() - loop_start
         _check_budget(plan, mode, started, monitor, artifact_bytes + _artifact_bytes(batch.path))
-        if (_source_hash(REPOSITORY_ROOT) != batch.source_hash
-                or _git_sha(REPOSITORY_ROOT) != batch.run_id.split("__")[1]
-                or _git_dirty(REPOSITORY_ROOT) is not False):
-            raise RuntimeError("Código mudou durante a execução; não certificar a comparação.")
+        try:
+            provenance_verification = provenance_snapshot.verify_current()
+        except BaseException as exc:
+            provenance_verification = {"status": "failed", "scope": "batch_end_before_ranking", "error": str(exc)}
+            raise
+        _check_budget(plan, mode, started, monitor, artifact_bytes + _artifact_bytes(batch.path))
         # Completeness is checked in benchmark too, but its ranking is not saved.
         ranked = rank_candidates(summaries, [item["configuration_id"] for item in candidates])
         write_csv_exclusive(batch.path / "candidate_metrics.csv", summaries)
@@ -311,6 +323,7 @@ def run_batch(plan: dict, sample: Any, mode: str, *, cache_validation_seconds: f
             if path.is_file() and path.name != "manifest.json"
         }
         batch.complete(summary=batch_summary, artifacts=batch_artifacts,
+                       provenance_verification=provenance_verification,
                        artifact_hashes={key: sha256_file(Path(path)) for key, path in batch_artifacts.items()},
                        candidate_manifests=[
             {"path": row["manifest_path"], "sha256": sha256_file(Path(row["manifest_path"]))}
@@ -318,7 +331,8 @@ def run_batch(plan: dict, sample: Any, mode: str, *, cache_validation_seconds: f
         ])
     except BaseException as exc:
         try:
-            batch.fail(exc, completed_candidates=len(summaries), selection_allowed=False)
+            batch.fail(exc, completed_candidates=len(summaries), selection_allowed=False,
+                       provenance_verification=provenance_verification)
         except BaseException as manifest_error:
             exc.add_note(f"Batch failure manifest could not be written: {manifest_error}")
         raise

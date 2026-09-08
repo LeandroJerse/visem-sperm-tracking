@@ -245,6 +245,73 @@ def environment_snapshot() -> dict[str, Any]:
     return snapshot
 
 
+@dataclass(frozen=True)
+class RunSnapshot:
+    """One explicit, immutable provenance capture for a batch in this process.
+
+    Sharing is opt-in. Consumers must verify the live repository/environment
+    again before certifying the batch; candidate completion is not that check.
+    Environment is stored as JSON so nested dictionaries cannot be changed by
+    one candidate and silently reused by the next.
+    """
+
+    repo_root: Path
+    captured_at: str
+    process_id: int
+    git_sha: str
+    git_dirty: bool
+    source_hash: str
+    _environment_json: str = field(repr=False)
+
+    @classmethod
+    def capture(cls, repo_root: str | Path = REPOSITORY_ROOT) -> "RunSnapshot":
+        root = Path(repo_root).resolve()
+        sha, dirty = _git_sha(root), _git_dirty(root)
+        if sha == "nogit" or dirty is not False:
+            raise RuntimeError("A shared run snapshot requires an available, clean Git repository.")
+        return cls(
+            repo_root=root, captured_at=datetime.now(timezone.utc).isoformat(),
+            process_id=os.getpid(), git_sha=sha, git_dirty=dirty,
+            source_hash=_source_hash(root),
+            _environment_json=json.dumps(environment_snapshot(), sort_keys=True, allow_nan=False),
+        )
+
+    @property
+    def environment(self) -> dict[str, Any]:
+        return json.loads(self._environment_json)
+
+    @property
+    def snapshot_hash(self) -> str:
+        return config_hash({
+            "repo_root": str(self.repo_root), "captured_at": self.captured_at,
+            "process_id": self.process_id, "git_sha": self.git_sha,
+            "git_dirty": self.git_dirty, "source_hash": self.source_hash,
+            "environment": self.environment,
+        }, 64)
+
+    def require_context(self, repo_root: str | Path) -> None:
+        if Path(repo_root).resolve() != self.repo_root or os.getpid() != self.process_id:
+            raise ValueError("A shared snapshot is valid only for its original repository and process.")
+
+    def verify_current(self) -> dict[str, Any]:
+        """Fresh end-of-batch checks; never satisfied by the cached capture."""
+        self.require_context(self.repo_root)
+        observed = {
+            "git_sha": _git_sha(self.repo_root), "git_dirty": _git_dirty(self.repo_root),
+            "source_hash": _source_hash(self.repo_root), "environment": environment_snapshot(),
+        }
+        expected = {"git_sha": self.git_sha, "git_dirty": False,
+                    "source_hash": self.source_hash, "environment": self.environment}
+        changed = [key for key in expected if observed[key] != expected[key]]
+        if changed:
+            raise RuntimeError("Shared run snapshot no longer matches: " + ", ".join(changed))
+        return {
+            "status": "verified", "checked_at": datetime.now(timezone.utc).isoformat(),
+            "snapshot_sha256": self.snapshot_hash, "checks": list(expected),
+            "scope": "batch_end_before_ranking",
+        }
+
+
 def _atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_suffix(path.suffix + ".tmp")
@@ -270,6 +337,8 @@ class RunContext:
     git_dirty: bool | None
     started_at: str
     _start_clock: float = field(repr=False)
+    _provenance_snapshot: RunSnapshot | None = field(default=None, repr=False)
+    _snapshot_origin_batch_manifest: str | None = field(default=None, repr=False)
 
     @classmethod
     def create(
@@ -284,11 +353,20 @@ class RunContext:
         repo_root: str | Path = REPOSITORY_ROOT,
         output_root: str | Path | None = None,
         results_root: str | Path | None = None,
+        provenance_snapshot: RunSnapshot | None = None,
+        snapshot_origin_batch_manifest: str | Path | None = None,
     ) -> "RunContext":
         root = Path(repo_root).resolve()
-        sha = _git_sha(root)
-        dirty = _git_dirty(root)
-        source_hash = _source_hash(root)
+        if provenance_snapshot is None:
+            if snapshot_origin_batch_manifest is not None:
+                raise ValueError("A snapshot origin requires an explicit provenance_snapshot.")
+            sha = _git_sha(root)
+            dirty = _git_dirty(root)
+            source_hash = _source_hash(root)
+        else:
+            provenance_snapshot.require_context(root)
+            sha, dirty, source_hash = (provenance_snapshot.git_sha, provenance_snapshot.git_dirty,
+                                       provenance_snapshot.source_hash)
         digest = config_hash(config)
         scientific_digest = configuration_hash(config)
         algorithm_id = algorithm or method
@@ -337,11 +415,18 @@ class RunContext:
             git_dirty=dirty,
             started_at=datetime.now(timezone.utc).isoformat(),
             _start_clock=time.perf_counter(),
+            _provenance_snapshot=provenance_snapshot,
+            _snapshot_origin_batch_manifest=(
+                str(Path(snapshot_origin_batch_manifest).resolve())
+                if snapshot_origin_batch_manifest is not None else str((path / "manifest.json").resolve())
+                if provenance_snapshot is not None else None
+            ),
         )
         context.write_manifest(status="running")
         return context
 
     def write_manifest(self, *, status: str, **extra: Any) -> Path:
+        snapshot = self._provenance_snapshot
         payload: dict[str, Any] = {
             "run_id": self.run_id,
             "status": status,
@@ -351,7 +436,7 @@ class RunContext:
             "stage": self.stage,
             "seed": self.seed,
             "started_at": self.started_at,
-            "git_sha": _git_sha(self.repo_root),
+            "git_sha": snapshot.git_sha if snapshot is not None else _git_sha(self.repo_root),
             "git_dirty": self.git_dirty,
             "source_hash": self.source_hash,
             "configuration_id": self.configuration_id,
@@ -359,9 +444,17 @@ class RunContext:
             "storage_class": self.storage_class,
             "config_hash": config_hash(self.config),
             "config": self.config,
-            "environment": environment_snapshot(),
+            "environment": snapshot.environment if snapshot is not None else environment_snapshot(),
             **extra,
         }
+        if snapshot is not None:
+            payload["provenance_capture"] = {
+                "mode": "shared_batch", "captured_at": snapshot.captured_at,
+                "snapshot_sha256": snapshot.snapshot_hash, "process_id": snapshot.process_id,
+                "origin_batch_manifest": self._snapshot_origin_batch_manifest,
+                "per_candidate_recheck": False,
+                "recheck_policy": "batch_end_before_ranking",
+            }
         if status != "running":
             payload["finished_at"] = datetime.now(timezone.utc).isoformat()
             payload["elapsed_seconds"] = round(time.perf_counter() - self._start_clock, 6)

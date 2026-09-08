@@ -2,6 +2,26 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — amostra pronta; custo inicial exige otimização
+
+- Plano e executor registrados em `9940337` antes da execução real.
+- Cache concluído: 576 quadros (48 por vídeo de treino), com subconjuntos
+  aninhados de 144 e 12 quadros, sem lacunas; 532.540.304 bytes, 19,29 s,
+  RSS amostrado de 156,473 MiB. Nenhum vídeo de validação/teste foi processado.
+- Benchmark completo: 171 candidatos × 12 quadros = 2.052 avaliações;
+  laço de 131,7403 s, projeção de 3.167,83 s acima do limite de 1.200 s.
+  Não foi produzido ranking nem iniciada a busca grossa.
+- A análise dos custos e um perfil sintético localizaram consultas repetidas
+  ao Git e ao ambiente como principal custo evitável. Revisão operacional:
+  compartilhar a captura de proveniência na bateria e revalidar ao final,
+  sem alterar plano, amostra, parâmetros, métricas ou orçamento.
+- Artefatos iniciais preservados; novo benchmark dependerá de novo commit.
+  Evidências e tempos no [registro da busca](../metodologia/BUSCA_THRESHOLD_V3.md).
+- Captura compartilhada implementada, com conferência final de commit,
+  Git limpo, código e ambiente antes da classificação. A suíte curta completa
+  passou em **442 testes, 102,60 s**. Isso verifica software, não desempenho
+  do detector. O benchmark completo será repetido sob o novo commit.
+
 ## 2026-09-08 — nível 3: plano prospectivo antes da busca
 
 - Registrado o [plano de threshold v3](../metodologia/BUSCA_THRESHOLD_V3.md):
