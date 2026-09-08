@@ -2,6 +2,32 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — revisão geral aprovada e validação v3 preparada antes dos dados
+
+- A [revisão geral](REVISAO_GERAL_20260908.md) confirmou alinhamento com o
+  projeto assinado: sem necessidade de reinício. Auditoria basal com 3.248
+  arquivos, 17.753 conferências e 502 testes, sem divergências.
+- Explicitados os controles futuros da hipótese: elegibilidade individual,
+  janelas comuns, somente informação até t, ADE de todos os passos 1..H,
+  limite inferencial de quatro vídeos e desenho de seleção dentro dos folds.
+- [Plano prospectivo da validação](../metodologia/VALIDACAO_THRESHOLD_V3.md):
+  T219/o0/c2 e T218/o0/c2; vídeos 14/19/36 com 1.470 quadros e 52 com
+  1.440. Oito runs, 11.700 avaliações. F1 macro por vídeo, desempates por
+  recall, MAE e ID; sensibilidades/custo não selecionam. Teto suave 1.800 s,
+  RSS/artefatos 2 GiB e 2.000 previsões/quadro, sem truncamento.
+- Implementados GT explícito e hashes, leitura integral com EOF adicional,
+  reconciliação de métricas exportadas, agregação própria para quatro vídeos
+  e rejeição de alterações em fontes, pais, planos e saídas. A revisão cruzada
+  encontrou e corrigiu brechas antes da execução científica.
+- Suíte final: **824 testes aprovados em 110,00 s**, excluindo `optional_ml`
+  e `slow`. O validador de estrutura confirmou inventários, splits e lacunas.
+  O dry-run de metadados confirmou duas finalistas e 11.700 avaliações sem
+  abrir fontes de validação/teste. Hash canônico do plano:
+  `d4b018b76398399ad20fca10f58765c7d02995a5c6c690546f4c4b6e9b173167`.
+- Nesta entrada, a bateria real ainda não foi iniciada. O próximo passo é
+  executá-la após o commit e conferir todos os registros e 144 matchings
+  previamente definidos, sem congelamento, teste ou folds automáticos.
+
 ## 2026-09-08 — refinamento v3 concluído e conferido; dois finalistas de treino
 
 - Executor e orçamento registrados em `da057ef` antes do benchmark, com

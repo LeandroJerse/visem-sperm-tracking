@@ -1,0 +1,60 @@
+plan_id: threshold_validation_v3_20260908
+method: threshold
+stage: validation
+purpose: select_between_two_training_finalists_on_complete_validation_videos
+refinement:
+  manifest: data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/20260908T145354693902Z__da057ef__cfge5e4d7fa737b__src3847d91dfb__s42/manifest.json
+  manifest_sha256: d72e1628f0de4f9cfdcf795467816d5a64784629f22c48858f258330f26a152d
+  finalists_sha256: 333d8b07b0f46715612ac73ab260c51daea75daa13b247254d58b9fe6fc4a2f3
+  verification: data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/verification_20260908.json
+  verification_sha256: a2251d6eb3fd2f8b6089192156dc2930cdd64b5c8adb667ad1a54976fcac96c7
+  candidate_ids: [t219_o0_c2, t218_o0_c2]
+  parameter_hashes:
+    t219_o0_c2: 2bee065ae23c3a63f2f03888d933fed7e2d2b0c67ffd6d05e243195efc9b78a9
+    t218_o0_c2: 5b9dacca7e53b226fe90c42f1cb98d673193f0b43d0af8e2952677bc733acfa3
+protocol:
+  splits_config: configs/protocol/splits.yaml
+  splits_sha256: f147f748c58d46d39868b2717df2369f2e46efa4af3ebfef93c7821002aad101
+  inventory: data/manifests/visem_tracking.csv
+  inventory_sha256: d28e4f543f45d6b41add122789126eda1377a973f72f600a3bde75d6c2d8f03b
+  validation_ids: [14, 19, 36, 52]
+  test_ids_blocked: [24, 38, 47, 54]
+input:
+  root: data/sources/visem_tracking/dataset/Train
+  label_format: tracked_yolo
+  width: 640
+  height: 480
+  expected_frames: {14: 1470, 19: 1470, 36: 1470, 52: 1440}
+  expected_annotation_coverage: complete_per_versioned_inventory
+  read_mode: sequential_full_video_with_extra_eof_check
+  on_missing_or_malformed_label: fail_without_selection
+  resize: false
+  ground_truth_available_to_detector: false
+evaluation:
+  protocol_id: center_distance_v3_individuals_ignore_clusters_10px
+  class_policy: individuals_ignore_clusters
+  center_gate_px: 10
+  sensitivity_gates_px: [15, 20]
+selection:
+  primary: macro_video_f1_individuals_center_10px
+  tie_breakers: [macro_video_recall_desc, macro_video_count_mae_asc, configuration_id_asc]
+  video_weighting: equal_after_within_video_aggregation
+  require_all_candidates_and_full_videos: true
+  timing_used_for_ranking: false
+  sensitivity_used_for_ranking: false
+  interpretation: validation_selection_not_independent_test_not_frozen
+  hypothesis_tests: false
+  confidence_intervals: false
+run:
+  split: val
+  seed: 42
+  opencv_threads: 1
+  save_video: false
+  order: seeded_shuffle_of_eight_candidate_video_pairs
+  reset_detector_per_video: true
+budget:
+  batch_soft_wall_seconds: 1800
+  max_rss_mb: 2048
+  max_batch_artifact_mb: 2048
+  max_predictions_per_frame: 2000
+  on_failure: preserve_partial_runs_without_selection

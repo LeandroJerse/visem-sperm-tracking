@@ -26,7 +26,9 @@ impedem que duplicatas próximas sejam ignoradas.
 | Plano prospectivo de busca — 08/09 | Registrado antes da execução em 9940337; otimização 3f73a52; 442 testes aprovados e conferência independente da busca |
 | Refinamento e seleção de treino v3 — 08/09 | Concluídos em da057ef, Git limpo: 117 × 576 = 67.392 avaliações; 502 testes aprovados; conferência independente aprovada na primeira execução |
 | Dois finalistas de treino | T219/o0/c2 e T218/o0/c2; nenhuma validação completa, teste ou promoção na v3 |
-| Próximo marco | Preparar protocolo e garantias de completude da validação dos dois finalistas nos quatro vídeos 14/19/36/52 |
+| Revisão geral de alinhamento | Aprovada com controles documentados; 3.248 arquivos e 17.753 conferências de integridade, 502 testes antes das alterações |
+| Preparação da validação v3 | Plano e executor estrito implementados para 2 × 5.850 = 11.700 avaliações; fontes ainda não abertas nesta etapa |
+| Próximo marco | Executar a validação registrada depois do commit e conferir as oito runs, sem congelamento automático |
 
 A [busca grossa v3](../metodologia/BUSCA_THRESHOLD_V3.md) selecionou para refinamento
 T224/o0/c2, T208/o0/c2, T224/o0/c1, T200/o1/c2 e T208/o1/c2.
@@ -57,11 +59,11 @@ Figura local:
 `data/derived/detection/search_reports/threshold_refinement_v3_20260908/refinamento_threshold_treino.png`
 (também disponível como `refinamento_threshold_treino.svg` na mesma pasta).
 
-Antes da validação, registrar agregação e desempates próprios para os quatro
-vídeos, orçamento e configurações identificadas por hash; garantir oito runs
-completas, leitura estrita do GT e interrupção diante de dados incompletos.
-Os utilitários da busca exigem 12 vídeos e não devem ser aplicados diretamente
-como agregador da futura validação. O [protocolo mestre](../metodologia/PROTOCOLO.md)
+O [plano de validação](../metodologia/VALIDACAO_THRESHOLD_V3.md) registra
+agregação, desempates, orçamento e hashes dos finalistas. O coordenador próprio
+exige oito runs completas, GT estrito, leitura até o fim e reconciliação dos
+CSVs; a agregação específica dá peso igual aos quatro vídeos. A
+[revisão geral](REVISAO_GERAL_20260908.md) registra alinhamento e limites. O [protocolo mestre](../metodologia/PROTOCOLO.md)
 mantém separadas essas pendências e as decisões históricas a 15 px.
 
 A auditoria encontrou 5.413 anotações de agrupamento em 4.056 quadros dos

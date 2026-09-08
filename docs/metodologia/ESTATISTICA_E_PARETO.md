@@ -111,6 +111,40 @@ status próprio.
 Holm para controlar o erro familiar. São reportados p bruto, p corrigido e a
 decisão para `alpha`. Não selecionar apenas os pares favoráveis depois do teste.
 
+### Limite do holdout de quatro vídeos
+
+O holdout atual contém quatro vídeos. No Wilcoxon **bilateral exato**, com
+quatro diferenças independentes, não nulas e sem empates em seus módulos, o
+menor p possível é `2 / 2^4 = 0,125`: entre as 16 atribuições de sinais, duas
+são extremas. Portanto, esse desenho não pode prometer significância a 5%
+nesse teste, mesmo que os quatro vídeos favoreçam o mesmo método. Esse limite
+é uma consequência da distribuição exata, não uma estimativa de potência
+obtida dos resultados. As condições e o tratamento de zeros/empates constam
+na [documentação primária do SciPy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.wilcoxon.html).
+
+Reportar primeiro os quatro resultados e diferenças pareadas por vídeo, com
+média/mediana e suas direções. Intervalos por bootstrap desse holdout, caso
+apresentados, serão **exploratórios**: reamostrar quatro unidades não cria
+informação equivalente à de novos vídeos. Seeds, trajetórias e frames também
+não aumentam esse tamanho amostral independente. Holm controla multiplicidade,
+mas não resolve a limitação amostral. O mínimo de dois vídeos aceito pela API
+de Friedman é uma condição de execução, não uma garantia de adequação da
+aproximação estatística para amostras pequenas.
+
+Os quatro vídeos de teste já foram expostos no piloto histórico. Essa
+limitação deve acompanhar qualquer resultado posterior. Uma avaliação dos 20
+vídeos fora da amostra requer seleção e ajuste **dentro dos dados de treino de
+cada fold externo**, com previsões dos vídeos externos mantidas fora dessas
+decisões. Repetir em cinco grupos uma configuração escolhida anteriormente
+não basta; a exposição histórica permanece declarada. O risco de otimismo
+por reutilizar dados para seleção e avaliação é discutido por
+[Cawley e Talbot (2010)](https://www.jmlr.org/papers/volume11/cawley10a/cawley10a.pdf).
+
+A [validação das duas finalistas do threshold v3](VALIDACAO_THRESHOLD_V3.md)
+é uma etapa de seleção sobre quatro vídeos, com ordenação previamente fixada.
+Seu plano não executa testes de hipótese nem intervalos de confiança. Ela não
+deve ser apresentada como uma comparação confirmatória independente.
+
 ## Diferença pareada e IC95
 
 ```python
@@ -183,8 +217,11 @@ método.
 2. Produzir um valor por vídeo/método/seed.
 3. Agregar seeds dentro de cada vídeo.
 4. Auditar `dropped_*` e IDs não pareados; na análise oficial, preferir erro.
-5. Executar Friedman quando houver três ou mais métodos.
-6. Executar Wilcoxon pareado e Holm para a família de pares planejada.
-7. Reportar valores por vídeo, diferença A−B e IC95 agrupado.
+5. Conferir adequação inferencial e tamanho amostral; executar Friedman quando
+   houver três ou mais métodos e o desenho registrado justificar seu uso.
+6. Executar Wilcoxon pareado e Holm para a família de pares planejada, com os
+   limites do holdout de quatro vídeos explicitados.
+7. Reportar valores por vídeo, diferença A−B e IC95 agrupado quando previsto;
+   identificar intervalos do holdout de quatro vídeos como exploratórios.
 8. Construir fronteiras de Pareto separadas para detecção, tracking e predição.
 9. Interpretar qualidade, custo e complexidade sem placar único.

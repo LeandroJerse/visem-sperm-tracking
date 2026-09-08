@@ -140,6 +140,29 @@ com a mesma estrutura de dados da busca grossa. Somente o refinamento completo
 produz `ranking.csv` e `finalists.json`, com dois candidatos de treino para a
 validação posterior. Não são configurações congeladas.
 
+### Validação completa dos dois finalistas v3
+
+O [plano de validação](../configs/detection/threshold/validation_v3.yaml) fixa
+T219/o0/c2 e T218/o0/c2, recuperadas por hashes do refinamento. O
+[protocolo](../docs/metodologia/VALIDACAO_THRESHOLD_V3.md) exige quatro vídeos
+integrais: 14/19/36 com 1.470 quadros e 52 com 1.440, totalizando 11.700
+avaliações em oito runs. Registre código e protocolo em commit antes de executar.
+
+```powershell
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.validate --dry-run
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.validate
+```
+
+`--dry-run` confere somente metadados e hashes dos resultados anteriores.
+A execução exige Git limpo, leitura integral, GT estrito, exportação sem
+arredondamento e rechecagem de hashes. Não aceita overrides de parâmetros,
+vídeos ou quantidade de quadros. `--plan` informa o plano explicitamente;
+`--out-dir` muda somente o destino, que não pode ficar em `data/sources/`.
+As oito runs e o lote ficam em `data/tests/detection/threshold/`, na etapa
+`validation`. Somente o lote completo gera uma seleção válida em
+`selection.json`, sem congelar parâmetros, abrir o teste ou executar folds.
+Manifesto com `status: failed` invalida qualquer artefato de seleção parcial.
+
 ## 0. Verificação antes de uma bateria
 
 ```powershell

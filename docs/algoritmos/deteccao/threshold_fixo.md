@@ -87,12 +87,11 @@ A conferência reconstruiu a aritmética de todos os quadros e as médias por
 vídeo; o matching independente foi amostral e usou somente CSVs das runs,
 sem reabrir fontes de vídeo, anotações originais ou pixels do cache.
 
-O próximo marco é **preparar o protocolo de validação
-dos dois finalistas nos vídeos completos 14/19/36/52**. Antes de abrir essas
-fontes, registrar critérios de agregação e desempate, orçamento, identidades
-das configurações e verificações que recusem vídeos truncados, GT inválido
-ou comparações incompletas. O executor completo existe, mas esse contrato
-de oito runs e a agregação dos quatro vídeos ainda precisam ser preparados.
+O próximo marco é **executar a validação registrada das duas finalistas**.
+O [protocolo prospectivo](../../metodologia/VALIDACAO_THRESHOLD_V3.md) e o
+executor estrito fixam 11.700 avaliações em oito runs completas, critérios
+de seleção, orçamento e hashes. O vídeo 52 possui 1.440 quadros; os outros
+três, 1.470. Fontes de validação ainda não foram abertas nesta preparação.
 Referência: [protocolo mestre](../../metodologia/PROTOCOLO.md).
 
 ### Busca grossa preservada — primeira seleção de treino

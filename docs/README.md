@@ -7,6 +7,10 @@ e resultados não devem ser armazenados aqui.
 
 ## Projeto
 
+- [`projeto/REVISAO_GERAL_20260908.md`](projeto/REVISAO_GERAL_20260908.md):
+  auditoria de integridade e alinhamento com o projeto assinado, correções
+  necessárias e limites das evidências atuais.
+
 - [`projeto/MAPA_PROJETO.md`](projeto/MAPA_PROJETO.md): ponto de entrada e mapa
   de responsabilidades dos diretórios, dados, etapas e retomada do trabalho.
 - [`projeto/MATRIZ_EXPERIMENTOS.md`](projeto/MATRIZ_EXPERIMENTOS.md): progresso
@@ -15,6 +19,10 @@ e resultados não devem ser armazenados aqui.
   cronológica.
 
 ## Metodologia
+
+- [`metodologia/VALIDACAO_THRESHOLD_V3.md`](metodologia/VALIDACAO_THRESHOLD_V3.md):
+  comparação prospectiva dos dois finalistas de treino nos quatro vídeos
+  completos de validação, com controles de identidade e completude.
 
 - [`metodologia/BUSCA_THRESHOLD_V3.md`](metodologia/BUSCA_THRESHOLD_V3.md):
   plano prospectivo da busca de threshold, amostra comum de treino, orçamento,

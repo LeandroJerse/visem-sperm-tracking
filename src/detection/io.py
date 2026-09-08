@@ -17,6 +17,7 @@ ground-truth annotations can live in the same file and be compared downstream.
 from __future__ import annotations
 
 import csv
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -90,7 +91,9 @@ def pixels_to_yolo(
 # --------------------------------------------------------------------------- #
 # Ground-truth label parsing
 # --------------------------------------------------------------------------- #
-def parse_label_line(line: str, img_w: int, img_h: int) -> Detection | None:
+def parse_label_line(
+    line: str, img_w: int, img_h: int, *, strict_ftid: bool = False,
+) -> Detection | None:
     """Parse one VISEM-Tracking label line into a pixel-space ``Detection``.
 
     Handles both annotation layouts in the dataset:
@@ -101,7 +104,13 @@ def parse_label_line(line: str, img_w: int, img_h: int) -> Detection | None:
     Detection is decided by whether the first token is numeric (then it is the
     class -> ``labels`` layout) or not (then it is the track id -> ``labels_ftid``
     layout). Returns ``None`` for blank/malformed lines.
+
+    ``strict_ftid=True`` instead requires the explicit six-field tracked
+    layout, including when the track ID is numeric; nonblank malformed lines
+    raise and all boxes must have valid finite geometry inside the image.
     """
+    if strict_ftid:
+        return _parse_strict_ftid_line(line, img_w, img_h)
     parts = line.split()
     if len(parts) < 5:
         return None
@@ -134,20 +143,64 @@ def parse_label_line(line: str, img_w: int, img_h: int) -> Detection | None:
     )
 
 
-def load_gt_frame(label_path: str | Path, img_w: int, img_h: int) -> list[Detection]:
+def _parse_strict_ftid_line(line: str, img_w: int, img_h: int) -> Detection | None:
+    """Parse the explicit six-field layout; numeric track IDs remain IDs."""
+    if not all(isinstance(value, int) and not isinstance(value, bool) and value > 0
+               for value in (img_w, img_h)):
+        raise ValueError("Image dimensions must be positive integers")
+    parts = line.split()
+    if not parts:
+        return None
+    if len(parts) != 6 or parts[1] not in {"0", "1", "2"}:
+        raise ValueError("Expected six fields: track_id class[0/1/2] cx cy w h")
+    try:
+        cx, cy, width, height = (float(value) for value in parts[2:])
+    except ValueError as exc:
+        raise ValueError("Normalized GT coordinates must be numeric") from exc
+    if not all(math.isfinite(value) and 0 <= value <= 1
+               for value in (cx, cy, width, height)) or min(width, height) <= 0:
+        raise ValueError("Normalized GT coordinates must be finite/in range, with positive dimensions")
+    x, y, w_px, h_px, cx_px, cy_px = yolo_to_pixels(cx, cy, width, height, img_w, img_h)
+    if min(x, y) < -1e-9 or x + w_px > img_w + 1e-9 or y + h_px > img_h + 1e-9:
+        raise ValueError("GT box extends outside the image")
+    return Detection(cx_px, cy_px, w_px, h_px, class_id=int(parts[1]), object_id=parts[0])
+
+
+def parse_gt_text(
+    text: str, img_w: int, img_h: int, *, strict_ftid: bool = False,
+    label_path: str | Path = "<labels>",
+) -> list[Detection]:
+    """Parse already-read label text, preserving contextual strict errors."""
+    detections: list[Detection] = []
+    identities: set[int | str] = set()
+    for line_number, line in enumerate(text.splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            detection = parse_label_line(line, img_w, img_h, strict_ftid=strict_ftid)
+            if detection is not None:
+                if strict_ftid and detection.object_id in identities:
+                    raise ValueError(f"Duplicate GT track identity {detection.object_id!r}")
+                identities.add(detection.object_id)
+                detections.append(detection)
+        except (ValueError, OverflowError) as exc:
+            if strict_ftid:
+                raise ValueError(f"{label_path}:{line_number}: {exc}") from exc
+            raise
+    return detections
+
+
+def load_gt_frame(
+    label_path: str | Path, img_w: int, img_h: int, *, strict_ftid: bool = False,
+) -> list[Detection]:
     """Load all ground-truth detections from a single label ``.txt`` file."""
     path = Path(label_path)
-    if not path.exists():
+    if not strict_ftid and not path.exists():
         return []
-    dets: list[Detection] = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        det = parse_label_line(line, img_w, img_h)
-        if det is not None:
-            dets.append(det)
-    return dets
+    return parse_gt_text(
+        path.read_text(encoding="utf-8-sig" if strict_ftid else "utf-8"),
+        img_w, img_h, strict_ftid=strict_ftid, label_path=path,
+    )
 
 
 def _natural_key(path: Path) -> list:

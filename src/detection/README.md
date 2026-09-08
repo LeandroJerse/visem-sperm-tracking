@@ -19,6 +19,7 @@ da classe, o código atual extrai **componentes conexos**, não contornos.
 | Ver os parâmetros T200/o1/c2 | [Configuração de desenvolvimento](../../configs/detection/threshold/t200_o1_c2.yaml) |
 | Consultar a seleção congelada | [YAML congelado](../../configs/frozen/detection/threshold/t200_o1_c2.yaml) |
 | Inspecionar cada etapa de um frame | [Bancada frame a frame](../../script/detection/test/threshold/README.md) |
+| Verificar vídeo completo e GT antes da validação | [Contrato estrito de entrada](strict_inputs.py) · [Coordenador da validação](../../script/detection/test/threshold/validate.py) |
 | Encontrar as imagens e tabelas existentes | [Artefatos do threshold](../../data/tests/detection/threshold/) |
 
 ## Todos os detectores presentes

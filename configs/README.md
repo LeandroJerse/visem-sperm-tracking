@@ -38,6 +38,12 @@ execução do refinamento aos hashes da busca grossa e dos 117 candidatos
 derivados. Registra o novo benchmark e orçamento sem reescrever o plano-base
 ou invalidar o cache; os dois finalistas continuam candidatos de treino.
 
+O [validation_v3.yaml](detection/threshold/validation_v3.yaml) fixa as duas
+finalistas por hash e os quatro vídeos completos, com 5.850 quadros cada
+candidato, critérios, ordem e orçamento próprios. Possui executor estrito
+separado e não substitui uma configuração congelada. Leia o
+[protocolo prospectivo](../docs/metodologia/VALIDACAO_THRESHOLD_V3.md).
+
 O [smoke v3](detection/threshold/protocol_smoke_v3.yaml) fixa T200/o1/c2 em
 três quadros dos vídeos de treino 11 e 12 para verificar o contrato. Ele não
 seleciona parâmetros, não é configuração congelada e não promove o detector.

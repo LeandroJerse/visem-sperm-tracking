@@ -8,9 +8,15 @@ O pesquisador autorizou a continuidade autônoma com registros e commits.
 Código, configuração, testes e orçamento prospectivo precisam existir antes
 de uma bateria longa. Em 08/09, a busca grossa e o refinamento do threshold
 concluíram a seleção de dois finalistas de treino. A conferência independente
-do refinamento foi aprovada; o próximo marco é preparar a validação
-completa dos quatro vídeos. Não houve promoção, validação completa ou teste
-na v3. O desenho confirmatório posterior continua pendente.
+do refinamento foi aprovada. A revisão geral confirmou o alinhamento com o
+projeto assinado e originou o [protocolo de validação](VALIDACAO_THRESHOLD_V3.md),
+registrado antes da execução. O desenho confirmatório posterior continua pendente.
+
+O [parecer de revisão](../projeto/REVISAO_GERAL_20260908.md) orienta a prioridade:
+fechar a linha de base e avançar à comparação pareada da predição com e sem
+fluxo aparente. As listas extensas abaixo são catálogo de métodos, não uma
+exigência de concluir todas as variantes antes da hipótese principal. As
+comparações aprendidas previstas no projeto exigem ambiente e protocolo próprios.
 
 ## Escopo dos dados e interpretação do movimento
 
@@ -45,8 +51,9 @@ versionada na seção de detecção; não reescreve o histórico.
 O planejamento anterior registrou a seguinte sequência por algoritmo. A busca
 e o refinamento do threshold já possuem um
 [registro prospectivo próprio](BUSCA_THRESHOLD_V3.md). Os critérios da nova
-validação, do congelamento e da confirmação em folds ainda precisam ser
-detalhados antes dessas etapas. Preservar a lista abaixo não torna seus
+validação agora constam em [VALIDACAO_THRESHOLD_V3.md](VALIDACAO_THRESHOLD_V3.md).
+Congelamento e confirmação em folds ainda precisam ser detalhados antes
+dessas etapas. Preservar a lista abaixo não torna seus
 desempates históricos uma regra automática da avaliação v3:
 
 1. validar a implementação com caso sintético e smoke test;
@@ -95,13 +102,13 @@ reconstruiu toda a aritmética dos quadros e a agregação por vídeo. O matchin
 independente foi amostral, com GT dos CSVs das runs; fontes originais de
 vídeos/anotações e pixels do cache não foram reabertos nessa conferência.
 
-Preparar agora uma avaliação de **duas configurações × quatro
-vídeos completos de validação: 14, 19, 36 e 52**. Antes de consultar essas
-fontes, o registro deve fixar os parâmetros e hashes dos dois finalistas,
-a agregação e o desempate entre quatro vídeos, o orçamento e o tratamento
-de falhas. O desempate histórico por recall, latência e memória acima não
-substitui esse registro; tampouco se deve transportar silenciosamente o
-desempate da triagem de treino para outra etapa.
+O registro separado [VALIDACAO_THRESHOLD_V3.md](VALIDACAO_THRESHOLD_V3.md)
+fixa **duas configurações × quatro vídeos completos: 14, 19, 36 e 52**,
+com 11.700 avaliações. Ordena por F1 macro, recall macro, MAE de contagem
+macro e identificador, sem timing ou sensibilidades na seleção. O YAML
+identifica parâmetros, pais e inventário por hash e fixa orçamento e falhas.
+O executor exige Git limpo, GT estrito, leitura integral e hashes inalterados.
+Essa regra prospectiva substitui os desempates históricos para esta bateria.
 
 O [executor por split](../../script/detection/test/run_split.py) já encaminha
 vídeos completos ao avaliador v3, mas ainda é necessário garantir oito runs
@@ -279,6 +286,14 @@ Promoção: ADE e FDE, com erro por horizonte, duração de trajetória e densid
 A ablação LSTM usa exatamente dados, arquitetura, seeds e hiperparâmetros iguais;
 somente as features de fluxo mudam.
 
+Antes da bateria de predição, registrar elegibilidade de GT individual 0/2,
+um conjunto comum de janelas válidas para todos os braços e proibição de
+informação posterior ao instante de previsão, inclusive em imagens, máscaras
+e pares de fluxo. Fluxo futuro observado é somente um cenário oracle separado.
+Para cada horizonte H, ADE deve considerar todos os passos 1..H; a média dos
+erros somente nos pontos 1/5/10 é outro estimando. Esses controles ainda
+precisam ser materializados e testados, conforme a revisão geral.
+
 ## Fila 5 — estatística e aplicação
 
 - Agregar primeiro por frame/trajetória e depois por vídeo.
@@ -291,6 +306,13 @@ somente as features de fluxo mudam.
 - Retreinar modelos aprendidos nos 20 anotados com hiperparâmetros congelados.
 - Executar os dois representantes nos 65 sem tracking e exportar tabelas/caches.
 - Nesses 65, relatar aplicação e estabilidade; não acurácia contra ground truth.
+
+Essa lista não garante significância com quatro vídeos. O
+[protocolo estatístico](ESTATISTICA_E_PARETO.md) registra o limite mínimo
+p = 0,125 do Wilcoxon bilateral exato com quatro diferenças não nulas e sem
+empates absolutos; replicar quadros ou seeds não aumenta o número de vídeos.
+Folds externos exigem seleção dentro de seus respectivos treinos. A exposição
+histórica dos vídeos de teste permanece declarada.
 
 ## Critérios de aceitação antes de dizer “concluído”
 
