@@ -1,0 +1,151 @@
+plan_id: threshold_search_v3_20260908
+configuration_id: threshold_search_v3
+method: threshold
+evaluation:
+  protocol_id: center_distance_v3_individuals_ignore_clusters_10px
+  center_gate_px: 10
+  sensitivity_gates_px:
+  - 15
+  - 20
+  class_policy: individuals_ignore_clusters
+protocol:
+  splits_config: configs/protocol/splits.yaml
+  train_ids:
+  - 11
+  - 12
+  - 13
+  - 15
+  - 21
+  - 22
+  - 23
+  - 29
+  - 30
+  - 35
+  - 60
+  - 82
+  geometry_audit: data/derived/detection/annotation_audit/retomada_20260907_nivel2/treino_geometria
+sampling:
+  master_frames_per_video: 48
+  coarse_frames_per_video: 12
+  benchmark_frames_per_video: 1
+  rule: evenly_spaced_annotated_indices_nested
+  image_source: sequential_decode_canonical_mp4
+  cache_format: numpy_uint8_bgr_lossless
+  width: 640
+  height: 480
+  benchmark_rule: upper_middle_of_coarse_sample
+params:
+  adaptive: false
+  invert: false
+  blur: 1
+  morph_kernel: 3
+  min_area: 3
+  max_area: 300
+search_space:
+  threshold_value:
+  - 0
+  - 16
+  - 32
+  - 48
+  - 64
+  - 80
+  - 96
+  - 112
+  - 128
+  - 144
+  - 160
+  - 176
+  - 190
+  - 192
+  - 200
+  - 208
+  - 224
+  - 240
+  - 255
+  morph_iterations:
+  - 0
+  - 1
+  - 2
+  close_iterations:
+  - 0
+  - 1
+  - 2
+selection:
+  primary: macro_video_f1_individuals_center_10px
+  tie_breakers:
+  - macro_video_recall_desc
+  - macro_video_count_mae_asc
+  - configuration_id_asc
+  comparisons_require_all_candidates_and_all_planned_frames: true
+  coarse_shortlist_size: 5
+  timing_used_for_ranking: false
+  interpretation: training_screening_not_generalization_estimate
+refinement_plan:
+  status: design_only_not_executable_in_current_runner
+  parent_candidates: top_5_from_complete_coarse_search
+  threshold_offsets:
+  - -15
+  - -14
+  - -13
+  - -12
+  - -11
+  - -10
+  - -9
+  - -8
+  - -7
+  - -6
+  - -5
+  - -4
+  - -3
+  - -2
+  - -1
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  clamp_threshold_to:
+  - 0
+  - 255
+  inherit_parent_morphology: true
+  fixed_min_area: 3
+  fixed_max_area: 300
+  deduplicate_resolved_parameters: true
+  frames_per_video: 48
+  maximum_candidates: 155
+  maximum_frame_evaluations: 89280
+  finalists_for_later_full_validation: 2
+  soft_wall_seconds: 7200
+  requires_new_cost_projection_before_execution: true
+run:
+  split: train
+  seed: 42
+  opencv_threads: 1
+  save_video: false
+budget:
+  benchmark_soft_wall_seconds: 600
+  coarse_soft_wall_seconds: 1800
+  max_rss_mb: 2048
+  max_batch_artifact_mb: 2048
+  max_cache_mb: 1024
+  max_predictions_per_frame: 2000
+  allow_coarse_after_benchmark_if_projection_seconds_at_most: 1200
+  projection_safety_factor: 2
+  on_failure_or_budget: stop_without_ranking_preserve_partial_runs
+benchmark:
+  candidate_policy: all_coarse_candidates
+  selection_allowed: false
+  projection_formula: cache_validation_seconds + safety_factor * (coarse_frames_per_video
+    / benchmark_frames_per_video) * benchmark_candidate_loop_seconds
+  interpretation: operational_projection_not_temporal_worst_case_bound

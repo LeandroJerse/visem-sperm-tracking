@@ -23,6 +23,7 @@ impedem que duplicatas próximas sejam ignoradas.
 | Smoke inicial: frames 0–2 de cada vídeo 11/12 | Executado; duas runs completas no commit 42ced6b, Git limpo; TP/FP/FN confirmados |
 | Fechamento do nível 2 | Concluído após repetir os mesmos seis frames em duas novas runs de 6b0a1e9, Git limpo; 36 associações e 168 comparações espaciais independentes aprovadas |
 | Busca, seleção ou promoção de threshold na v3 | Não executadas |
+| Plano prospectivo de busca — 08/09 | Registrado: 171 candidatos, 12 quadros por vídeo de treino; benchmark e busca aguardam execução |
 
 A auditoria encontrou 5.413 anotações de agrupamento em 4.056 quadros dos
 vídeos 11/12/15/29. Há 4.250 centros individuais dentro das regiões e 6.277

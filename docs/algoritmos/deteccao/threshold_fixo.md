@@ -47,6 +47,11 @@ clusters. O baseline deve continuar puro; CLAHE/top-hat pertencem ao híbrido.
 
 ## Decisão atual
 
+O [plano prospectivo v3](../../metodologia/BUSCA_THRESHOLD_V3.md) registra
+171 combinações para os mesmos 12 quadros de cada vídeo de treino, com
+orçamento prévio, benchmark obrigatório e refinamento desenhado. O plano
+antecede a execução real e não modifica os resultados históricos abaixo.
+
 O avaliador **`center_distance_v3_individuals_ignore_clusters_10px`** está
 implementado; a suíte curta passou com 287 testes após a correção da precisão
 de exportação e seis regressões adicionais. A repetição dos mesmos seis

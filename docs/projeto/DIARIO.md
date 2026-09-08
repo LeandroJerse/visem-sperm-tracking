@@ -2,6 +2,30 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — nível 3: plano prospectivo antes da busca
+
+- Registrado o [plano de threshold v3](../metodologia/BUSCA_THRESHOLD_V3.md):
+  171 combinações fixas, mesmos 12 quadros por vídeo de treino, sem abrir
+  validação ou teste. Seleção por F1 macro entre vídeos; desempates por recall,
+  MAE de contagem e identificador, sem usar tempo ou arredondamento.
+- A amostra principal terá 48 quadros anotados por vídeo, com subconjuntos
+  aninhados de 12 e um quadro. Cache de pixels decodificados do MP4 canônico,
+  sem resize ou nova compressão, GT completo e hashes das entradas.
+- Benchmark das 171 configurações em um quadro por vídeo mede custo. A busca
+  depende de projeção até 1.200 s e tem teto operacional de 1.800 s. Falhas,
+  universos incompletos ou orçamento excedido impedem a classificação.
+- Refinamento previsto: cinco candidatos, limiares inteiros ±15, morfologia
+  herdada, área fixa, até 155 configurações nos 48 quadros por vídeo. A sua
+  execução e nova medição de custo ainda serão implementadas.
+- Este registro antecede a preparação real da amostra, o benchmark e a busca.
+  Não é resultado experimental nem promoção de configuração.
+- A suíte curta completa passou em 423 testes (70,37 s) após a integração
+  estável do cache, agregação por vídeo e executor. A revisão incluiu testes
+  de integridade, ausência/duplicação de quadros e preservação de exportações
+  interrompidas. Depois dos dois casos adicionais de falha/integridade,
+  17 testes do executor e o teste de links passaram em 4,16 s. São 425 testes
+  distintos verificados, sem contar a rechecagem como testes adicionais.
+
 ## 2026-09-07 — nível 2 concluído: métricas reconstruídas com precisão
 
 - Correção de exportação registrada em `6b0a1e9`, após 287 testes aprovados.

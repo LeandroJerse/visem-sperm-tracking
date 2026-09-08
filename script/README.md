@@ -14,6 +14,7 @@ do repositório. Para entender um algoritmo, abra sua implementação em
 - [0. Verificações de código antes de uma bateria](#0-verificação-antes-de-uma-bateria)
 - [Retomada: inspeção de anotações em um quadro de treino](#inspecao-de-anotacoes)
 - [Retomada: geometria das anotações dos 12 vídeos de treino](#geometria-das-anotacoes)
+- [Busca prospectiva de threshold no treino](#busca-threshold-v3)
 - [1. Detecção](#1-detecção): [threshold frame a frame](#threshold-frame-a-frame), [execução por vídeo/split](#threshold-por-video), [outros detectores](#outros-detectores), [YOLO](#yolo)
 - [2. Tracking](#2-tracking)
 - [3. Movimento aparente por fluxo e integração com tracks](#3-movimento-aparente-por-fluxo)
@@ -68,6 +69,41 @@ pasta de saída em `data/`. Isso evita manter várias cópias divergentes do mes
 executor. Ferramentas que realmente têm um protocolo próprio, como threshold
 frame a frame, MOG2/KNN por clipes e treino/avaliação YOLO, ganham subpastas
 específicas em `test/`.
+
+<a id="busca-threshold-v3"></a>
+
+## Busca prospectiva de threshold no treino
+
+O [plano v3](../configs/detection/threshold/search_v3.yaml) e sua
+[justificativa científica](../docs/metodologia/BUSCA_THRESHOLD_V3.md) definem
+171 candidatos, 12 quadros por vídeo de treino e seleção por F1 com peso igual
+entre vídeos. O executor [search.py](detection/test/threshold/search.py) exige
+um commit limpo. A bancada interativa e seu lote histórico continuam úteis
+para inspeção, mas não executam este protocolo prospectivo.
+
+```powershell
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.search --mode prepare --dry-run
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.search --mode prepare
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.search --mode benchmark
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.search --mode coarse --benchmark-manifest CAMINHO_DO_MANIFESTO_BENCHMARK
+```
+
+Substitua o último argumento pelo caminho `batch_manifest` impresso pelo
+benchmark. A projeção de custo deve caber no orçamento previamente declarado;
+falhas interrompem a bateria e impedem a classificação parcial.
+
+A preparação decodifica sequencialmente somente os 12 MP4 de treino e guarda
+48 quadros por vídeo em
+`data/derived/detection/frame_samples/threshold_search_v3_20260908/`, com
+GT integral e hashes. Os subconjuntos de 12 quadros da busca e de um quadro
+do benchmark são aninhados nessa amostra, sem lacunas de anotação.
+
+Cada candidato reúne os 12 vídeos em uma run própria sob
+`data/tests/detection/threshold/<configuração>/<benchmark|search>/`. O manifesto
+da bateria liga o plano, a amostra e todos os candidatos. Somente uma busca
+grossa completa produz `ranking.csv` e `shortlist.json`; estes selecionam
+candidatos para refinamento no treino, sem promover o detector. O refinamento
+está descrito no plano e ainda não tem modo executável nesta CLI.
 
 ## 0. Verificação antes de uma bateria
 

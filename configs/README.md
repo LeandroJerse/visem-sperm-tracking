@@ -29,7 +29,10 @@ As divisões de vídeos, os parâmetros dos detectores e seus espaços de busca
 não foram modificados por esta decisão. As regras de agrupamentos e a
 avaliação complementar estão em
 [Classes e agrupamentos](../docs/metodologia/CLASSES_E_AGRUPAMENTOS.md).
-O orçamento da busca ainda será registrado antes de sua execução.
+O plano prospectivo [search_v3.yaml](detection/threshold/search_v3.yaml)
+registra a amostra, as 171 combinações, o orçamento e os critérios antes da
+busca. Leia a [justificativa](../docs/metodologia/BUSCA_THRESHOLD_V3.md).
+Esse plano tem executor próprio; o `search.yaml` anterior permanece histórico.
 
 O [smoke v3](detection/threshold/protocol_smoke_v3.yaml) fixa T200/o1/c2 em
 três quadros dos vídeos de treino 11 e 12 para verificar o contrato. Ele não
