@@ -250,3 +250,35 @@ e fechamento 2; T209–239 com abertura 0 e fechamento 1; T185–223 com abertur
 e fechamento 2. Essa redução de 155 para 117 elimina apenas parâmetros
 idênticos, conforme o plano. Área, kernel, polaridade e métrica permanecem
 iguais; nenhum desses 117 candidatos foi executado no refinamento ainda.
+
+### Execução do refinamento: orçamento registrado antes do benchmark
+
+A [configuração operacional do refinamento](../../configs/detection/threshold/refinement_v3.yaml)
+referencia por SHA-256 o plano-base, a busca grossa e a lista derivada dos
+117 candidatos. O YAML original e a lista derivada permanecem imutáveis:
+o campo histórico `design_only_not_executable_in_current_runner` descreve
+o executor no instante do registro inicial, anterior à extensão da CLI.
+
+O benchmark específico executará **todos os 117 candidatos nos mesmos 12
+quadros de benchmark** do cache: 1.404 avaliações. Esses quadros pertencem à
+amostra de 48 por vídeo já preparada. Não há escolha de novas imagens ou
+alteração dos parâmetros por esse benchmark. A projeção será:
+
+`validação do cache + validação dos pais + 2 × 48 × tempo do laço do benchmark`.
+
+O fator 48 corresponde à passagem de um para 48 quadros por vídeo, e o fator
+2 mantém a margem operacional anterior. Autorizar a execução se essa
+projeção for **até 4.800 s**, preservando o teto registrado de **7.200 s** para
+o refinamento e 600 s para seu benchmark. Essa escolha operacional antecede
+o novo benchmark e não é determinada pelas métricas de qualidade. A projeção
+não é garantia de pior caso temporal. Recursos mantêm os limites anteriores:
+2 GiB de RSS, 2 GiB nos artefatos da bateria, no máximo 2.000 previsões por
+quadro; exceder um limite interrompe a comparação, sem truncar previsões.
+
+O refinamento avaliará novamente todos os candidatos em todos os **576
+quadros**. Não somará resultados antigos de 12 quadros aos novos. Só uma
+bateria completa, com proveniência revalidada, produzirá `finalists.json`
+contendo os **dois primeiros** pela ordenação já registrada. Não forçar
+diversidade de morfologia ou escolher finalistas pelas sensibilidades de
+15/20 px. A finalidade é escolher candidatos para a futura validação completa,
+sem promover ou congelar o método nesta etapa.

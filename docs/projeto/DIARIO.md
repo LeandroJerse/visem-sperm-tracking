@@ -2,6 +2,25 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — refinamento: preparação do executor e orçamento prospectivo
+
+- Mantidos os cinco pais e a união de 117 configurações já registrada;
+  nenhum limiar, área, kernel, regra de avaliação ou quadro foi escolhido
+  novamente. A busca grossa concluída não será repetida.
+- Configuração operacional separada referencia os hashes da busca, do plano
+  original e da lista derivada; o cache existente permanece compatível.
+- Antes do novo benchmark, registrada projeção de validação das entradas
+  mais 2 × 48 × custo do laço dos 117 candidatos. Liberação até 4.800 s,
+  teto real 7.200 s; benchmark 600 s. Limites de memória/artefatos preservados.
+- O executor implementado reaproveita detecção, avaliação e exportação,
+  separando os modos de custo e refinamento. Duas finalistas só serão obtidas
+  de uma bateria completa nos 576 quadros. Nesta entrada ainda não houve
+  benchmark de refinamento ou execução científica dos 117 candidatos.
+- Suíte curta: 502 testes aprovados em 95,97 s. A leitura dos metadados reais
+  reconstruiu os 117 candidatos e verificou 1.035 entradas sem executar o
+  detector. Testes cobrem adulteração dos pais, incompatibilidade de benchmark,
+  amostra incompleta, orçamento e corte dos dois primeiros finalistas.
+
 ## 2026-09-08 — busca grossa v3 concluída; cinco candidatos para refinamento
 
 - Plano anterior à execução: `9940337`; otimização operacional: `3f73a52`,

@@ -33,6 +33,10 @@ O plano prospectivo [search_v3.yaml](detection/threshold/search_v3.yaml)
 registra a amostra, as 171 combinações, o orçamento e os critérios antes da
 busca. Leia a [justificativa](../docs/metodologia/BUSCA_THRESHOLD_V3.md).
 Esse plano tem executor próprio; o `search.yaml` anterior permanece histórico.
+O [refinement_v3.yaml](detection/threshold/refinement_v3.yaml) vincula a
+execução do refinamento aos hashes da busca grossa e dos 117 candidatos
+derivados. Registra o novo benchmark e orçamento sem reescrever o plano-base
+ou invalidar o cache; os dois finalistas continuam candidatos de treino.
 
 O [smoke v3](detection/threshold/protocol_smoke_v3.yaml) fixa T200/o1/c2 em
 três quadros dos vídeos de treino 11 e 12 para verificar o contrato. Ele não

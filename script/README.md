@@ -103,7 +103,7 @@ Cada candidato reúne os 12 vídeos em uma run própria sob
 da bateria liga o plano, a amostra e todos os candidatos. Somente uma busca
 grossa completa produz `ranking.csv` e `shortlist.json`; estes selecionam
 candidatos para refinamento no treino, sem promover o detector. O refinamento
-está descrito no plano e ainda não tem modo executável nesta CLI.
+está descrito no plano e usa os modos específicos abaixo.
 
 As runs da bateria compartilham uma captura explícita de commit, estado do
 Git e ambiente, evitando centenas de consultas idênticas. Cada manifesto
@@ -112,6 +112,33 @@ esses dados antes de aceitar a comparação. Um benchmark anterior a uma
 mudança de código não habilita a nova busca: repita-o em outra run, preservando
 a execução anterior. O cache pode ser reutilizado quando plano, fontes e
 amostra continuam idênticos e passam na validação de hashes.
+
+### Refinamento dos candidatos v3
+
+Os modos abaixo verificam a busca grossa concluída e a lista derivada,
+usando a [configuração operacional](../configs/detection/threshold/refinement_v3.yaml).
+O YAML-base e o cache de 48 quadros por vídeo permanecem iguais. `--dry-run`
+confere os artefatos dos pais e informa o universo; não carrega pixels nem
+executa o detector.
+
+```powershell
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.search --mode refine --dry-run
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.search --mode refinement_benchmark
+.\.venv\Scripts\python.exe -m script.detection.test.threshold.search --mode refine --benchmark-manifest CAMINHO_DO_MANIFESTO_REFINEMENT_BENCHMARK
+```
+
+Use o manifesto do novo benchmark de refinamento: o benchmark da busca
+grossa não serve para essa autorização. `--refinement-config` permite
+informar explicitamente o YAML operacional; o padrão é o arquivo ligado acima.
+A projeção deve ser até 4.800 s e a execução tem teto operacional de 7.200 s.
+Nenhum modo deste executor abre validação ou teste.
+
+O benchmark usa todos os 117 candidatos nos mesmos 12 quadros de custo;
+o refinamento, todos os candidatos nos mesmos 576 quadros. As runs ficam
+sob `<configuração>/refinement_benchmark/` ou `<configuração>/refinement/`,
+com a mesma estrutura de dados da busca grossa. Somente o refinamento completo
+produz `ranking.csv` e `finalists.json`, com dois candidatos de treino para a
+validação posterior. Não são configurações congeladas.
 
 ## 0. Verificação antes de uma bateria
 
