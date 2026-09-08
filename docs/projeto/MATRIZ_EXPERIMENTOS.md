@@ -31,7 +31,8 @@ impedem que duplicatas próximas sejam ignoradas.
 | Seleção de validação | T218/o0/c2: F1 macro 0,658959; T219: 0,657819; a bateria precedeu o congelamento de desenvolvimento |
 | Congelamento v3 | T218/o0/c2 fixa para desenvolvimento; teste e folds bloqueados pelo escopo executável |
 | Referência individual do treino | Concluída em 33d191d: 363.074 observações, 725 segmentos, 343.776 janelas; 86 arquivos conferidos |
-| Próximo marco | Consumir índices comuns nos baselines de predição com ADE denso e entradas causais; contrato HOTA próprio ainda pendente |
+| Baselines de predição no treino | Concluídos em 5289c93: persistência e CV mediana5 nas mesmas 343.776 janelas; conferência integral aprovada |
+| Próximo marco | Contrato e smoke de características causais de Farnebäck; contrato HOTA próprio ainda pendente |
 
 [Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
 Cada finalista vence em dois vídeos; a diferença macro de 0,11403 ponto
@@ -151,18 +152,21 @@ foi validado com vetores conhecidos e pixels inválidos. A coluna ainda marca
 
 A [referência individual v1](../metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md#resultados-da-preparação--08092026)
 foi preparada e conferida somente no treino: 363.074 observações, 725 segmentos
-e 343.776 janelas. Isso prepara os dados; as colunas de avaliação dos modelos
-abaixo continuam pendentes. Os 102 segmentos sem janela foram preservados.
+e 343.776 janelas. Os 102 segmentos sem janela foram preservados. A
+[bateria fixa v1](../metodologia/BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
+concluiu persistência e CV mediana5 nessas mesmas janelas; a conferência
+independente aprovou previsões, métricas e agregações. Isso é desenvolvimento
+descritivo com GT de treino, sem tuning, validação, seleção de vencedor ou fluxo.
 
-| Algoritmo | Código | Analítico/sintético | GT: tuning/val | Tracker: tuning/val | Congelar | Teste | 5-fold | Aplicar 65 |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Persistência | ✓ | ✓ | — | — | — | — | — | — |
-| Velocidade constante | ✓ | ✓ | — | — | — | — | — | — |
-| Kalman | ✓ | ✓ | — | — | — | — | — | — |
-| Filtro de partículas | ✓ | ✓ | — | — | — | — | — | — |
-| LSTM sem fluxo | ✓ | API; treino pendente | — | — | — | — | — | — |
-| LSTM com fluxo | ✓ | API; treino pendente | — | — | — | — | — | — |
-| Híbridos clássicos flow-aware | ✓ | ✓ | — | — | — | — | — | — |
+| Algoritmo | Código | Analítico/sintético | GT: desenvolvimento fixo | GT: tuning/val | Tracker: tuning/val | Congelar | Teste | 5-fold | Aplicar 65 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Persistência | ✓ | ✓ | ✓ v1 | — | — | — | — | — | — |
+| Velocidade constante | ✓ | ✓ | ✓ mediana5 v1 | — | — | — | — | — | — |
+| Kalman | ✓ | ✓ | — | — | — | — | — | — | — |
+| Filtro de partículas | ✓ | ✓ | — | — | — | — | — | — | — |
+| LSTM sem fluxo | ✓ | API; treino pendente | — | — | — | — | — | — | — |
+| LSTM com fluxo | ✓ | API; treino pendente | — | — | — | — | — | — | — |
+| Híbridos clássicos flow-aware | ✓ | ✓ | — | — | — | — | — | — | — |
 
 ## Nível 2 concluído: precisão dos CSVs conferida
 

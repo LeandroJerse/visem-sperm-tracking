@@ -88,11 +88,14 @@ disjuntos. Consulte os
 A CLI rejeita sobreposição de IDs de vídeo entre treino e avaliação. O mesmo
 bloqueio de protocolo impede busca ou avaliação prematura no split de teste.
 
-## Referência individual preparada, sem avaliação de modelos
+## Referência individual e baselines fixos de treino
 
 O [contrato v1 e seus resultados](../../metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md#resultados-da-preparação--08092026)
 registram 363.074 observações e 343.776 janelas do treino, conferidas
-independentemente. São índices comuns de elegibilidade, ainda sem resultados
-dos preditores. O executor antigo de CSV não constitui automaticamente essa
-comparação: precisa consumir os segmentos, separar alvos de entradas e
-usar ADE denso em 1..H. Os 102 segmentos curtos foram preservados.
+independentemente. Os 102 segmentos sem janelas foram preservados. A
+[bateria fixa v1](../../metodologia/BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
+avaliou persistência e CV mediana5 em todas essas janelas, com conferência
+integral dos CSVs. O executor próprio usa históricos separados dos alvos e
+ADE denso em 1..H, com posições float64 em formato largo. O executor genérico
+de CSV mantém seu contrato histórico; não certifica automaticamente essa
+comparação. Fluxo, preditores aprendidos e cenário com tracking estão pendentes.

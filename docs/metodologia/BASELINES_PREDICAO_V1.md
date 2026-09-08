@@ -5,9 +5,10 @@
 Protocolo prospectivo de 08/09/2026, definido antes da execução desta bateria.
 O plano operacional é
 [`prediction_baselines_v1.yaml`](../../configs/protocol/prediction_baselines_v1.yaml),
-com identificador `prediction_baselines_v1_20260908`. Ainda não há resultados
-de predição deste marco. Implementação, testes, registro do código e execução
-deverão respeitar as regras abaixo.
+com identificador `prediction_baselines_v1_20260908`. Código e plano foram
+registrados em `5289c93` antes da bateria. A execução e a conferência independente
+foram concluídas; os [resultados](#resultados-da-bateria--08092026) estão ao fim
+deste documento. As regras prospectivas abaixo foram preservadas.
 
 O objetivo é medir duas referências determinísticas, persistência e velocidade
 constante, sobre as mesmas trajetórias individuais anotadas do treino. Isso
@@ -277,3 +278,121 @@ avaliado somente em um subconjunto favorável.
 Finalmente, as interrupções usadas para construir janelas não definem por si
 só a política de identidades ou associação da avaliação HOTA. Este marco não
 altera o contrato de tracking, a separação por vídeo ou o bloqueio do teste.
+
+## Resultados da bateria — 08/09/2026
+
+**Nível 6 concluído: duas referências fixas no treino, sem seleção de modelo.**
+A primeira execução terminou sob `5289c93`, Git limpo, após **1.362 testes
+aprovados em 144,75 s**. A conferência independente também passou na primeira
+execução. Nenhuma fonte original foi reaberta, nem pixels, detector, tracker
+ou fluxo foram processados nesta bateria. Validação e teste não foram avaliados.
+
+Cada método consumiu todas as **343.776 janelas** da referência, em 12 vídeos:
+**687.552 avaliações de janela**, com **6.875.520 posições futuras** exportadas.
+As janelas cobrem 606 dos 669 IDs individuais originais e 623 dos 725 segmentos.
+Os 63 IDs sem janela e os 102 segmentos sem janela continuam registrados no
+pai; não receberam erro zero e não foram confundidos com falha dos preditores.
+
+### Erros com a agregação principal
+
+Média das janelas de cada ID original, depois pesos iguais para os IDs do
+vídeo e para os 12 vídeos. Unidades: pixels da imagem original. As casas
+decimais da tabela são apresentação; os CSVs conservam a precisão processada.
+
+| Método fixo | ADE₁ = FDE₁ | ADE₅ | FDE₅ | ADE₁₀ | FDE₁₀ |
+|---|---:|---:|---:|---:|---:|
+| Persistência | 0,851447 | 2,308355 | 3,677067 | 3,890964 | 6,619751 |
+| Velocidade constante, mediana5 | 0,505077 | 1,670137 | 2,845992 | 3,137020 | 5,774373 |
+
+Na média principal, a velocidade constante tem ADE₁₀ menor em 0,753944 px
+e FDE₁₀ menor em 0,845377 px. A diferença não é uniforme: o ADE₁₀ é menor
+em 9/12 vídeos e o FDE₁₀ em 7/12. Em 11/21/23, ambos os erros são maiores
+com extrapolação. Em 12/15, o ADE₁₀ é menor, mas o FDE₁₀ é maior. Esses
+contrastes são descrições do treino; não demonstram superioridade geral,
+não selecionam um método e não autorizam ajustar parâmetros retrospectivamente.
+
+| Vídeo | Persistência ADE₁₀ | CV ADE₁₀ | Persistência FDE₁₀ | CV FDE₁₀ |
+|---|---:|---:|---:|---:|
+| 11 | 3,541327 | 4,742708 | 5,485369 | 8,280968 |
+| 12 | 9,948136 | 9,815191 | 16,646147 | 18,004632 |
+| 13 | 3,152911 | 1,088328 | 5,655251 | 2,287740 |
+| 15 | 1,756832 | 1,606425 | 2,964306 | 3,002008 |
+| 21 | 4,273612 | 4,712687 | 6,960595 | 8,475029 |
+| 22 | 7,229134 | 2,936967 | 12,890020 | 5,587464 |
+| 23 | 4,719480 | 4,778864 | 7,934064 | 8,813851 |
+| 29 | 0,880918 | 0,295441 | 1,589212 | 0,626812 |
+| 30 | 6,191930 | 4,830592 | 10,504332 | 8,504538 |
+| 35 | 1,471439 | 0,975544 | 2,615488 | 1,976277 |
+| 60 | 2,196916 | 1,207063 | 3,853661 | 2,432270 |
+| 82 | 1,328931 | 0,654424 | 2,338560 | 1,300889 |
+
+### Sensibilidade aos pesos e duração dos horizontes
+
+A agregação secundária dá peso igual às janelas dentro de cada vídeo e
+depois peso igual aos vídeos. Os IDs com mais janelas contribuem mais nesse
+estimando, enquanto a regra principal dá a cada ID avaliado o mesmo peso
+dentro do respectivo vídeo.
+
+| Método fixo | ADE₁ = FDE₁ | ADE₅ | FDE₅ | ADE₁₀ | FDE₁₀ |
+|---|---:|---:|---:|---:|---:|
+| Persistência | 0,459184 | 1,264604 | 2,030576 | 2,149073 | 3,667572 |
+| Velocidade constante, mediana5 | 0,250443 | 0,867423 | 1,511456 | 1,685941 | 3,163498 |
+
+Os dois agregados não devem ser misturados ou escolhidos conforme o resultado.
+A diferença entre eles mostra que a distribuição das janelas por ID afeta
+o resumo; não identifica, por si só, a causa dos erros de cada trajetória.
+
+O FPS nominal exportado é 48 no vídeo 35, 50 no 82 e 49 nos demais. Dez
+quadros correspondem, respectivamente, a 0,208333 s, 0,200000 s e 0,204082 s.
+As 20 posições históricas abrangem 19 intervalos; nenhuma reamostragem foi
+feita. Não se trata de um horizonte físico idêntico em todos os vídeos.
+
+### Custo e conferência independente
+
+A bateria levou **54,191753 s**, com RSS amostrado máximo de **199,027 MiB**
+em 1.376 amostras. Foram gravados **419.207.751 bytes** antes do manifesto final
+(399,788 MiB); a pasta concluída contém **419.292.960 bytes**, incluindo o
+manifesto final. O cálculo em lote dos preditores somou aproximadamente 0,098467 s
+para persistência e 0,317673 s para CV; esses tempos excluem leitura, métricas
+e gravação. Não são latência de uma pipeline de vídeo nem benchmark de FPS.
+GPU não foi usada; os campos de VRAM do monitor são indisponíveis, não zero medido.
+
+A conferência reconstituiu todas as previsões e métricas densas usando somente
+JSON/CSV derivados e biblioteca padrão, sem importar a implementação do projeto.
+Conferiu **187 arquivos**, sendo 99 artefatos novos, seu manifesto
+e 87 arquivos da referência e de sua certificação; realizou
+**34.749.527 comparações**, das quais **18.572.544 numéricas**,
+em **180,6703 s**. Contagens, parâmetros, identidades e índices
+foram comparados exatamente; floats usam tolerância absoluta 1e-9 e relativa
+1e-12. A maior diferença numérica observada foi 1.42e-14.
+Históricos e alvos foram reconstruídos, com hashes binários conferidos nos dois
+métodos; não houve nova filtragem de janelas. Isso verifica a conformidade dos
+resultados às fórmulas registradas; não certifica, isoladamente, todos os
+acessos internos nem cria uma avaliação estatisticamente independente do treino.
+
+| Evidência local | Caminho |
+|---|---|
+| Manifesto completo | [manifest.json](../../data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/20260908T202138821137Z__5289c93__cfg11aeec0be9f3__srcf738122f1f__s42/manifest.json) |
+| Resumo principal e secundário | [summary.json](../../data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/20260908T202138821137Z__5289c93__cfg11aeec0be9f3__srcf738122f1f__s42/summary.json) |
+| Todos os pares método–vídeo | [video_metrics.csv](../../data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/20260908T202138821137Z__5289c93__cfg11aeec0be9f3__srcf738122f1f__s42/video_metrics.csv) |
+| Diferenças CV menos persistência | [paired_video_metrics.csv](../../data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/20260908T202138821137Z__5289c93__cfg11aeec0be9f3__srcf738122f1f__s42/paired_video_metrics.csv) |
+| Previsões, métricas por janela e ID | [by_video/](../../data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/20260908T202138821137Z__5289c93__cfg11aeec0be9f3__srcf738122f1f__s42/by_video/) |
+| Conferência independente | [verification_20260908.json](../../data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/verification_20260908.json) |
+| Figura por vídeo | [PNG](../../data/derived/prediction/baseline_reports/prediction_baselines_v1_20260908/baselines_predicao_treino.png) e [SVG](../../data/derived/prediction/baseline_reports/prediction_baselines_v1_20260908/baselines_predicao_treino.svg) |
+| Proveniência e revisão visual | [manifest.json](../../data/derived/prediction/baseline_reports/prediction_baselines_v1_20260908/manifest.json) e [visual_review.json](../../data/derived/prediction/baseline_reports/prediction_baselines_v1_20260908/visual_review.json) |
+
+SHA256 do manifesto: `fefb77906d3af9629c22a21b4c989f62d9f295f73f65708894c8672975fe2f2d`.
+SHA256 da conferência: `9bc9cd8beee29636470e747851e735ab481f23afcdd4b41ef36c7acf12550b69`.
+Fonte de código da run: `f738122f1f98c19202014f584f9e4b3d45e549fe3245cadfd673ac2c94fbb0db`.
+A figura PNG foi inspecionada visualmente; o SVG vem da mesma renderização.
+O mapa HTML e os links foram conferidos estaticamente, sem validação de navegador.
+
+### Continuidade
+
+O próximo marco é registrar e verificar o contrato causal de características
+locais de Farnebäck: pares somente até a origem, posição e sistema de
+coordenadas corretos, máscara e validade explícitas, ausências preservadas e
+coorte comum para os métodos com e sem fluxo. Primeiro casos sintéticos e
+smoke limitado no treino; uma extração ampla dependerá de protocolo e orçamento.
+Não foram executados fluxo, HOTA, preditores aprendidos ou avaliação fim a fim.
+A hipótese principal e o desenho confirmatório continuam pendentes.

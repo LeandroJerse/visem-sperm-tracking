@@ -12,6 +12,14 @@ O marco de referência individual adiciona
 e [escopo do congelamento](experiments/test_frozen_release.py).
 Antes da primeira preparação v1, a suíte curta passou em 1.026 testes.
 
+Os baselines fixos acrescentam testes do [consumidor da referência](experiments/test_prediction_reference.py),
+de [previsão causal e ADE denso](integration/test_dense_prediction_baselines.py),
+do [executor e precisão de exportação](experiments/test_prediction_baselines.py)
+e da [certificação de agregados](experiments/test_prediction_summary_contract.py).
+Antes da bateria real, a suíte `not optional_ml and not slow` aprovou
+**1.362 testes, em 144,75 s**. A conferência dos resultados exportados é uma
+etapa separada desses testes sintéticos.
+
 **Procurando a inspeção visual frame a frame?** Ela está em
 [`script/detection/test/threshold/`](../script/detection/test/threshold/README.md).
 Os [três modos e comandos oficiais](../script/README.md#threshold-frame-a-frame)

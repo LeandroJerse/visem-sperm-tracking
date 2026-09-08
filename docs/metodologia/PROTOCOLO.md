@@ -16,7 +16,10 @@ T218/o0/c2, com F1 macro 0,658959, sem congelamento, teste ou folds; os
 estão separados das regras prospectivas. Posteriormente, o
 [congelamento para desenvolvimento](CONGELAMENTO_THRESHOLD_V3.md) fixou T218
 sem liberar teste/folds. A [referência de trajetórias individuais v1](TRAJETORIAS_INDIVIDUAIS_V1.md)
-é preparada somente no treino. O desenho confirmatório continua pendente.
+foi preparada e conferida somente no treino. A [comparação fixa dos baselines](BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
+concluiu persistência e CV mediana5 nas 343.776 janelas comuns, sob `5289c93`,
+com conferência independente integral. A hipótese com fluxo e o desenho
+confirmatório continuam pendentes.
 
 O [parecer de revisão](../projeto/REVISAO_GERAL_20260908.md) orienta a prioridade:
 fechar a linha de base e avançar à comparação pareada da predição com e sem
@@ -297,8 +300,12 @@ um conjunto comum de janelas válidas para todos os braços e proibição de
 informação posterior ao instante de previsão, inclusive em imagens, máscaras
 e pares de fluxo. Fluxo futuro observado é somente um cenário oracle separado.
 Para cada horizonte H, ADE deve considerar todos os passos 1..H; a média dos
-erros somente nos pontos 1/5/10 é outro estimando. Esses controles ainda
-precisam ser materializados e testados, conforme a revisão geral.
+erros somente nos pontos 1/5/10 é outro estimando. A [bateria fixa v1](BASELINES_PREDICAO_V1.md)
+materializou e testou esses controles para persistência e CV com GT, inclusive
+o consumo exato do índice e a precisão de exportação. O executor genérico e
+as variantes com fluxo ainda exigem contratos próprios. A próxima etapa
+verificará pares de imagens, coordenadas e disponibilidade causal do fluxo
+antes de formar a coorte comum da ablação.
 
 ## Fila 5 — estatística e aplicação
 

@@ -45,7 +45,9 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
    fixa os parâmetros e mantém teste/folds bloqueados. O protocolo define
    [trajetórias individuais de referência](docs/metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md) no treino.
    Essa preparação já foi concluída e conferida: 363.074 observações preservadas
-   e 343.776 janelas; o próximo passo implementa seu consumo pelos preditores.
+   e 343.776 janelas. A [comparação fixa de persistência e velocidade constante](docs/metodologia/BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
+   também foi concluída e conferida nessas janelas, somente no treino com GT.
+   O próximo marco verifica as entradas causais de fluxo aparente local.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).

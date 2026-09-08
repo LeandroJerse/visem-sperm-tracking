@@ -9,7 +9,9 @@
 | Execução | [Comandos oficiais](../../../script/README.md#4-predição) |
 | Ensaios e resultados | [Área de ensaios do domínio](../../../data/tests/prediction/README.md) · [Área de resultados promovidos](../../../data/results/prediction/README.md) |
 
-Ainda não há pasta de runs específica deste método; o link abre a área do domínio.
+A primeira bateria fixa está em `data/tests/prediction/baselines/`, com
+subpastas por vídeo e método. Os [resultados conferidos](../../metodologia/BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
+ligam os artefatos e a figura; as entradas genéricas acima continuam disponíveis.
 
 [Índice da família](README.md) · [Catálogo de algoritmos](../README.md)
 
@@ -46,4 +48,7 @@ Custo baixo. Manter baseline puro e híbrido como linhas separadas. O
 [protocolo v1](../../metodologia/BASELINES_PREDICAO_V1.md) fixa mediana das últimas
 cinco diferenças antes de avaliar as janelas GT do treino; não é busca de janela
 ou seleção de estimador. A API em lote usa float64 e recebe somente histórico.
-Resultado da execução v1: **pendente**; nenhum híbrido é avaliado nesta bateria.
+Resultado v1 conferido: **ADE₁₀ 3,137020 px; FDE₁₀ 5,774373 px**,
+com peso igual por ID original dentro do vídeo e por vídeo. São 343.776 janelas
+dos 12 vídeos de treino, sob `5289c93`; não é avaliação com tracking ou fluxo.
+A bateria não seleciona hiperparâmetros nem promove o método para uso final.

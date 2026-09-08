@@ -2,6 +2,106 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — nível 6 concluído: baselines fixos no treino
+
+Primeira execução completa em `5289c93`, Git limpo e reconferido no encerramento,
+54,191753 s, RSS amostrado 199,027 MiB e 419.207.751 bytes antes do manifesto.
+Persistência e CV mediana5 consumiram as mesmas 343.776 janelas cada, sem
+filtro novo: 606 IDs individuais com janelas, agrupados sob 12 vídeos.
+Nenhuma fonte original, pixel de vídeo, validação ou teste foi aberto.
+
+ADE₁₀/FDE₁₀ principais: persistência 3,890964/6,619751 px;
+CV 3,137020/5,774373 px. CV tem ADE₁₀ menor em 9/12 vídeos e FDE₁₀ menor em
+7/12; a média não descreve melhora uniforme. Agregação: janelas por ID original,
+IDs por vídeo e vídeos com pesos iguais. Resultados descritivos de treino com
+GT, sem seleção, inferência estatística, fluxo ou avaliação fim a fim.
+
+Conferência independente aprovada na primeira execução: 187 arquivos,
+34.749.527 comparações (18.572.544 numéricas),
+180,6703 s, previsões e métricas reconstruídas integralmente.
+O verificador usa biblioteca padrão e derivados, sem importar o código
+científico ou reler fontes. A figura PNG/SVG foi gerada e o PNG revisado.
+Os [resultados completos](../metodologia/BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
+registram horizontes, pesos secundários, valores por vídeo, hashes e caminhos.
+
+Run: `data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/20260908T202138821137Z__5289c93__cfg11aeec0be9f3__srcf738122f1f__s42`.
+Conferência: `data/tests/prediction/baselines/prediction_baselines_v1__cfgc874ef20/development/verification_20260908.json`.
+Próximo: contrato e smoke causal do fluxo aparente local, começando por
+Farnebäck. HOTA, preditores aprendidos e confirmação continuam pendentes.
+Mapa HTML, guia de navegação e fonte LaTeX atualizados localmente; PDF não
+recompilado. A suíte anterior à bateria aprovou 1.362 testes em 144,75 s.
+
+## 2026-09-08 — protocolo do nível 6: baselines causais com GT
+
+Registrado o [plano de baselines](../metodologia/BASELINES_PREDICAO_V1.md) antes
+da avaliação: persistência e CV com mediana componente a componente das últimas
+cinco diferenças, fixos sem busca. Todas as 343.776 janelas do pai entram em
+ambos; são 687.552 avaliações de janela. O preditor recebe somente histórico,
+em float64, e produz todos os passos 1..10. ADE_H usa todos os erros 1..H.
+
+A agregação principal reúne janelas de todos os segmentos do mesmo ID original,
+depois dá peso igual aos IDs dentro de cada vídeo e aos 12 vídeos. A secundária
+usa média de janelas dentro de vídeo. Horizonte em segundos é H/FPS nominal;
+20 posições de histórico abrangem 19 intervalos. Não há reamostragem ou clipping.
+
+O contrato CSV largo preserva dez pares de coordenadas por janela; alvos ficam
+referenciados no pai. O consumidor confere a cadeia, o índice exato e as
+restrições de elegibilidade. A revisão prévia acrescentou rejeição de cobertura
+impossível, janelas repetidas/trocadas e deriva para float32, antes de dados reais.
+Resultados desta bateria serão registrados em entrada separada, após execução
+com Git limpo e conferência independente. Nenhum resultado de fluxo ou HOTA
+é produzido por esta etapa.
+
+Antes da execução real, a suíte `not optional_ml and not slow` aprovou
+**1.362 testes, em 144,75 s**. As regressões novas cobrem leitor da referência,
+causalidade, precisão, métricas densas, agregação e certificação da cobertura.
+
+## 2026-09-08 — nível 5 concluído: referência individual do treino
+
+Preparação em `33d191d`, Git limpo, sem mudança de código durante a execução.
+151,929874 s, RSS amostrado 226,148 MiB. Fontes originais preservadas; nenhum
+acesso às fontes de validação/teste ou decodificação de pixels neste marco.
+Resultado: 17.640 quadros, 17.466 anotados, 174 lacunas; 363.074 observações
+individuais, 5.413 clusters brutos, 725 segmentos e 343.776 janelas 20+10.
+Os 102 segmentos sem janela conservam 1.231 observações. As origens excluídas
+são 12.914 por histórico incompleto e 6.384 por futuro incompleto.
+
+Conferência independente aprovada na primeira execução: 86 arquivos,
+9.407.090 comparações, 26,3672 s, reconstrução completa de segmentos/janelas.
+Nenhuma transição direta do mesmo ID para classe 1 apareceu na referência;
+a regra continua coberta por testes sintéticos, sem inferir a causa das ausências.
+A figura descritiva PNG/SVG foi renderizada e o PNG foi conferido visualmente.
+Detalhes e caminhos no [protocolo com resultados](../metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md#resultados-da-preparação--08092026).
+
+Run: `data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/20260908T193624353498Z__33d191d__cfgf6cda613a4fe__srcca22c3a977__s42`.
+Conferência: `data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/verification_20260908.json`.
+Nenhum modelo temporal foi avaliado. Próximo: consumo de índices comuns,
+ADE denso e causalidade nos baselines; contrato HOTA separado e hipótese de
+fluxo ainda pendentes. HTML, guia permanente, instruções locais e fonte LaTeX
+foram atualizados localmente; o PDF não foi recompilado.
+
+## 2026-09-08 — linha de base fixa e protocolo de referência individual
+
+Após a autorização para continuar, T218/o0/c2 foi materializada como configuração
+congelada para desenvolvimento, sem nova busca nem acesso às fontes. Foram
+reconferidos 46 artefatos da validação, seus pais e a identidade dos componentes
+de detecção/avaliação. As runs continuam atribuídas a 7f47afb; o recibo de decisão
+fica em `data/derived/project_audits/general_20260908/freeze_t218_development_20260908.json`.
+O escopo executável bloqueia teste/folds e não restaura a cegueira histórica.
+
+Registrado o protocolo de referência individual do treino: classes 0/2,
+IDs originais, interrupções explícitas, todos os segmentos preservados,
+janelas 20+10/stride 1 e exclusões por falta de futuro contabilizadas.
+Módulo puro, executor e testes sintéticos precedem a primeira preparação.
+A preparação real e sua conferência serão registradas em entrada separada.
+Não há neste marco resultado de rastreamento, fluxo ou predição.
+
+Antes da preparação real, a suíte `not optional_ml and not slow` passou em
+**1.026 testes, em 108,58 s**. As novas regressões cobrem elegibilidade,
+causalidade do prefixo, cobertura, preservação de precisão/IDs, falhas de
+proveniência e recusas de liberação confirmatória. A configuração congelada
+também teve sua correspondência com a seleção conferida separadamente.
+
 ## 2026-09-08 — validação completa v3 concluída; T218 selecionada
 
 - Bateria científica executada uma vez, após commit `7f47afb` e 824 testes,
@@ -637,74 +737,3 @@ permanece preservado em
 - [ ] Módulo de fluxo óptico (`src/flow`): Farneback → RAFT.
 - [ ] Rastreamento (`src/tracking`): SORT → ByteTrack.
 - [ ] Predição (`src/prediction`): Kalman → LSTM.
-
-## 2026-09-08 — linha de base fixa e protocolo de referência individual
-
-Após a autorização para continuar, T218/o0/c2 foi materializada como configuração
-congelada para desenvolvimento, sem nova busca nem acesso às fontes. Foram
-reconferidos 46 artefatos da validação, seus pais e a identidade dos componentes
-de detecção/avaliação. As runs continuam atribuídas a 7f47afb; o recibo de decisão
-fica em `data/derived/project_audits/general_20260908/freeze_t218_development_20260908.json`.
-O escopo executável bloqueia teste/folds e não restaura a cegueira histórica.
-
-Registrado o protocolo de referência individual do treino: classes 0/2,
-IDs originais, interrupções explícitas, todos os segmentos preservados,
-janelas 20+10/stride 1 e exclusões por falta de futuro contabilizadas.
-Módulo puro, executor e testes sintéticos precedem a primeira preparação.
-A preparação real e sua conferência serão registradas em entrada separada.
-Não há neste marco resultado de rastreamento, fluxo ou predição.
-
-Antes da preparação real, a suíte `not optional_ml and not slow` passou em
-**1.026 testes, em 108,58 s**. As novas regressões cobrem elegibilidade,
-causalidade do prefixo, cobertura, preservação de precisão/IDs, falhas de
-proveniência e recusas de liberação confirmatória. A configuração congelada
-também teve sua correspondência com a seleção conferida separadamente.
-
-## 2026-09-08 — nível 5 concluído: referência individual do treino
-
-Preparação em `33d191d`, Git limpo, sem mudança de código durante a execução.
-151,929874 s, RSS amostrado 226,148 MiB. Fontes originais preservadas; nenhum
-acesso às fontes de validação/teste ou decodificação de pixels neste marco.
-Resultado: 17.640 quadros, 17.466 anotados, 174 lacunas; 363.074 observações
-individuais, 5.413 clusters brutos, 725 segmentos e 343.776 janelas 20+10.
-Os 102 segmentos sem janela conservam 1.231 observações. As origens excluídas
-são 12.914 por histórico incompleto e 6.384 por futuro incompleto.
-
-Conferência independente aprovada na primeira execução: 86 arquivos,
-9.407.090 comparações, 26,3672 s, reconstrução completa de segmentos/janelas.
-Nenhuma transição direta do mesmo ID para classe 1 apareceu na referência;
-a regra continua coberta por testes sintéticos, sem inferir a causa das ausências.
-A figura descritiva PNG/SVG foi renderizada e o PNG foi conferido visualmente.
-Detalhes e caminhos no [protocolo com resultados](../metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md#resultados-da-preparação--08092026).
-
-Run: `data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/20260908T193624353498Z__33d191d__cfgf6cda613a4fe__srcca22c3a977__s42`.
-Conferência: `data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/verification_20260908.json`.
-Nenhum modelo temporal foi avaliado. Próximo: consumo de índices comuns,
-ADE denso e causalidade nos baselines; contrato HOTA separado e hipótese de
-fluxo ainda pendentes. HTML, guia permanente, instruções locais e fonte LaTeX
-foram atualizados localmente; o PDF não foi recompilado.
-
-## 2026-09-08 — protocolo do nível 6: baselines causais com GT
-
-Registrado o [plano de baselines](../metodologia/BASELINES_PREDICAO_V1.md) antes
-da avaliação: persistência e CV com mediana componente a componente das últimas
-cinco diferenças, fixos sem busca. Todas as 343.776 janelas do pai entram em
-ambos; são 687.552 avaliações de janela. O preditor recebe somente histórico,
-em float64, e produz todos os passos 1..10. ADE_H usa todos os erros 1..H.
-
-A agregação principal reúne janelas de todos os segmentos do mesmo ID original,
-depois dá peso igual aos IDs dentro de cada vídeo e aos 12 vídeos. A secundária
-usa média de janelas dentro de vídeo. Horizonte em segundos é H/FPS nominal;
-20 posições de histórico abrangem 19 intervalos. Não há reamostragem ou clipping.
-
-O contrato CSV largo preserva dez pares de coordenadas por janela; alvos ficam
-referenciados no pai. O consumidor confere a cadeia, o índice exato e as
-restrições de elegibilidade. A revisão prévia acrescentou rejeição de cobertura
-impossível, janelas repetidas/trocadas e deriva para float32, antes de dados reais.
-Resultados desta bateria serão registrados em entrada separada, após execução
-com Git limpo e conferência independente. Nenhum resultado de fluxo ou HOTA
-é produzido por esta etapa.
-
-Antes da execução real, a suíte `not optional_ml and not slow` aprovou
-**1.362 testes, em 144,75 s**. As regressões novas cobrem leitor da referência,
-causalidade, precisão, métricas densas, agregação e certificação da cobertura.
