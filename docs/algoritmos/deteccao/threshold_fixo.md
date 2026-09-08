@@ -24,7 +24,8 @@ componentes conexos produzem uma box e um centro por região.
 `threshold_value`, polaridade, blur, kernel, iterações de abertura/fechamento
 e limites de área. O planejamento anterior usou a faixa 190–205 e preservou
 os pilotos `T200/o1/c2` e `T190/o1/c1`. Essas configurações históricas não são
-finalistas ou vencedoras do contrato v3; a nova busca ainda não foi executada.
+finalistas ou vencedoras automáticas do contrato v3. A busca prospectiva de
+08/09 reavaliou esses parâmetros sob a nova regra, como descrito abaixo.
 
 ## Pontos fortes
 
@@ -49,8 +50,14 @@ clusters. O baseline deve continuar puro; CLAHE/top-hat pertencem ao híbrido.
 
 O [plano prospectivo v3](../../metodologia/BUSCA_THRESHOLD_V3.md) registra
 171 combinações para os mesmos 12 quadros de cada vídeo de treino, com
-orçamento prévio, benchmark obrigatório e refinamento desenhado. O plano
-antecede a execução real e não modifica os resultados históricos abaixo.
+orçamento prévio, benchmark obrigatório e refinamento desenhado. A busca
+grossa terminou todas as 24.624 avaliações: T224/o0/c2 liderou a amostra de
+treino com F1 macro de 0,7753; T208/o0/c2, T224/o0/c1, T200/o1/c2 e T208/o1/c2
+completam os cinco candidatos. O refinamento ainda não ocorreu. Os 442 testes
+de código e a conferência independente dos resultados passaram. A seleção
+no treino não promove o detector nem altera os resultados históricos.
+
+### Histórico do contrato e do smoke de engenharia
 
 O avaliador **`center_distance_v3_individuals_ignore_clusters_10px`** está
 implementado; a suíte curta passou com 287 testes após a correção da precisão
@@ -79,8 +86,9 @@ sintéticos cobrem ignorados, duplicatas protegidas e ramos de quadros vazios.
 Saídas locais:
 `data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
 Os seis frames verificam a execução do contrato; seu F1 não estima a qualidade
-geral do threshold e não orienta seleção de parâmetros. Não há busca,
-validação científica ou promoção do método na v3. O raio é uma convenção
+geral do threshold e não orienta seleção de parâmetros. Naquele marco ainda
+não havia busca na v3. A busca de treino posterior está registrada acima;
+a validação e a promoção do método na v3 continuam pendentes. O raio é uma convenção
 operacional, não uma estimativa de ótimo ou referência anatômica exata.
 
 A verificação independente confirmou TP/FP/FN nos seis frames, mas encontrou
@@ -90,8 +98,9 @@ permanecem imutáveis. O nível 2 foi concluído após repetir os mesmos seis
 quadros em duas novas runs de `6b0a1e9`, sem alterar parâmetros ou contagens.
 O registro local `verification_20260907_full_precision.json`, no diretório
 `smoke/`, contém a conferência independente dos erros espaciais exportados.
-O pesquisador autorizou continuidade autônoma. O planejamento prospectivo
-de threshold virá depois, com raio e política de classes já definidos.
+Após esse marco, o plano prospectivo foi registrado e a busca grossa foi
+executada, como descrito na decisão atual. Raio e política de classes
+permaneceram iguais. O refinamento é a próxima etapa.
 
 ## Decisão histórica preservada — avaliação de 15 px
 

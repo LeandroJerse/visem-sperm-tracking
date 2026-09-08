@@ -22,8 +22,14 @@ impedem que duplicatas próximas sejam ignoradas.
 | Avaliador v3 e precisão de exportação | Implementados; suíte curta com 287 testes passou após seis regressões adicionais |
 | Smoke inicial: frames 0–2 de cada vídeo 11/12 | Executado; duas runs completas no commit 42ced6b, Git limpo; TP/FP/FN confirmados |
 | Fechamento do nível 2 | Concluído após repetir os mesmos seis frames em duas novas runs de 6b0a1e9, Git limpo; 36 associações e 168 comparações espaciais independentes aprovadas |
-| Busca, seleção ou promoção de threshold na v3 | Não executadas |
-| Plano prospectivo de busca — 08/09 | Registrado: 171 candidatos, 12 quadros por vídeo de treino; benchmark e busca aguardam execução |
+| Busca grossa e seleção de treino na v3 | Concluídas: 171 × 144 avaliações; cinco candidatos para refinamento; nenhuma promoção |
+| Plano prospectivo de busca — 08/09 | Registrado antes da execução em 9940337; otimização 3f73a52; 442 testes aprovados e conferência independente da busca |
+| Próximo marco | Refinamento de 117 candidatos distintos em 576 quadros, ainda não executado; nova projeção de custo necessária |
+
+A [busca grossa v3](../metodologia/BUSCA_THRESHOLD_V3.md) selecionou para refinamento
+T224/o0/c2, T208/o0/c2, T224/o0/c1, T200/o1/c2 e T208/o1/c2.
+O primeiro atingiu F1 macro de treino de 0,7753 a 10 px, após agregação por
+vídeo. São resultados de seleção em 12 quadros por vídeo, sem promoção.
 
 A auditoria encontrou 5.413 anotações de agrupamento em 4.056 quadros dos
 vídeos 11/12/15/29. Há 4.250 centros individuais dentro das regiões e 6.277

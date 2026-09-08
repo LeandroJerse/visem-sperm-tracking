@@ -15,6 +15,7 @@ da classe, o código atual extrai **componentes conexos**, não contornos.
 
 | Quero… | Arquivo ou guia |
 |---|---|
+| Acompanhar a busca atual e os candidatos para refinamento | [Plano v3](../../configs/detection/threshold/search_v3.yaml) · [Resultados da busca](../../docs/metodologia/BUSCA_THRESHOLD_V3.md#resultados-v3) |
 | Ver os parâmetros T200/o1/c2 | [Configuração de desenvolvimento](../../configs/detection/threshold/t200_o1_c2.yaml) |
 | Consultar a seleção congelada | [YAML congelado](../../configs/frozen/detection/threshold/t200_o1_c2.yaml) |
 | Inspecionar cada etapa de um frame | [Bancada frame a frame](../../script/detection/test/threshold/README.md) |

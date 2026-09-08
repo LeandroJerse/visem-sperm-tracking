@@ -2,6 +2,26 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — busca grossa v3 concluída; cinco candidatos para refinamento
+
+- Plano anterior à execução: `9940337`; otimização operacional: `3f73a52`,
+  com 442 testes aprovados. Os dois benchmarks estão preservados e a comparação
+  confirmou CSVs de detecções/GT idênticos nos 171 candidatos.
+- A nova projeção (986,31 s) permitiu executar a busca dentro do orçamento
+  original. Bateria completa: 171 × 144 = 24.624 avaliações, 291,32 s totais,
+  RSS amostrado de 94,594 MiB; Git limpo e conferência final de proveniência.
+- Seleção de treino: T224/o0/c2, T208/o0/c2, T224/o0/c1, T200/o1/c2 e
+  T208/o1/c2. Primeiro colocado: F1 macro de 0,7753 a 10 px. Nenhuma promoção,
+  nova validação ou abertura do teste. Resultado não estima generalização.
+- Conferência independente: 1.205 arquivos, 1.631.066 comparações numéricas
+  e 72 verificações de associação SciPy aprovadas; ranking reconstruído.
+- Próximo marco: implementar e medir o refinamento registrado, com 117
+  configurações distintas × 576 quadros = 67.392 avaliações. A lista foi
+  derivada dos cinco pais, mas ainda não foi executada.
+- Atualizados ficha, matriz, mapa didático, guia de retomada e método LaTeX.
+  O PDF continua sem recompilação; arquivos locais seguem fora dos commits.
+  [Resultados, figuras e manifestos](../metodologia/BUSCA_THRESHOLD_V3.md#resultados-v3).
+
 ## 2026-09-08 — amostra pronta; custo inicial exige otimização
 
 - Plano e executor registrados em `9940337` antes da execução real.

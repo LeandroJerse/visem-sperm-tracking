@@ -189,3 +189,64 @@ nenhuma métrica de qualidade foi usada para decidir essa otimização.
 O primeiro benchmark e a análise de custo permanecem em
 `data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfg1eb41e0e/benchmark/`,
 com `cost_review_20260908.json` como índice da revisão operacional.
+
+<a id="resultados-v3"></a>
+
+### Busca grossa concluída e conferida — 08/09/2026
+
+A otimização foi registrada em `3f73a52`, após **442 testes aprovados**.
+O segundo benchmark manteve plano e amostra: laço de 40,8452 s e projeção de
+986,31 s, dentro do limite original. A comparação entre as duas execuções
+confirmou os 171 arquivos de detecções/GT idênticos byte a byte e todas as
+métricas por quadro iguais, exceto o tempo de detecção. A redução observada
+de tempo é operacional, não uma estimativa estatística de aceleração.
+
+A busca completa avaliou **171 configurações × 144 quadros = 24.624 casos**.
+As 144 imagens contêm 2.961 anotações individuais e 44 agrupamentos, estes em
+33 quadros. Cada vídeo contribuiu com 12 quadros. A run terminou em 291,32 s
+(laço de 289,06 s), com pico amostrado de RSS de 94,594 MiB e 128.422.020 bytes
+nos artefatos dos candidatos. Commit `3f73a52`, Git limpo e proveniência
+reverificada antes da classificação. Validação e teste não foram processados.
+
+| Ordem | Configuração | F1 macro | Recall macro | MAE de contagem |
+|---:|---|---:|---:|---:|
+| 1 | t224_o0_c2 | 0,7753 | 0,8424 | 4,1528 |
+| 2 | t208_o0_c2 | 0,7557 | 0,8568 | 4,6111 |
+| 3 | t224_o0_c1 | 0,7418 | 0,8504 | 5,7500 |
+| 4 | t200_o1_c2 | 0,7410 | 0,7842 | 3,7292 |
+| 5 | t208_o1_c2 | 0,7378 | 0,7727 | 4,1944 |
+
+
+Os valores são médias entre os 12 vídeos de treino, calculadas após agregar
+os quadros dentro de cada vídeo. A precisão média do primeiro colocado é
+0,7374; seu F1 a 15/20 px é 0,7823/0,7836. Houve 15 previsões ignoradas a
+10 px. No mesmo candidato, o F1 por vídeo variou de 0,6166 a 0,8982 nesta
+amostra, mostrando que a média não descreve igualmente todos os vídeos.
+T200/o1/c2 foi reavaliado na v3 e ficou em quarto; o registro congelado
+histórico a 15 px permanece intacto. Nenhum desses resultados confirma
+generalização, ótimo global, significância estatística ou promoção do método.
+
+A conferência independente aprovou 1.205 arquivos, 1.631.066 comparações
+numéricas e 72 verificações de associação com SciPy em casos predeterminados.
+Reconstruiu agregações e a ordem dos 171 candidatos; não reutilizou o código
+de avaliação ou classificação do projeto. Isso certifica a consistência dos
+artefatos verificados, sem certificar completude do gabarito nem desempenho
+em quadros não amostrados.
+
+| Artefato local | Abrir |
+|---|---|
+| Busca completa | [Manifesto](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/20260908T141429306548Z__3f73a52__cfg2906caf3f234__srceae1c32fd9__s42/manifest.json) |
+| Classificação completa | [ranking.csv](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/20260908T141429306548Z__3f73a52__cfg2906caf3f234__srceae1c32fd9__s42/ranking.csv) |
+| Cinco candidatos | [shortlist.json](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/20260908T141429306548Z__3f73a52__cfg2906caf3f234__srceae1c32fd9__s42/shortlist.json) |
+| Conferência independente | [verification_20260908.json](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/verification_20260908.json) |
+| Equivalência dos benchmarks | [benchmark_parity_20260908.json](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfg1eb41e0e/benchmark/benchmark_parity_20260908.json) |
+| Figura: curvas e resultados por vídeo | [PNG](../../data/derived/detection/search_reports/threshold_search_v3_20260908/triagem_threshold_treino.png) · [SVG](../../data/derived/detection/search_reports/threshold_search_v3_20260908/triagem_threshold_treino.svg) |
+| Próximo refinamento, ainda não executado | [117 candidatos derivados](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/refinement_plan_20260908.json) |
+
+O próximo marco implementará e medirá o custo do refinamento previamente
+definido. Deduplicar as faixas dos cinco pais produz **117 configurações**,
+com 67.392 avaliações nos 576 quadros já preparados: T193–239 com abertura 0
+e fechamento 2; T209–239 com abertura 0 e fechamento 1; T185–223 com abertura 1
+e fechamento 2. Essa redução de 155 para 117 elimina apenas parâmetros
+idênticos, conforme o plano. Área, kernel, polaridade e métrica permanecem
+iguais; nenhum desses 117 candidatos foi executado no refinamento ainda.
