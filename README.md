@@ -36,6 +36,9 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
    registra a seleção após validação no protocolo antigo. O
    [smoke v3](configs/detection/threshold/protocol_smoke_v3.yaml) verifica a
    nova avaliação de indivíduos e agrupamentos; ainda não promove o threshold.
+   A [busca e o refinamento v3](docs/metodologia/BUSCA_THRESHOLD_V3.md#refinamento-v3)
+   selecionaram **T219/o0/c2 e T218/o0/c2 no treino**. São candidatos para
+   validação completa; nenhuma configuração foi congelada no novo contrato.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).

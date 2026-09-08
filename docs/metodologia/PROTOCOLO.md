@@ -6,8 +6,11 @@ principal de 10 px, com sensibilidade obrigatória a 15/20 px, e a política
 principal de indivíduos com tratamento de agrupamentos descrita abaixo.
 O pesquisador autorizou a continuidade autônoma com registros e commits.
 Código, configuração, testes e orçamento prospectivo precisam existir antes
-de uma bateria longa. A seleção de parâmetros e o desenho confirmatório
-continuam pendentes; a etapa corrente verifica o contrato da avaliação.
+de uma bateria longa. Em 08/09, a busca grossa e o refinamento do threshold
+concluíram a seleção de dois finalistas de treino. A conferência independente
+do refinamento foi aprovada; o próximo marco é preparar a validação
+completa dos quatro vídeos. Não houve promoção, validação completa ou teste
+na v3. O desenho confirmatório posterior continua pendente.
 
 ## Escopo dos dados e interpretação do movimento
 
@@ -39,9 +42,12 @@ versionada na seção de detecção; não reescreve o histórico.
 
 ## Regra comum de promoção
 
-O planejamento anterior registrou a seguinte sequência por algoritmo. A nova
-seleção e avaliação, inclusive a confirmação em folds, ainda precisam ser
-detalhadas e aprovadas; preservar a lista não a transforma em execução vigente:
+O planejamento anterior registrou a seguinte sequência por algoritmo. A busca
+e o refinamento do threshold já possuem um
+[registro prospectivo próprio](BUSCA_THRESHOLD_V3.md). Os critérios da nova
+validação, do congelamento e da confirmação em folds ainda precisam ser
+detalhados antes dessas etapas. Preservar a lista abaixo não torna seus
+desempates históricos uma regra automática da avaliação v3:
 
 1. validar a implementação com caso sintético e smoke test;
 2. fazer busca grossa exclusivamente no treino;
@@ -52,6 +58,60 @@ detalhadas e aprovadas; preservar a lista não a transforma em execução vigent
 7. executar uma única vez no teste bloqueado;
 8. confirmar a configuração congelada em previsões fora da amostra de 5 folds;
 9. fechar a ficha individual e incorporar o resultado na monografia.
+
+### Estado atual do threshold e preparação da validação — 08/09/2026
+
+A busca grossa preservada avaliou 171 configurações em 12 quadros por vídeo
+de treino e forneceu cinco pais. O refinamento registrado percorreu 117
+configurações distintas nos 48 quadros por vídeo já manifestados: **67.392
+avaliações**, commit `da057ef`, Git limpo. A bateria terminou em 454,647241 s,
+com pico amostrado de RSS de 140,77 MiB; **502 testes** passaram antes da
+execução. A conferência independente foi aprovada na primeira execução:
+2.451 arquivos, 4.029.280 comparações de campos/valores, ranking das 117
+configurações e dois finalistas reconstruídos. Foram verificadas com SciPy
+162 avaliações de matching em 27 combinações predeterminadas de
+configuração/quadro, nos três raios e nas duas políticas. Os 720 pares
+configuração/quadro dos cinco pais coincidiram com a busca grossa nos mesmos
+144 quadros físicos, exceto pelo tempo `detection_ms`.
+
+Foram selecionados **T219/o0/c2** e **T218/o0/c2**, com F1 macro de treino
+de 0,775790026345069 e 0,7756341553985521, respectivamente. O F1 de cada vídeo
+foi calculado após somar seus TP/FP/FN; a média deu o mesmo peso aos 12 vídeos.
+O raio de 10 px, a política v3 e as sensibilidades de 15/20 px permaneceram
+fixos. Esses resultados selecionam finalistas para desenvolvimento posterior,
+sem promover o detector ou estimar desempenho fora da amostra de treino.
+A diferença de aproximadamente 0,000156 de F1 macro é pequena nesta amostra;
+não constitui evidência de superioridade estatística ou generalização.
+
+O manifesto e `finalists.json` estão em
+`data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/20260908T145354693902Z__da057ef__cfge5e4d7fa737b__src3847d91dfb__s42/`.
+
+O relatório local é
+`data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/verification_20260908.json`;
+a figura está em
+`data/derived/detection/search_reports/threshold_refinement_v3_20260908/refinamento_threshold_treino.png`,
+com versão `refinamento_threshold_treino.svg` na mesma pasta. A verificação
+reconstruiu toda a aritmética dos quadros e a agregação por vídeo. O matching
+independente foi amostral, com GT dos CSVs das runs; fontes originais de
+vídeos/anotações e pixels do cache não foram reabertos nessa conferência.
+
+Preparar agora uma avaliação de **duas configurações × quatro
+vídeos completos de validação: 14, 19, 36 e 52**. Antes de consultar essas
+fontes, o registro deve fixar os parâmetros e hashes dos dois finalistas,
+a agregação e o desempate entre quatro vídeos, o orçamento e o tratamento
+de falhas. O desempate histórico por recall, latência e memória acima não
+substitui esse registro; tampouco se deve transportar silenciosamente o
+desempate da triagem de treino para outra etapa.
+
+O [executor por split](../../script/detection/test/run_split.py) já encaminha
+vídeos completos ao avaliador v3, mas ainda é necessário garantir oito runs
+comparáveis: universo de quadros e anotações explícito, leitura estrita do GT,
+recusa de cortes/subconjuntos ou término prematuro, hashes das entradas e
+saídas e agregação específica dos quatro vídeos. Os utilitários de seleção
+de treino exigem 12 vídeos. As configurações históricas T190/T200 a 15 px
+permanecem preservadas e não devem servir como substitutas dos finalistas v3.
+Essa preparação não abre o teste nem define automaticamente a confirmação
+em folds, cujo desenho continua pendente.
 
 As seeds de modelos estocásticos são `42`, `123` e `2026`. Buscas em massa
 geram métricas e previsões, não MP4. MP4 é produzido nos quatro vídeos de teste

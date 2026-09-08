@@ -24,12 +24,45 @@ impedem que duplicatas próximas sejam ignoradas.
 | Fechamento do nível 2 | Concluído após repetir os mesmos seis frames em duas novas runs de 6b0a1e9, Git limpo; 36 associações e 168 comparações espaciais independentes aprovadas |
 | Busca grossa e seleção de treino na v3 | Concluídas: 171 × 144 avaliações; cinco candidatos para refinamento; nenhuma promoção |
 | Plano prospectivo de busca — 08/09 | Registrado antes da execução em 9940337; otimização 3f73a52; 442 testes aprovados e conferência independente da busca |
-| Próximo marco | Refinamento de 117 candidatos distintos em 576 quadros, ainda não executado; nova projeção de custo necessária |
+| Refinamento e seleção de treino v3 — 08/09 | Concluídos em da057ef, Git limpo: 117 × 576 = 67.392 avaliações; 502 testes aprovados; conferência independente aprovada na primeira execução |
+| Dois finalistas de treino | T219/o0/c2 e T218/o0/c2; nenhuma validação completa, teste ou promoção na v3 |
+| Próximo marco | Preparar protocolo e garantias de completude da validação dos dois finalistas nos quatro vídeos 14/19/36/52 |
 
 A [busca grossa v3](../metodologia/BUSCA_THRESHOLD_V3.md) selecionou para refinamento
 T224/o0/c2, T208/o0/c2, T224/o0/c1, T200/o1/c2 e T208/o1/c2.
 O primeiro atingiu F1 macro de treino de 0,7753 a 10 px, após agregação por
 vídeo. São resultados de seleção em 12 quadros por vídeo, sem promoção.
+
+O refinamento posterior usou os 48 quadros por vídeo previamente manifestados.
+T219/o0/c2 obteve F1 macro de treino de **0,775790026345069** e T218/o0/c2,
+**0,7756341553985521**, nessa ordem. O lote terminou em 454,647241 s, com pico
+amostrado de RSS de 140,77 MiB. Os dois foram selecionados pelo critério
+registrado, sem escolher morfologias diferentes artificialmente. Esses
+valores descrevem a seleção no treino e não uma estimativa de generalização.
+A diferença de aproximadamente 0,000156 de F1 macro é pequena nesta amostra
+e não demonstra superioridade estatística.
+Manifesto, ranking e `finalists.json` ficam em
+`data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/20260908T145354693902Z__da057ef__cfge5e4d7fa737b__src3847d91dfb__s42/`.
+
+A conferência independente aprovou 2.451 arquivos, 4.029.280 comparações de
+campos/valores, o ranking das 117 configurações e os dois finalistas. Houve
+162 verificações de matching com SciPy em 27 combinações predeterminadas
+de configuração/quadro. Os 720 pares configuração/quadro dos cinco pais nos
+144 quadros físicos comuns coincidiram com a busca grossa, exceto pelo tempo
+`detection_ms`. A aritmética e a agregação foram verificadas integralmente;
+o matching foi amostral, a partir dos CSVs, sem reabrir fontes ou pixels.
+Relatório local:
+`data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/verification_20260908.json`.
+Figura local:
+`data/derived/detection/search_reports/threshold_refinement_v3_20260908/refinamento_threshold_treino.png`
+(também disponível como `refinamento_threshold_treino.svg` na mesma pasta).
+
+Antes da validação, registrar agregação e desempates próprios para os quatro
+vídeos, orçamento e configurações identificadas por hash; garantir oito runs
+completas, leitura estrita do GT e interrupção diante de dados incompletos.
+Os utilitários da busca exigem 12 vídeos e não devem ser aplicados diretamente
+como agregador da futura validação. O [protocolo mestre](../metodologia/PROTOCOLO.md)
+mantém separadas essas pendências e as decisões históricas a 15 px.
 
 A auditoria encontrou 5.413 anotações de agrupamento em 4.056 quadros dos
 vídeos 11/12/15/29. Há 4.250 centros individuais dentro das regiões e 6.277
@@ -136,13 +169,12 @@ As métricas dos seis frames são diagnóstico de engenharia, não estimativa
 de qualidade geral, ranking ou seleção de limiar. As runs locais estão em
 `data/tests/detection/threshold/protocol_smoke_t200_o1_c2_v3__cfg2aefee95/smoke/`.
 
-O pesquisador autorizou continuidade autônoma. O próximo trabalho é
-**planejar a busca prospectiva de threshold**, com raio e política de classes
-já definidos. A repetição em `6b0a1e9` preservou parâmetros e contagens e
-confirmou os erros reconstruídos dos CSVs a 1e-9 px. Formalizar a amostragem,
-o espaço de busca, o orçamento e os critérios antes de executar a busca,
-mantendo a limitação de exposição histórica do teste. O roteiro anterior de
-teste isolado e folds permanece abaixo apenas como referência histórica.
+O pesquisador autorizou continuidade autônoma. Naquele marco, o próximo
+trabalho era registrar a busca prospectiva, posteriormente executada junto
+ao refinamento descrito no estado atual. A repetição em `6b0a1e9` preservou
+parâmetros e contagens e confirmou os erros reconstruídos dos CSVs a 1e-9 px.
+A limitação de exposição histórica do teste permanece. O roteiro anterior
+de teste isolado e folds segue abaixo apenas como referência histórica.
 
 <details>
 <summary>Roteiro anterior: teste isolado do threshold</summary>

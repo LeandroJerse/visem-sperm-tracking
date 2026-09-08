@@ -18,7 +18,7 @@ e resultados não devem ser armazenados aqui.
 
 - [`metodologia/BUSCA_THRESHOLD_V3.md`](metodologia/BUSCA_THRESHOLD_V3.md):
   plano prospectivo da busca de threshold, amostra comum de treino, orçamento,
-  classificação por vídeo e desenho do refinamento.
+  classificação por vídeo, refinamento e evidências das execuções no treino.
 - [`metodologia/PROTOCOLO.md`](metodologia/PROTOCOLO.md): promoção de
   configurações, bloqueio de teste e ordem experimental.
 - [`metodologia/TOLERANCIA_ESPACIAL.md`](metodologia/TOLERANCIA_ESPACIAL.md):

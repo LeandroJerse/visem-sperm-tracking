@@ -5,7 +5,7 @@
 | Procurar | Abrir |
 |---|---|
 | Implementação | [threshold.py](../../../src/detection/classical/threshold.py) — `ThresholdContourDetector` |
-| Configuração | [Smoke de engenharia v3, sem busca](../../../configs/detection/threshold/protocol_smoke_v3.yaml) · [T200 histórica](../../../configs/detection/threshold/t200_o1_c2.yaml) · [T190 histórica](../../../configs/detection/threshold/t190_o1_c1.yaml) · [T200 congelada histórica](../../../configs/frozen/detection/threshold/t200_o1_c2.yaml) |
+| Configuração | [Busca v3](../../../configs/detection/threshold/search_v3.yaml) · [Refinamento v3](../../../configs/detection/threshold/refinement_v3.yaml) · [Smoke de engenharia](../../../configs/detection/threshold/protocol_smoke_v3.yaml) · [T200 histórica](../../../configs/detection/threshold/t200_o1_c2.yaml) · [T190 histórica](../../../configs/detection/threshold/t190_o1_c1.yaml) · [T200 congelada histórica](../../../configs/frozen/detection/threshold/t200_o1_c2.yaml) |
 | Execução | [Comandos oficiais](../../../script/README.md#threshold-etapa-atual) · [Inspeção de um frame](../../../script/detection/test/threshold/README.md) |
 | Ensaios e resultados | [Ensaios do método](../../../data/tests/detection/threshold) · [Seleção congelada](../../../data/results/detection/threshold/t200_o1_c2__cfg3276cf65/README.md) |
 
@@ -48,14 +48,63 @@ clusters. O baseline deve continuar puro; CLAHE/top-hat pertencem ao híbrido.
 
 ## Decisão atual
 
+O refinamento registrado da seleção de treino foi **concluído em 08/09/2026**:
+117 configurações nos mesmos 48 quadros de cada um dos 12 vídeos de treino,
+totalizando 576 quadros por configuração e **67.392 avaliações**. A bateria
+usou o commit `da057ef`, com Git limpo, e terminou em 454,647241 s, com pico
+amostrado de RSS de 140,77 MiB. Os **502 testes** da suíte passaram antes da
+execução. A conferência independente dos resultados foi **aprovada na
+primeira execução**: 2.451 arquivos, 4.029.280 comparações de campos/valores,
+ranking completo das 117 configurações e os dois finalistas reconstruídos.
+Foram conferidos 162 matchings com SciPy em 27 combinações predeterminadas
+de configuração/quadro, nos três raios e nas duas políticas. Nos cinco pais,
+720 pares configuração/quadro coincidiram com a busca grossa nos mesmos
+144 quadros físicos, exceto pelo tempo `detection_ms`.
+
+| Ordem no refinamento | Finalista de treino | F1 macro de treino a 10 px |
+|---|---|---:|
+| 1 | T219/o0/c2 | 0,775790026345069 |
+| 2 | T218/o0/c2 | 0,7756341553985521 |
+
+O F1 é calculado após somar TP/FP/FN dentro dos 48 quadros de cada vídeo,
+seguido de média com peso igual entre os 12 vídeos. Os valores selecionam
+**dois finalistas de treino**, sem demonstrar superioridade fora dessa amostra.
+A diferença de aproximadamente 0,000156 de F1 macro é pequena e descritiva;
+não demonstra generalização ou superioridade estatística.
+Não houve validação completa, teste ou promoção no contrato v3. A morfologia
+foi herdada e a área permaneceu fixa em 3–300 pixels; o refinamento não alterou
+o raio principal de 10 px ou as sensibilidades de 15/20 px.
+
+Manifesto e `finalists.json` permanecem em
+`data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/20260908T145354693902Z__da057ef__cfge5e4d7fa737b__src3847d91dfb__s42/`.
+
+O relatório independente está em
+`data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/verification_20260908.json`.
+A figura de seleção no treino está em
+`data/derived/detection/search_reports/threshold_refinement_v3_20260908/refinamento_threshold_treino.png`,
+com versão vetorial `refinamento_threshold_treino.svg` na mesma pasta.
+A conferência reconstruiu a aritmética de todos os quadros e as médias por
+vídeo; o matching independente foi amostral e usou somente CSVs das runs,
+sem reabrir fontes de vídeo, anotações originais ou pixels do cache.
+
+O próximo marco é **preparar o protocolo de validação
+dos dois finalistas nos vídeos completos 14/19/36/52**. Antes de abrir essas
+fontes, registrar critérios de agregação e desempate, orçamento, identidades
+das configurações e verificações que recusem vídeos truncados, GT inválido
+ou comparações incompletas. O executor completo existe, mas esse contrato
+de oito runs e a agregação dos quatro vídeos ainda precisam ser preparados.
+Referência: [protocolo mestre](../../metodologia/PROTOCOLO.md).
+
+### Busca grossa preservada — primeira seleção de treino
+
 O [plano prospectivo v3](../../metodologia/BUSCA_THRESHOLD_V3.md) registra
 171 combinações para os mesmos 12 quadros de cada vídeo de treino, com
 orçamento prévio, benchmark obrigatório e refinamento desenhado. A busca
 grossa terminou todas as 24.624 avaliações: T224/o0/c2 liderou a amostra de
 treino com F1 macro de 0,7753; T208/o0/c2, T224/o0/c1, T200/o1/c2 e T208/o1/c2
-completam os cinco candidatos. O refinamento ainda não ocorreu. Os 442 testes
-de código e a conferência independente dos resultados passaram. A seleção
-no treino não promove o detector nem altera os resultados históricos.
+completaram os cinco candidatos para o refinamento posterior. Naquele marco,
+os 442 testes de código e a conferência independente da busca grossa passaram.
+Essa seleção não promoveu o detector nem alterou os resultados históricos.
 
 ### Histórico do contrato e do smoke de engenharia
 
@@ -99,8 +148,9 @@ quadros em duas novas runs de `6b0a1e9`, sem alterar parâmetros ou contagens.
 O registro local `verification_20260907_full_precision.json`, no diretório
 `smoke/`, contém a conferência independente dos erros espaciais exportados.
 Após esse marco, o plano prospectivo foi registrado e a busca grossa foi
-executada, como descrito na decisão atual. Raio e política de classes
-permaneceram iguais. O refinamento é a próxima etapa.
+executada, seguida pelo refinamento descrito na decisão atual. Raio e política
+de classes permaneceram iguais. A preparação da validação completa é o
+próximo marco, sem reaproveitar como finalistas os YAMLs históricos a 15 px.
 
 ## Decisão histórica preservada — avaliação de 15 px
 

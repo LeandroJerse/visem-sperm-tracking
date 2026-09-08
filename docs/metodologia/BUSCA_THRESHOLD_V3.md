@@ -160,9 +160,10 @@ explicitada. A hipótese sobre fluxo óptico e predição não é testada nesta 
 
 ## Estado deste registro
 
-Plano e executores em preparação, antes da formação do cache e de qualquer
-resultado de benchmark ou busca grossa. Os resultados e commits de execução
-serão registrados abaixo após as verificações correspondentes.
+O registro inicial antecedeu a formação do cache e qualquer resultado de
+benchmark ou busca grossa. As subseções preservam a sequência das execuções
+e revisões operacionais. O [estado mais recente](#refinamento-v3) é o
+refinamento concluído no treino; a validação completa na v3 ainda está pendente.
 
 ### Primeiro benchmark e revisão operacional — 08/09/2026
 
@@ -241,15 +242,16 @@ em quadros não amostrados.
 | Conferência independente | [verification_20260908.json](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/verification_20260908.json) |
 | Equivalência dos benchmarks | [benchmark_parity_20260908.json](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfg1eb41e0e/benchmark/benchmark_parity_20260908.json) |
 | Figura: curvas e resultados por vídeo | [PNG](../../data/derived/detection/search_reports/threshold_search_v3_20260908/triagem_threshold_treino.png) · [SVG](../../data/derived/detection/search_reports/threshold_search_v3_20260908/triagem_threshold_treino.svg) |
-| Próximo refinamento, ainda não executado | [117 candidatos derivados](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/refinement_plan_20260908.json) |
+| Lista registrada antes do refinamento | [117 candidatos derivados](../../data/tests/detection/threshold/threshold_search_v3_20260908_batch__cfgcdee80e5/search/refinement_plan_20260908.json) |
 
-O próximo marco implementará e medirá o custo do refinamento previamente
-definido. Deduplicar as faixas dos cinco pais produz **117 configurações**,
+Ao encerrar a busca grossa, foi registrada a lista para o refinamento
+previamente definido. Deduplicar as faixas dos cinco pais produz **117 configurações**,
 com 67.392 avaliações nos 576 quadros já preparados: T193–239 com abertura 0
 e fechamento 2; T209–239 com abertura 0 e fechamento 1; T185–223 com abertura 1
 e fechamento 2. Essa redução de 155 para 117 elimina apenas parâmetros
 idênticos, conforme o plano. Área, kernel, polaridade e métrica permanecem
-iguais; nenhum desses 117 candidatos foi executado no refinamento ainda.
+iguais. O estado `planned_not_executed` desse artefato descreve o instante
+de seu registro; a execução posterior está documentada abaixo, em nova run.
 
 ### Execução do refinamento: orçamento registrado antes do benchmark
 
@@ -282,3 +284,87 @@ contendo os **dois primeiros** pela ordenação já registrada. Não forçar
 diversidade de morfologia ou escolher finalistas pelas sensibilidades de
 15/20 px. A finalidade é escolher candidatos para a futura validação completa,
 sem promover ou congelar o método nesta etapa.
+
+<a id="refinamento-v3"></a>
+
+### Refinamento concluído no treino — 08/09/2026
+
+Executor e orçamento registrados em **`da057ef`**, após **502 testes
+aprovados** em 95,97 s e antes do novo benchmark. A validação somente dos
+metadados da busca grossa reconstruiu os 117 candidatos e conferiu 1.035
+entradas, preservando os pais na ordem original de classificação.
+
+O benchmark específico concluiu 117 × 12 = 1.404 avaliações. O laço levou
+16,9821 s; validar cache e pais levou 6,1535 s e 3,2060 s. A projeção registrada
+foi **1.639,64 s**, inferior ao limite de liberação de 4.800 s. Não houve
+seleção por qualidade nesse benchmark nem mudança de orçamento.
+
+O refinamento concluiu **117 × 576 = 67.392 avaliações**, em **454,65 s**
+para a bateria, incluindo 452,79 s no laço. A validação prévia do cache e
+dos pais levou, separadamente, 5,94 s e 3,14 s. O pico amostrado de RSS foi
+140,77 MiB, e os artefatos dos candidatos somaram 338.594.816 bytes.
+Todas as runs registram Git limpo em `da057ef`; código, Git e ambiente foram
+reconferidos antes do ranking. As fontes e as execuções anteriores permanecem
+intactas; os novos resultados ficam em `data/tests/`, como seleção de treino.
+
+| Ordem | Configuração | F1 macro a 10 px | Precisão macro | Recall macro | MAE de contagem |
+|---:|---|---:|---:|---:|---:|
+| 1 | t219_o0_c2 | 0,775790 | 0,729686 | 0,852050 | 4,255208 |
+| 2 | t218_o0_c2 | 0,775634 | 0,728333 | 0,852686 | 4,237847 |
+
+Ambos usam abertura desativada e duas iterações de fechamento. A diferença
+de F1 é **0,000155871**, aproximadamente 0,0156 ponto percentual. A regra
+registrada seleciona os dois primeiros, mesmo que tenham limiares vizinhos
+e a mesma morfologia. O arredondamento da tabela não participou da escolha.
+Esses valores são médias com peso igual entre os 12 vídeos, após agregar
+48 quadros dentro de cada vídeo; não são o F1 calculado sobre a união de
+todas as detecções.
+
+Os 576 quadros contêm 11.864 anotações individuais e 176 de agrupamentos;
+são observações por quadro, não contagens de células únicas. Cada finalista
+teve 60 previsões ignoradas na avaliação principal. O F1 por vídeo do T219
+variou de 0,5551 a 0,8847. A 15 px, os F1 macro de T219/T218 foram
+0,783759/0,783613; a 20 px, 0,786210/0,786278. A pequena inversão de ordem
+na sensibilidade de 20 px não muda a seleção pela regra principal de 10 px.
+
+Não há teste de significância, intervalo de confiança ou declaração de
+superioridade geral entre os finalistas. Também não se interpreta a
+diferença para o F1 da busca grossa como melhora: a amostra passou de 12
+para 48 quadros por vídeo. O refinamento é uma seleção local nos intervalos
+registrados, sem demonstração de ótimo global ou de generalização.
+
+A conferência independente foi aprovada na primeira execução: **2.451
+arquivos**, **4.029.280 comparações de campos e valores** e **162 verificações
+de associação com SciPy**. Reconstruiu a aritmética de todos os quadros, as
+agregações por vídeo, o ranking dos 117 candidatos e os dois finalistas.
+O matching independente abrangeu 27 combinações predeterminadas de candidato
+e quadro, nas três tolerâncias e nas duas políticas; não refez todas as
+associações da bateria. Os hashes, vínculos e registros de proveniência foram
+conferidos a partir dos artefatos, sem nova leitura dos pixels ou do GT-fonte.
+
+Os cinco pais também foram comparados nos quadros compartilhados com a
+busca grossa: **720 pares configuração–quadro**, correspondentes a 144
+quadros físicos distintos. Todas as linhas brutas de GT e previsões,
+preservando multiplicidade, e todos os campos de métricas por quadro
+coincidiram, exceto `detection_ms`. Isso confirma a consistência da
+reavaliação, sem acrescentar réplicas independentes à análise.
+
+| Artefato local | Abrir |
+|---|---|
+| Benchmark do refinamento | [Manifesto](../../data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg10615a87/refinement_benchmark/20260908T145306368969Z__da057ef__cfg6ed5cd6a66dd__src3847d91dfb__s42/manifest.json) |
+| Refinamento completo | [Manifesto](../../data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/20260908T145354693902Z__da057ef__cfge5e4d7fa737b__src3847d91dfb__s42/manifest.json) |
+| Classificação dos 117 candidatos | [ranking.csv](../../data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/20260908T145354693902Z__da057ef__cfge5e4d7fa737b__src3847d91dfb__s42/ranking.csv) |
+| Dois candidatos para validação | [finalists.json](../../data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/20260908T145354693902Z__da057ef__cfge5e4d7fa737b__src3847d91dfb__s42/finalists.json) |
+| Conferência independente e equivalência dos pais | [verification_20260908.json](../../data/tests/detection/threshold/threshold_refinement_v3_20260908_batch__cfg2ebedc67/refinement/verification_20260908.json) |
+| Curvas e comparação dos finalistas por vídeo | [PNG](../../data/derived/detection/search_reports/threshold_refinement_v3_20260908/refinamento_threshold_treino.png) · [SVG](../../data/derived/detection/search_reports/threshold_refinement_v3_20260908/refinamento_threshold_treino.svg) |
+| Revisão da figura | [visual_review_20260908.json](../../data/derived/detection/search_reports/threshold_refinement_v3_20260908/visual_review_20260908.json) |
+
+Próximo marco: registrar a validação v3 dos dois finalistas nos vídeos
+completos 14/19/36/52, fixando parâmetros por hash, critério de escolha e
+orçamento antes de ler esses dados. O executor deverá recusar leitura
+incompleta, GT malformado e comparações com menos de oito runs completas,
+além de registrar hashes e agregação com peso igual entre quatro vídeos.
+O contrato atual de busca exige 12 vídeos e não será reutilizado silenciosamente
+para esse universo diferente. Validação, congelamento, teste e confirmação
+em folds permanecem pendentes na v3; a hipótese de predição com fluxo óptico
+ainda não foi avaliada.

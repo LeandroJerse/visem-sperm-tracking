@@ -37,6 +37,16 @@ frame screening seguem diretamente
 `<algoritmo>/<configuração>/frame_screening/<run_id>/`; vídeo e frame são
 atributos do manifesto, não níveis extras de pasta.
 
+A busca prospectiva do threshold usa etapas próprias na mesma hierarquia:
+`benchmark/` mede o custo da busca grossa; `search/` guarda essa busca;
+`refinement_benchmark/` mede o custo do refinamento; `refinement/` guarda a
+reavaliação nos 48 quadros por vídeo de treino. A pasta cujo nome termina em
+`_batch__cfg...` reúne manifestos dos candidatos e as comparações completas.
+`shortlist.json` identifica cinco pais da busca grossa; `finalists.json`
+identifica dois candidatos para validação. Nenhum desses arquivos representa
+congelamento. O [registro da busca](../../../docs/metodologia/BUSCA_THRESHOLD_V3.md)
+liga cada etapa aos manifestos, tabelas e figuras locais.
+
 MOG2/KNN usam uma unidade diferente: as runs de triagem continuam sob a mesma
 hierarquia canônica, mas cada uma registra `clip_windows.csv`. As comparações
 macro por vídeo ficam em

@@ -2,6 +2,31 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — refinamento v3 concluído e conferido; dois finalistas de treino
+
+- Executor e orçamento registrados em `da057ef` antes do benchmark, com
+  502 testes aprovados. O plano-base e a lista derivada permanecem intactos.
+- Benchmark completo: 117 × 12 = 1.404 avaliações; laço 16,9821 s e projeção
+  de 1.639,64 s, inferior ao limite de 4.800 s. Nenhuma escolha por qualidade
+  ou mudança de orçamento nessa medição.
+- Refinamento completo: 117 × 576 = 67.392 avaliações, 454,65 s de bateria,
+  RSS amostrado de 140,77 MiB e 338.594.816 bytes nos artefatos dos candidatos.
+  Git limpo e proveniência revalidada antes do ranking, em `da057ef`.
+- Dois primeiros no treino: T219/o0/c2 (F1 macro 0,775790) e T218/o0/c2
+  (0,775634). A diferença de 0,000155871 não demonstra superioridade geral.
+  Nenhuma promoção, congelamento ou abertura de validação/teste na v3.
+- Conferência independente aprovada na primeira execução: 2.451 arquivos,
+  4.029.280 comparações de campos/valores e 162 verificações SciPy; ranking
+  e finalistas reconstruídos. Os cinco pais coincidem nas 720 comparações
+  configuração–quadro compartilhadas com a busca grossa, exceto tempo.
+- Criadas figura PNG/SVG e revisão visual. Atualizados método LaTeX, ficha,
+  matriz, protocolo, mapa e guia de retomada. O PDF não foi recompilado;
+  HTMLs e arquivos locais continuam fora dos commits.
+- Próximo marco: registrar e preparar a validação de dois finalistas em
+  quatro vídeos completos (14/19/36/52), com critérios de escolha, orçamento,
+  leitura integral, GT válido, hashes e agregação própria para quatro vídeos.
+  [Resultados e artefatos do refinamento](../metodologia/BUSCA_THRESHOLD_V3.md#refinamento-v3).
+
 ## 2026-09-08 — refinamento: preparação do executor e orçamento prospectivo
 
 - Mantidos os cinco pais e a união de 117 configurações já registrada;
