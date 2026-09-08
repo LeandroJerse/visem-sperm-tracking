@@ -2,6 +2,26 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-08 — consolidação didática e clareza do estado científico
+
+Consolidados objetivo, dados, contratos, histórico, resultados, explicação das
+métricas e navegação pelas pastas em relatório HTML local. A leitura distingue
+implementação, teste de código, desenvolvimento e confirmação. Foram
+confrontados o projeto acadêmico assinado, a fonte LaTeX atual, os registros
+experimentais e as implementações; os exemplos interativos são hipotéticos.
+
+O guia de configurações agora explicita que uma pasta `frozen/` não libera
+o teste: prevalecem o escopo, a integridade e o protocolo de liberação. O
+T218 v3 permanece `development_only`; também foi esclarecida a sequência
+histórica entre finalistas de treino e validação completa.
+
+Nenhuma nova execução científica ou leitura de vídeos/labels originais foi
+feita para o relatório. Fontes e runs foram preservadas; o nível 6 e os
+resultados anteriores permanecem inalterados. A hipótese com fluxo ainda
+está pendente. Próximo marco: contrato e smoke causal de Farnebäck.
+HTMLs e orientações locais permanecem fora dos commits; o PDF acadêmico não
+foi recompilado.
+
 ## 2026-09-08 — nível 6 concluído: baselines fixos no treino
 
 Primeira execução completa em `5289c93`, Git limpo e reconferido no encerramento,

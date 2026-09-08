@@ -36,7 +36,8 @@ Esse plano tem executor próprio; o `search.yaml` anterior permanece histórico.
 O [refinement_v3.yaml](detection/threshold/refinement_v3.yaml) vincula a
 execução do refinamento aos hashes da busca grossa e dos 117 candidatos
 derivados. Registra o novo benchmark e orçamento sem reescrever o plano-base
-ou invalidar o cache; os dois finalistas continuam candidatos de treino.
+ou invalidar o cache; os dois finalistas eram candidatos de treino nessa etapa
+e foram depois comparados na validação completa registrada abaixo.
 
 O [validation_v3.yaml](detection/threshold/validation_v3.yaml) fixa as duas
 finalistas por hash e os quatro vídeos completos, com 5.850 quadros cada
@@ -59,7 +60,11 @@ promovida a 10 px. Fundamentação e limites estão na
 
 Cada algoritmo possui sua própria pasta. Arquivos `search.yaml` descrevem a
 configuração inicial e o espaço de busca; candidatos nomeados ficam na pasta do
-algoritmo. Somente arquivos copiados para `frozen/` podem abrir o teste.
+algoritmo. Estar em `frozen/` não basta para abrir o teste: é necessário um
+congelamento com escopo permitido, configuração íntegra e protocolo de
+liberação correspondente. O T218 v3 tem escopo `development_only` e mantém
+teste, folds e aplicação bloqueados; copiar ou renomear um arquivo não altera
+essa regra.
 
 ```text
 configs/
