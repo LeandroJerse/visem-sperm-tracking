@@ -659,3 +659,27 @@ Antes da preparação real, a suíte `not optional_ml and not slow` passou em
 causalidade do prefixo, cobertura, preservação de precisão/IDs, falhas de
 proveniência e recusas de liberação confirmatória. A configuração congelada
 também teve sua correspondência com a seleção conferida separadamente.
+
+## 2026-09-08 — nível 5 concluído: referência individual do treino
+
+Preparação em `33d191d`, Git limpo, sem mudança de código durante a execução.
+151,929874 s, RSS amostrado 226,148 MiB. Fontes originais preservadas; nenhum
+acesso às fontes de validação/teste ou decodificação de pixels neste marco.
+Resultado: 17.640 quadros, 17.466 anotados, 174 lacunas; 363.074 observações
+individuais, 5.413 clusters brutos, 725 segmentos e 343.776 janelas 20+10.
+Os 102 segmentos sem janela conservam 1.231 observações. As origens excluídas
+são 12.914 por histórico incompleto e 6.384 por futuro incompleto.
+
+Conferência independente aprovada na primeira execução: 86 arquivos,
+9.407.090 comparações, 26,3672 s, reconstrução completa de segmentos/janelas.
+Nenhuma transição direta do mesmo ID para classe 1 apareceu na referência;
+a regra continua coberta por testes sintéticos, sem inferir a causa das ausências.
+A figura descritiva PNG/SVG foi renderizada e o PNG foi conferido visualmente.
+Detalhes e caminhos no [protocolo com resultados](../metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md#resultados-da-preparação--08092026).
+
+Run: `data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/20260908T193624353498Z__33d191d__cfgf6cda613a4fe__srcca22c3a977__s42`.
+Conferência: `data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/verification_20260908.json`.
+Nenhum modelo temporal foi avaliado. Próximo: consumo de índices comuns,
+ADE denso e causalidade nos baselines; contrato HOTA separado e hipótese de
+fluxo ainda pendentes. HTML, guia permanente, instruções locais e fonte LaTeX
+foram atualizados localmente; o PDF não foi recompilado.

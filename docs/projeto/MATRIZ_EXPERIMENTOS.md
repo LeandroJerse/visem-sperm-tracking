@@ -28,9 +28,10 @@ impedem que duplicatas próximas sejam ignoradas.
 | Dois finalistas de treino | T219/o0/c2 e T218/o0/c2; comparados posteriormente na validação completa |
 | Revisão geral de alinhamento | Aprovada com controles documentados; 3.248 arquivos e 17.753 conferências de integridade, 502 testes antes das alterações |
 | Validação v3 completa | 11.700 avaliações em 7f47afb, Git limpo; 824 testes antes da execução; conferência independente aprovada |
-| Seleção de validação | T218/o0/c2: F1 macro 0,658959; T219: 0,657819; sem congelamento, teste ou folds |
+| Seleção de validação | T218/o0/c2: F1 macro 0,658959; T219: 0,657819; a bateria precedeu o congelamento de desenvolvimento |
 | Congelamento v3 | T218/o0/c2 fixa para desenvolvimento; teste e folds bloqueados pelo escopo executável |
-| Próximo marco | Preparar referência individual do treino e índices de janelas 20+10, sem modelo; depois contrato de tracking e predição causal |
+| Referência individual do treino | Concluída em 33d191d: 363.074 observações, 725 segmentos, 343.776 janelas; 86 arquivos conferidos |
+| Próximo marco | Consumir índices comuns nos baselines de predição com ADE denso e entradas causais; contrato HOTA próprio ainda pendente |
 
 [Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
 Cada finalista vence em dois vídeos; a diferença macro de 0,11403 ponto
@@ -147,6 +148,11 @@ foi validado com vetores conhecidos e pixels inválidos. A coluna ainda marca
 `VISEM —` porque a ablação real mascarado/não mascarado não foi executada.
 
 ## Predição
+
+A [referência individual v1](../metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md#resultados-da-preparação--08092026)
+foi preparada e conferida somente no treino: 363.074 observações, 725 segmentos
+e 343.776 janelas. Isso prepara os dados; as colunas de avaliação dos modelos
+abaixo continuam pendentes. Os 102 segmentos sem janela foram preservados.
 
 | Algoritmo | Código | Analítico/sintético | GT: tuning/val | Tracker: tuning/val | Congelar | Teste | 5-fold | Aplicar 65 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|

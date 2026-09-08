@@ -1,7 +1,9 @@
 # Validação completa das finalistas do threshold v3
 
 Resultado posterior: [validação concluída e conferida](#resultados-da-validação--08092026),
-com T218/o0/c2 selecionada, ainda sem congelamento. O protocolo prospectivo
+com T218/o0/c2 selecionada. Depois, foi registrado seu
+[congelamento para desenvolvimento](CONGELAMENTO_THRESHOLD_V3.md), sem liberar
+teste ou folds. O protocolo prospectivo
 abaixo permanece preservado.
 
 ## Estado e finalidade
@@ -242,11 +244,11 @@ decimais das sensibilidades. Corrigiu-se somente o verificador local; as
 falhas foram preservadas e a terceira tentativa foi aprovada. Nenhuma run
 científica, configuração ou fonte foi alterada ou reexecutada para isso.
 
-O resultado é uma **seleção de validação ainda não congelada**. Não houve
-teste, folds ou nova busca após observar estes resultados. A hipótese de
-predição com fluxo continua pendente. O próximo marco é registrar critérios
-de congelamento e o contrato de trajetórias individuais, preparando tracking
-com GT e janelas causais comuns para a futura ablação.
+Ao concluir a bateria, o resultado era uma **seleção de validação ainda não
+congelada**. Posteriormente, o [congelamento para desenvolvimento](CONGELAMENTO_THRESHOLD_V3.md)
+fixou T218 sem teste, folds ou nova busca. A [referência individual do treino](TRAJETORIAS_INDIVIDUAIS_V1.md)
+foi preparada para as janelas comuns da futura ablação. A hipótese de
+predição com fluxo continua pendente.
 
 ### Artefatos locais preservados
 

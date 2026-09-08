@@ -4,8 +4,9 @@
 
 Protocolo prospectivo de 08/09/2026, registrado antes da preparação descrita
 aqui. Este documento define uma referência derivada do GT e índices de janelas
-para desenvolvimento. Não contém resultados dessa preparação nem demonstra a
-hipótese sobre a contribuição do fluxo óptico.
+para desenvolvimento. As regras prospectivas permanecem abaixo, e os
+[resultados posteriores](#resultados-da-preparação--08092026) estão ao final.
+Esta preparação não demonstra a hipótese sobre a contribuição do fluxo óptico.
 
 O objetivo é preservar as observações individuais válidas dos **12 vídeos de
 treino**, identificar seus trechos consecutivos e registrar quais origens
@@ -14,7 +15,7 @@ detector, rastreador, estimador de fluxo ou preditor será executado neste marco
 Não serão selecionados hiperparâmetros nem descartadas trajetórias por
 geometria, velocidade, aparência ou desempenho.
 
-Os pontos de entrada previstos para implementação são:
+Os pontos de entrada implementados são:
 
 | Responsabilidade | Caminho |
 |---|---|
@@ -220,3 +221,102 @@ abre o teste, não executa folds e não transforma a configuração de detecçã
 em uma pipeline temporal validada. As guardas dessas etapas permanecem
 aplicáveis, e a exposição histórica do teste continua declarada. A hipótese
 central do TCC ainda não foi testada por este marco.
+
+## Resultados da preparação — 08/09/2026
+
+Preparação **concluída e conferida**, sem ajuste ou avaliação de modelo. O
+protocolo e o código foram registrados em `33d191d` antes do acesso às fontes,
+após **1.026 testes em 108,58 s**. A run manteve Git limpo e terminou em
+151,929874 s, com pico amostrado de RSS de 226,148 MiB. O orçamento foi cumprido;
+146.913.962 bytes foram contabilizados antes da gravação do manifesto final.
+RAM foi amostrada em 14 pontos, portanto não é um máximo contínuo garantido.
+
+O universo contém **17.640 quadros**, dos quais **17.466 anotados** e **174 sem
+anotação**, exclusivamente nas duas lacunas já registradas do vídeo 23.
+Foram preservadas as 368.487 observações brutas: **363.074 individuais**
+(347.847 de classe 0 e 15.227 de classe 2) e **5.413 de agrupamentos**.
+Os agrupamentos permanecem no CSV bruto e nas contagens; não viram posições
+individuais ou máscaras para modelos.
+
+| Vídeo | Observações individuais | Segmentos | Janelas 20+10 | Origens sem futuro completo após histórico válido |
+|---|---:|---:|---:|---:|
+| 11 | 53.854 | 60 | 52.223 | 546 |
+| 12 | 37.887 | 154 | 34.093 | 1.188 |
+| 13 | 62.646 | 81 | 60.406 | 760 |
+| 15 | 24.437 | 41 | 23.315 | 376 |
+| 21 | 32.510 | 80 | 30.574 | 626 |
+| 22 | 15.983 | 38 | 14.944 | 350 |
+| 23 | 3.227 | 11 | 2.922 | 100 |
+| 29 | 4.348 | 10 | 4.058 | 100 |
+| 30 | 16.034 | 54 | 14.582 | 470 |
+| 35 | 45.752 | 63 | 43.998 | 600 |
+| 60 | 20.401 | 57 | 18.802 | 538 |
+| 82 | 45.995 | 76 | 43.859 | 730 |
+| **Total descritivo** | **363.074** | **725** | **343.776** | **6.384** |
+
+Há 669 pares distintos `(vídeo, ID individual original)` e 725 segmentos
+contínuos. Esses números descrevem IDs observados, não demonstram identidade
+biológica perfeita. **623 segmentos têm janela; 102 não têm**, e todos foram
+guardados. Os 102 sem janela contêm **1.231 observações**: 77 segmentos têm
+menos de 20 observações e 25 têm entre 20 e 29. Nenhum foi apagado para melhorar
+a cobertura ou o desempenho de um algoritmo.
+
+A contabilidade de origens fecha exatamente:
+
+`363.074 = 12.914 sem histórico + 6.384 sem futuro + 343.776 janelas aceitas`.
+
+Entre as 350.160 origens com histórico completo, 6.384 não têm dez posições
+futuras: 2.244 por fim do vídeo, 20 por ausência de anotação e 4.120 por
+ausência do ID. Os segmentos terminaram 229 vezes na borda do vídeo, duas em
+lacunas de anotação e 494 por ausência do ID. **Não houve fronteira de classe
+1 do mesmo ID nesta referência de treino**; esse ramo foi verificado por
+testes sintéticos. Isso não demonstra ausência de oclusões ou agrupamentos
+e não permite inferir a causa biológica de `id_absent`.
+
+### Conferência e limites
+
+A conferência independente passou **na primeira execução**, verificando
+**86 arquivos** (85 artefatos e o manifesto) e **9.407.090 comparações de
+campos/valores**, em 26,3672 s. Uma implementação por agrupamento offline de
+índices consecutivos de cada ID reconstruiu todos os segmentos e janelas a
+partir de `ground_truth_raw.csv` e `frame_status.csv`. Observações, classes,
+coordenadas em ponto flutuante, IDs, razões e resumos coincidiram integralmente.
+
+O executor leu anotações, hashes e metadados dos MP4 apenas do treino e
+reconferiu fontes, inventários, artefatos e proveniência antes de completar.
+Não decodificou pixels, não executou detector/tracker e não abriu as fontes de
+validação/teste. A conferência independente leu somente os derivados; não
+constitui uma segunda releitura das fontes nem uma certificação de identidade
+biológica. Janelas continuam dependentes dentro do vídeo e condicionadas à
+disponibilidade de referência individual futura. Nenhum ADE/FDE, HOTA ou ganho
+de fluxo foi medido neste marco.
+
+### Onde navegar
+
+- [Manifesto da run](../../data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/20260908T193624353498Z__33d191d__cfgf6cda613a4fe__srcca22c3a977__s42/manifest.json),
+  [resumo completo](../../data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/20260908T193624353498Z__33d191d__cfgf6cda613a4fe__srcca22c3a977__s42/summary.json) e
+  [pastas dos 12 vídeos](../../data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/20260908T193624353498Z__33d191d__cfgf6cda613a4fe__srcca22c3a977__s42/by_video).
+- [Conferência independente](../../data/derived/prediction/ground_truth_individuals/individual_trajectories_v1__cfgc9793dcb/preparation/verification_20260908.json).
+- [Figura PNG](../../data/derived/prediction/reference_reports/individual_trajectories_v1_20260908/trajetorias_individuais_treino.png),
+  [SVG](../../data/derived/prediction/reference_reports/individual_trajectories_v1_20260908/trajetorias_individuais_treino.svg) e
+  [revisão visual estática](../../data/derived/prediction/reference_reports/individual_trajectories_v1_20260908/visual_review.json).
+
+Cada pasta de vídeo contém exatamente sete arquivos: `ground_truth_raw.csv`,
+`observations.csv`, `segments.csv`, `windows.csv`, `frame_status.csv`,
+`summary.json` e `input_contract.json`. As fontes permanecem em seu local;
+a preparação é derivada e recriável. IDs originais ficam em `track_id` e os
+trechos consecutivos em `segment_id`. Os índices atuais ainda precisam ser
+integrados aos consumidores de predição, com controle causal e ADE denso.
+
+SHA-256 do manifesto: `88965912d7f08bc6e2fe5ae69b20cf2c58fa538a8d99e3e5eb296722e6028c35`.
+SHA-256 da conferência: `f751652ce01d4b830196da076bc038e4517568444b0563bde782bfeb457e39f9`.
+
+### Próximo marco
+
+Implementar o consumo desses índices comuns pelos baselines de persistência
+e velocidade constante, separando entradas até `t` de alvos futuros e
+calculando ADE em todos os passos `1..H`. Verificar primeiro com casos
+analíticos e registrar o plano antes da execução real. O contrato de tracking
+com IDs originais e HOTA permanece uma etapa própria; o acoplamento de fluxo
+e a comparação com/sem fluxo vêm após os controles de causalidade e pareamento.
+Teste e folds continuam bloqueados pelo desenho confirmatório pendente.

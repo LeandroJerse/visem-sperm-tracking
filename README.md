@@ -41,8 +41,10 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
    selecionaram **T219/o0/c2 e T218/o0/c2 no treino**. A [validação completa](docs/metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026)
    selecionou **T218/o0/c2**, com F1 macro de 0,658959; nenhuma configuração
    foi liberada para confirmação. A [T218 v3 congelada para desenvolvimento](configs/frozen/detection/threshold/t218_o0_c2_v3.yaml)
-   fixa os parâmetros e mantém teste/folds bloqueados. O próximo marco prepara
+   fixa os parâmetros e mantém teste/folds bloqueados. O protocolo define
    [trajetórias individuais de referência](docs/metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md) no treino.
+   Essa preparação já foi concluída e conferida: 363.074 observações preservadas
+   e 343.776 janelas; o próximo passo implementa seu consumo pelos preditores.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).
