@@ -32,7 +32,8 @@ impedem que duplicatas próximas sejam ignoradas.
 | Congelamento v3 | T218/o0/c2 fixa para desenvolvimento; teste e folds bloqueados pelo escopo executável |
 | Referência individual do treino | Concluída em 33d191d: 363.074 observações, 725 segmentos, 343.776 janelas; 86 arquivos conferidos |
 | Baselines de predição no treino | Concluídos em 5289c93: persistência e CV mediana5 nas mesmas 343.776 janelas; conferência integral aprovada |
-| Próximo marco | Contrato e smoke de características causais de Farnebäck; contrato HOTA próprio ainda pendente |
+| Nível 7 em preparação | Contrato prospectivo e executor estrito do smoke causal de Farnebäck; testes anteriores aos pixels, sem busca ou predição |
+| Contrato HOTA | Próprio e ainda pendente |
 
 [Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
 Cada finalista vence em dois vídeos; a diferença macro de 0,11403 ponto

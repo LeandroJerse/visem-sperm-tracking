@@ -2,6 +2,34 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-09 — protocolo do nível 7: smoke causal de Farnebäck
+
+Registrados [contrato causal v1](../metodologia/FLUXO_CAUSAL_V1.md) e plano
+fixo antes de ler pixels: treinos 11/12, quadros 0..19, origem19 e todos os
+IDs das janelas elegíveis dessa origem na referência auditada. Uma única
+configuração inicial de Farnebäck, sem busca. O histórico permite 19 pares,
+amostrados no centro do primeiro quadro de cada par, disponíveis até a origem.
+
+O novo leitor retorna somente histórias e chaves, sem coordenadas futuras.
+O caminho de fluxo confere vídeo, configuração, par, SHA-256, dimensões e
+validade; a decodificação parcial falha e preserva os artefatos. Interpolação
+em float64 usa somente vizinhos de peso positivo válidos. Nenhuma máscara GT
+entra no estimador, nenhum vetor ausente vira zero e nenhuma janela é
+descartada por qualidade. Diagnósticos de fotometria, ida/volta e mudança
+temporal têm suporte explícito; não são EPE físico ou avaliação de predição.
+
+A revisão do contrato foi aprovada antes dos dados. Os testes sintéticos e
+o registro de código precedem a execução real, que terá entrada posterior
+própria no diário. Este registro não declara o smoke executado ou a hipótese
+com fluxo avaliada. O nível 6 permanece preservado, sem repetir a bateria.
+
+Antes dos pixels, a suíte `not optional_ml and not slow` aprovou **1.495
+testes em 160,71 s**. Inclui 73 testes do núcleo causal e 60 do executor e da
+interface histórica. O verificador independente, sem importar implementações
+do projeto, passou em 12 grupos de controles sintéticos: interpolação SciPy,
+translação conhecida, suporte comum, temporalidade, ausências, precisão e
+restrições de leitura. Tolerância absoluta de 1e-9 registrada previamente.
+
 ## 2026-09-08 — consolidação didática e clareza do estado científico
 
 Consolidados objetivo, dados, contratos, histórico, resultados, explicação das

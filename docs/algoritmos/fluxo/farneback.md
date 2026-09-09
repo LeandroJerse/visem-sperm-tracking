@@ -9,7 +9,10 @@
 | Execução | [Comandos oficiais](../../../script/README.md#3-movimento-aparente-por-fluxo) |
 | Ensaios e resultados | [Área de ensaios do domínio](../../../data/tests/flow/README.md) · [Área de resultados promovidos](../../../data/results/flow/README.md) |
 
-Ainda não há pasta de runs específica deste método; o link abre a área do domínio.
+O [contrato causal v1](../../metodologia/FLUXO_CAUSAL_V1.md) registra o primeiro
+smoke do protocolo atual: uma configuração fixa, treinos 11/12, quadros 0..19.
+Sua execução e conferência serão registradas após os testes. O espaço de busca
+legado não foi executado nesta etapa.
 
 [Índice da família](README.md) · [Catálogo de algoritmos](../README.md)
 

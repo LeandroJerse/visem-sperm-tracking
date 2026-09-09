@@ -37,9 +37,16 @@ afim e devolve movimento residual; essa escolha é registrada nos metadados.
 | [metrics.py](metrics.py) | Erro após warp, consistência forward/backward, estabilidade e EPE. |
 | [synthetic.py](synthetic.py) | Translações com deslocamento verdadeiro conhecido, apropriadas para EPE. |
 | [cache.py](cache.py) | Escrita e leitura do campo `.npz`, índice e amostragem válida. |
+| [causal.py](causal.py) | Novo par autenticado por vídeo/hash, disponibilidade temporal, interpolação float64 estrita e diagnósticos com suporte explícito. |
 | [Integração com trajetórias](../integration/README.md) | Como o cache gera `tracks_with_flow.csv` para a predição. |
 
 ## Pares de frames, resultados e verificação
+
+O [smoke causal v1](../../docs/metodologia/FLUXO_CAUSAL_V1.md) tem caminho
+próprio em [causal_flow_smoke.py](../experiments/causal_flow_smoke.py): prefixo
+0..19 dos treinos 11/12, 19 pares e amostras somente nos centros históricos
+de origem de cada campo. Ele não utiliza o cache/consumidor legado nem máscaras
+GT. O plano fixa uma configuração inicial, sem busca ou avaliação de predição.
 
 O processamento e as métricas são por **par de frames**, não por imagem isolada.
 `FlowResult.valid` identifica onde houve medida válida: zeros fora dessa máscara

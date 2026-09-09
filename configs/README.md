@@ -5,6 +5,11 @@
 
 ## Encontre a configuração
 
+Para o nível 7, [causal_smoke_v1.yaml](flow/farneback/causal_smoke_v1.yaml)
+fixa Farnebäck nos quadros 0..19 dos treinos 11/12. É um smoke de integridade
+causal, sem busca, predição ou promoção. O `search.yaml` antigo não define
+essa execução. Consulte o [contrato](../docs/metodologia/FLUXO_CAUSAL_V1.md).
+
 | Tarefa | Parâmetros | Código e explicação de cada método |
 |---|---|---|
 | Detecção | [detection/](detection/) | [Guia da detecção](../src/detection/README.md) |

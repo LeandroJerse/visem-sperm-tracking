@@ -114,6 +114,14 @@ class WindowBatch:
 
 
 @dataclass(frozen=True)
+class HistoryBatch:
+    """Detached historical inputs at one origin, without future coordinates."""
+
+    histories: np.ndarray
+    window_rows: tuple[Mapping[str, Any], ...]
+
+
+@dataclass(frozen=True)
 class VideoReference:
     video_id: str
     fps: float
@@ -158,6 +166,26 @@ class VideoReference:
                 targets[index] = positions[offset + HISTORY_LENGTH:offset + HISTORY_LENGTH + FORECAST_HORIZON]
                 rows.append(MappingProxyType(row))
             yield WindowBatch(_readonly(histories), _readonly(targets), tuple(rows))
+
+    def history_batch_at_origin(self, origin_frame: int) -> HistoryBatch:
+        """Return only histories of audited windows at a specified origin.
+
+        Eligibility still comes from the parent's complete-future rule, but
+        future coordinates are neither sliced nor returned by this interface.
+        An empty batch never requests an alternative origin automatically.
+        """
+        _require(type(origin_frame) is int and origin_frame >= 0,
+                 "origin_frame must be a nonnegative integer")
+        specs = [spec for spec in self._windows if spec[6] == origin_frame]
+        histories = np.empty((len(specs), HISTORY_LENGTH, 2), dtype=np.float64)
+        rows = []
+        for index, spec in enumerate(specs):
+            row = dict(zip(_FIELDS["windows"], spec))
+            segment = row["segment_id"]
+            offset = row["history_start"] - self._starts[segment]
+            histories[index] = self._positions[segment][offset:offset + HISTORY_LENGTH]
+            rows.append(MappingProxyType(row))
+        return HistoryBatch(_readonly(histories), tuple(rows))
 
 
 @dataclass(frozen=True)

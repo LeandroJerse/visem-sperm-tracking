@@ -580,6 +580,33 @@ Enriqueça tracks sem sobrescrever o original:
   --output data/derived/tracking/tracks/14_tracks_with_flow.csv
 ```
 
+## Smoke causal de Farnebäck — nível 7
+
+O [contrato causal v1](../docs/metodologia/FLUXO_CAUSAL_V1.md) e
+[plano fixo](../configs/flow/farneback/causal_smoke_v1.yaml) exigem Git limpo
+e testes aprovados antes dos pixels. O comando não aceita overrides:
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -B -m script.flow.test.causal_smoke
+```
+
+Decodifica somente os 20 primeiros quadros de cada treino 11/12, produz 19
+pares por vídeo e características nos centros históricos. Falha de leitura
+não equivale a conclusão. Saída nova em `data/tests/flow/farneback/`, etapa
+`smoke/`, com quadros cinza, pares NPZ autenticados, índices, features, cobertura
+e diagnósticos. Não usa máscara GT nem fluxo posterior à origem; não prevê
+posições ou libera validação/teste. O caminho de fluxo anterior é exploratório.
+
+Conferência independente, somente nos derivados da run concluída:
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -B -m script.flow.test.verify_causal_smoke `
+  --run "data/tests/flow/farneback/<config>/smoke/<run>" `
+  --output "data/tests/flow/farneback/<config>/smoke/verification_<identificador>.json"
+```
+
+O relatório de conferência deve ter nome novo; não sobrescrever tentativas.
+
 ## 4. Predição
 
 Implementações e famílias: [mapa da predição](../src/prediction/README.md).

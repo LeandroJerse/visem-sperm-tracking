@@ -20,6 +20,10 @@ e resultados não devem ser armazenados aqui.
 
 ## Metodologia
 
+- [`metodologia/FLUXO_CAUSAL_V1.md`](metodologia/FLUXO_CAUSAL_V1.md): contrato
+  temporal e espacial, autenticação dos pares e smoke inicial de Farnebäck no
+  treino, com diagnósticos e cobertura sem testar a hipótese de predição.
+
 - [`metodologia/VALIDACAO_THRESHOLD_V3.md`](metodologia/VALIDACAO_THRESHOLD_V3.md):
   comparação prospectiva dos dois finalistas de treino nos quatro vídeos
   completos de validação, com controles de identidade e completude.
