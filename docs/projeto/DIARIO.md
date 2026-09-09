@@ -2,6 +2,20 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-09 — compatibilidade da conferência do nível 7
+
+O smoke terminou em `16eecbb`, com Git limpo, antes da conferência. A primeira
+tentativa do verificador parou em `Invalid file-reference schema`, ainda com
+zero comparações numéricas: o QA antigo da referência guarda `mtime_ns` e
+`expected_hash_verified`, além de caminho, bytes e SHA-256.
+
+A leitura agora exige esse esquema exato e verifica as duas informações
+históricas antes de autenticar o conteúdo. O hash do manifesto pai continua
+fixado; não houve relaxamento da tolerância numérica ou alteração da run.
+Nove testes sintéticos do verificador passaram em 4,32s. A tentativa original
+permanece em `verification_20260909.json`; a próxima usará outro arquivo.
+Repetir somente a conferência dos derivados, sem executar Farnebäck novamente.
+
 ## 2026-09-09 — protocolo do nível 7: smoke causal de Farnebäck
 
 Registrados [contrato causal v1](../metodologia/FLUXO_CAUSAL_V1.md) e plano

@@ -311,6 +311,28 @@ def reference_map(audit, records, expected_paths, label):
     return dict(zip(actual, records))
 
 
+def parent_qa_references(audit, records, parent_path):
+    """Normalize the pinned older QA's exact five-field evidence schema.
+
+    The parent's own digest was discovered by that audit, while its 85
+    artifacts had expected hashes. We authenticate the parent separately by
+    the prospectively pinned digest; historical mtime is not a content hash.
+    """
+    require(isinstance(records, list), "Parent QA input files must be a list")
+    output = []
+    for record in records:
+        require(isinstance(record, dict) and set(record) == {
+            "path", "sha256", "bytes", "mtime_ns", "expected_hash_verified"},
+            "Unexpected parent QA input-file schema")
+        integer(record["mtime_ns"])
+        expected_flag = audit.path(record["path"]) != parent_path
+        require(type(record["expected_hash_verified"]) is bool
+                and record["expected_hash_verified"] is expected_flag,
+                "Parent QA expected-hash evidence differs from pinned format")
+        output.append({key: record[key] for key in ("path", "sha256", "bytes")})
+    return output
+
+
 def read_parent(audit, plan, manifest):
     parent_path = audit.path(plan["reference"]["manifest"])
     qa_path = audit.path(plan["reference"]["verification"])
@@ -354,7 +376,8 @@ def read_parent(audit, plan, manifest):
             "Derived reference not fully rechecked")
     # Compare the earlier audit's complete input identity against pinned files.
     qa_expected = expected | {parent_path}
-    reference_map(audit, qa["input_files"], qa_expected, "parent QA input files")
+    reference_map(audit, parent_qa_references(audit, qa["input_files"], parent_path),
+                  qa_expected, "parent QA input files")
     for video in VIDEOS:
         contract = audit.json(parent_path.parent / "by_video" / video / "input_contract.json")
         source = plan["sources"][video]
