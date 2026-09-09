@@ -189,3 +189,98 @@ deste projeto, não garantias fornecidas pela biblioteca.
 Após o smoke conferido, registrar o estudo de características causais no treino
 e a ablação com preditores equivalentes, mantendo os baselines e a referência
 anteriores. Tracking/HOTA e avaliação fim a fim continuam com contratos próprios.
+
+## Resultados do smoke — 09/09/2026
+
+Protocolo, código e execução registrados em
+`16eecbb32b3edb4b4908ced344367670132a4cc1`, com Git limpo e reconferido.
+A suíte completa selecionada (`not optional_ml and not slow`) aprovou
+**1.495 testes em 160,71 s** antes dos pixels. O verificador passou também
+em 12 grupos sintéticos. Este registro posterior preserva o desenho acima.
+
+A execução terminou em **56,923953 s**, com RSS máximo amostrado de
+**289,598 MiB** (196 amostras), 193.923.149 bytes antes do manifesto e
+**193.999.043 bytes finais**. Foram produzidos 97 artefatos mais o manifesto.
+Os 40 quadros são o prefixo 0..19 dos dois vídeos, em 640×480 e FPS nominal 49;
+não se avaliou a completude dos 1.470 quadros de cada vídeo.
+
+| Vídeo de treino | Janelas na origem 19 | Amostras históricas | Válidas / inválidas | Pares / campos / trios |
+|---|---:|---:|---:|---:|
+| 11 | 42 | 798 | 798 / 0 | 19 / 38 / 18 |
+| 12 | 26 | 494 | 494 / 0 | 19 / 38 / 18 |
+| Total | 68 | 1.292 | 1.292 / 0 | 38 / 76 / 36 |
+
+Todas as janelas escolhidas antes dos pixels foram preservadas. Validade de
+100% nesta amostra significa suporte numérico finito, não acurácia de 100%.
+A elegibilidade continua condicionada ao futuro completo da referência; o
+consumidor recebeu apenas as 20 posições históricas, sem coordenadas futuras.
+
+| Vídeo | MAE fotométrica zero | MAE fotométrica após warp | Consistência FB média (px) | Mudança temporal média (px) |
+|---|---:|---:|---:|---:|
+| 11 | 0,003008 | 0,002374 | 0,015067 | 0,131004 |
+| 12 | 0,005554 | 0,003461 | 0,169551 | 0,571267 |
+
+A fotometria usa intensidade cinza/255 e suporte idêntico entre zero e warp
+em cada par. Cada vídeo dá peso igual aos 19 pares com suporte. O suporte
+fotométrico/FB médio foi 0,996679 no vídeo 11 e 0,996328 no 12; as frações FB
+≤1,5 px foram 0,999370 e 0,983397. A mudança temporal dá peso igual aos 18
+trios com suporte. Seus p95 médios foram 0,548537 e 3,611518 px, com suporte
+médio 0,996658 e 0,996319, respectivamente. Valores completos e denominadores
+permanecem nos CSVs. Menor erro fotométrico nos dois prefixos é um diagnóstico
+descritivo; mudança temporal maior pode incluir mudança real do movimento.
+
+Os tempos de estimação forward/backward somaram 5,893733 s no vídeo 11 e
+5,888907 s no 12; diagnósticos, 8,951774 s e 8,914980 s. O tempo total inclui
+verificações, decodificação, exportação e demais operações. Esses valores
+não são latência de predição nem custo da pipeline fim a fim.
+
+### Conferência independente e falha preservada
+
+A primeira tentativa parou no esquema da referência histórica, com zero
+comparações numéricas. Seu relatório foi preservado. O commit
+`0fccda8f663dc64a9ebc815b8cbaa60d5146fde1` corrigiu exclusivamente a leitura
+do esquema de cinco campos do QA pai, verificando também `mtime_ns` e
+`expected_hash_verified`. Nove regressões sintéticas passaram em 4,32 s.
+Não se alteraram a run, o plano, a tolerância ou o estimador; Farnebäck não
+foi repetido. Essa correção não substitui `16eecbb` na proveniência da run.
+
+A segunda conferência passou em **21,051553 s**: **190 arquivos**, **37.406
+comparações**, das quais **8.378 numéricas**, incluindo 5.304 coordenadas
+comparadas exatamente. Reconstituiu as 68 janelas, 1.292 amostras e todos os
+resumos. A maior diferença foi **8,881784197001252e-16**, abaixo do limite
+absoluto registrado de 1e-9. Foram diagnosticadas 11.673.600 posições de
+pixels ao longo dos 38 pares e 11.059.200 posições temporais; essas contagens vetorizadas
+são distintas das comparações escalares. Os campos dos dois sentidos
+totalizam 23.347.200 posições verificadas quanto a formato/validade.
+
+A conferência recalculou amostragem e diagnósticos com SciPy, sem importar
+o código científico, reler MP4/labels ou executar o estimador. Ela autentica
+os derivados e sua matemática; não constitui decodificação independente do
+MP4 nem prova independente de que cada campo seja a saída do Farnebäck.
+Esses vínculos dependem do produtor registrado e de seus testes sintéticos.
+
+- [Manifesto da run](../../data/tests/flow/farneback/farneback_causal_smoke_v1__cfg0609f968/smoke/20260909T203917667291Z__16eecbb__cfgf7e0afa345b3__src3f9307153a__s42/manifest.json), SHA-256
+  `fff845df9b10c743b227e0f459b502218677840d021c6190736041507b7f1d98`.
+- Código fonte da execução: SHA-256
+  `3f9307153a3c7c661ba59b007e8d003b5cecdc6b93bec18f5cb32d12c243879b`.
+- [Resumo e saídas por vídeo](../../data/tests/flow/farneback/farneback_causal_smoke_v1__cfg0609f968/smoke/20260909T203917667291Z__16eecbb__cfgf7e0afa345b3__src3f9307153a__s42/summary.json).
+- [Primeira conferência preservada](../../data/tests/flow/farneback/farneback_causal_smoke_v1__cfg0609f968/smoke/verification_20260909.json).
+- [Conferência aprovada](../../data/tests/flow/farneback/farneback_causal_smoke_v1__cfg0609f968/smoke/verification_20260909_retry1.json), SHA-256
+  `b44db2e80e727afe067ee5ba6b95b97d7c2a9c32491fec045bf54ec9fa7c6652`.
+- [Figura PNG](../../data/derived/flow/reports/farneback_causal_smoke_v1_20260909/smoke_fluxo_causal.png) e
+  [SVG](../../data/derived/flow/reports/farneback_causal_smoke_v1_20260909/smoke_fluxo_causal.svg), derivados da run conferida.
+  Setas do par 18→19 ampliadas em 5× para leitura, sem interpretação física.
+
+**Nível 7 concluído e conferido.** Há evidência de funcionamento da conexão
+causal imagem–histórico nesta amostra. Não há seleção de Farnebäck, teste de
+ganho em ADE/FDE, confirmação estatística ou avaliação de rastreamento.
+Fontes originais de validação/teste não foram abertas; runs anteriores
+foram preservadas.
+O próximo marco é registrar o estudo de características em amostra maior do
+treino e a ablação pareada: mesmas janelas e alvos, normalização ajustada no
+treino correspondente, tratamento explícito das ausências, modelos e orçamento
+comparáveis e agregação por ID/vídeo. Esse contrato ainda será detalhado antes
+de novas extrações. Um benchmark prospectivo de custo e uma política de
+armazenamento precederão a expansão: campos e amostras sobrepostas poderão
+ser reutilizados por chave, com auditabilidade definida. Não selecionar novos
+parâmetros com base nos diagnósticos deste smoke sem protocolo próprio.

@@ -2,6 +2,36 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-09 — nível 7 concluído: fluxo causal conferido no treino
+
+O [smoke causal de Farnebäck](../metodologia/FLUXO_CAUSAL_V1.md#resultados-do-smoke--09092026)
+terminou em `16eecbb`, com Git limpo: 40 quadros dos treinos 11/12, 38 pares,
+76 campos e 36 diagnósticos temporais. Todas as 68 janelas selecionadas na
+origem 19 foram preservadas, com 1.292 amostras numericamente válidas e zero
+inválidas. Vinte posições fornecem 19 transições; o último par é 18→19 e a
+amostragem ocorre no centro do primeiro quadro do par, sem coordenadas futuras.
+
+Tempo total 56,923953 s, RSS amostrado 289,598 MiB, 193.999.043 bytes finais.
+Nos vídeos 11/12, as MAEs fotométricas após warp foram 0,002374/0,003461,
+contra 0,003008/0,005554 com deslocamento zero nos mesmos suportes.
+São diagnósticos dos prefixos, sem inferência, seleção ou teste de predição.
+
+A primeira conferência falhou apenas na leitura do esquema histórico; a
+correção em `0fccda8` passou em nove testes, preservando a tentativa e a run.
+A segunda conferência passou: 190 arquivos, 37.406 comparações (8.378
+numéricas), 21,051553 s e diferença máxima 8,881784197001252e-16.
+O verificador recompôs a matemática dos derivados, sem reler fontes ou
+repetir Farnebäck. O protocolo registra seus limites e os hashes exatos.
+
+Run: `data/tests/flow/farneback/farneback_causal_smoke_v1__cfg0609f968/smoke/20260909T203917667291Z__16eecbb__cfgf7e0afa345b3__src3f9307153a__s42/manifest.json`.
+QA: `data/tests/flow/farneback/farneback_causal_smoke_v1__cfg0609f968/smoke/verification_20260909_retry1.json`.
+Figura, relatório didático, atlas, guia e método da monografia foram atualizados
+localmente. HTMLs, orientações locais e monografia permanecem fora dos commits.
+O PDF não foi recompilado. A referência individual e os baselines estão
+preservados. Próximo marco: detalhar protocolo da extração causal ampliada e
+da ablação pareada com/sem fluxo; hipótese, tracking/HOTA e confirmação seguem
+pendentes. Não repetir esta execução encerrada.
+
 ## 2026-09-09 — compatibilidade da conferência do nível 7
 
 O smoke terminou em `16eecbb`, com Git limpo, antes da conferência. A primeira

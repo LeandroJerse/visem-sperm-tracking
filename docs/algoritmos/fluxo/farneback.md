@@ -11,8 +11,11 @@
 
 O [contrato causal v1](../../metodologia/FLUXO_CAUSAL_V1.md) registra o primeiro
 smoke do protocolo atual: uma configuração fixa, treinos 11/12, quadros 0..19.
-Sua execução e conferência serão registradas após os testes. O espaço de busca
-legado não foi executado nesta etapa.
+Execução em `16eecbb` concluída e conferida: 40 quadros, 68 janelas e 1.292
+amostras históricas válidas. O QA aprovado após a correção de esquema em
+`0fccda8` conferiu 190 arquivos, sem repetir o estimador. Consulte resultados,
+custos, limites e hashes no contrato. O espaço de busca legado não foi
+executado nesta etapa; a hipótese de ganho na predição continua pendente.
 
 [Índice da família](README.md) · [Catálogo de algoritmos](../README.md)
 
@@ -23,12 +26,12 @@ desses polinômios explica o deslocamento. Pirâmides tratam escalas diferentes.
 `FarnebackFlow` preserva o algoritmo do OpenCV e retorna campo denso; a máscara
 apenas define quais vetores podem entrar na análise.
 
-## Parâmetros a testar
+## Espaço legado previsto — ainda não executado
 
 - `levels`: 3, 4 e 5; `pyr_scale`: 0,5;
-- `winsize`: 15, 21 e 31;
+- `winsize`: 11, 15, 21 e 31;
 - `iterations`: 3, 5 e 7;
-- `poly_n/poly_sigma`: 5/1,1 e 7/1,5;
+- `poly_n`: 5 e 7; `poly_sigma`: 1,1, 1,3 e 1,5, em listas independentes;
 - janela gaussiana ligada e desligada.
 
 ## Pontos fortes
@@ -47,5 +50,8 @@ apenas define quais vetores podem entrar na análise.
 ## Custo e decisão
 
 CPU, memória linear no número de pixels e nenhum treino. É o estimador-base do
-híbrido, mas seu resultado puro será preservado para comparação. Promover pela
-combinação de erro fotométrico, consistência e latência. Resultado: **pendente**.
+híbrido, mas seu resultado puro será preservado para comparação. O smoke
+causal está concluído; busca, ablação e avaliação científica ampliada seguem
+**pendentes**, sob plano próprio. Fotometria, consistência e custo são
+diagnósticos complementares; não usar um placar subjetivo ou interpretá-los
+como prova de ganho em ADE/FDE.

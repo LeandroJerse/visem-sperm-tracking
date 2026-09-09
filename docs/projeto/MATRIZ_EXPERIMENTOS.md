@@ -32,7 +32,7 @@ impedem que duplicatas próximas sejam ignoradas.
 | Congelamento v3 | T218/o0/c2 fixa para desenvolvimento; teste e folds bloqueados pelo escopo executável |
 | Referência individual do treino | Concluída em 33d191d: 363.074 observações, 725 segmentos, 343.776 janelas; 86 arquivos conferidos |
 | Baselines de predição no treino | Concluídos em 5289c93: persistência e CV mediana5 nas mesmas 343.776 janelas; conferência integral aprovada |
-| Nível 7 em preparação | Contrato prospectivo e executor estrito do smoke causal de Farnebäck; testes anteriores aos pixels, sem busca ou predição |
+| Nível 7 concluído e conferido | Farnebäck causal em 11/12, origem 19: 40 quadros, 68 janelas, 1.292 amostras válidas; QA 190 arquivos. Sem busca, ablação ou predição |
 | Contrato HOTA | Próprio e ainda pendente |
 
 [Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
@@ -145,7 +145,9 @@ métricas.
 | Híbrido robusto CPU | ✓ | ✓ fusão e translação sem compensação | — | ✓ contrato; VISEM — | — | — | — |
 | Híbrido robusto + RAFT | ✓ | sem torch/pesos | — | ✓ contrato; VISEM — | — | — | — |
 
-O contrato de máscara une boxes dos dois frames e o enriquecimento de tracks
+**Atualização de 09/09/2026:** [smoke causal de Farnebäck](../metodologia/FLUXO_CAUSAL_V1.md) concluído e conferido em `16eecbb`, QA corrigido em `0fccda8`. Uma configuração fixa, sem máscara, quadros 0..19 dos treinos 11/12. A coluna busca/val real permanece pendente: este smoke não seleciona parâmetros nem testa a hipótese.
+
+O contrato legado de máscara une boxes dos dois frames e o enriquecimento de tracks
 foi validado com vetores conhecidos e pixels inválidos. A coluna ainda marca
 `VISEM —` porque a ablação real mascarado/não mascarado não foi executada.
 
