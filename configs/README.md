@@ -5,6 +5,11 @@
 
 ## Encontre a configuração
 
+Para o nível 8a, [compact_benchmark_v1.yaml](flow/farneback/compact_benchmark_v1.yaml)
+registra os prefixos 0..59 dos 12 treinos, testemunhos das interpolações,
+sentinelas densos e projeção de custo. Não executa predição ou extração completa.
+O desenho da ablação está no [contrato compacto](../docs/metodologia/FLUXO_COMPACTO_V1.md).
+
 Para o nível 7, [causal_smoke_v1.yaml](flow/farneback/causal_smoke_v1.yaml)
 fixa Farnebäck nos quadros 0..19 dos treinos 11/12. É um smoke de integridade
 causal, sem busca, predição ou promoção. O `search.yaml` antigo não define

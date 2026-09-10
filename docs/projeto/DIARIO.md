@@ -2,6 +2,34 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-09 — nível 8a: protocolo compacto e comparação planejada
+
+Registrados [protocolo compacto](../metodologia/FLUXO_COMPACTO_V1.md), plano e
+executor antes dos pixels: 60 quadros de cada um dos 12 treinos, todos os
+campos forward, dois backward/sentinelas por vídeo. Amostras repetidas entre
+janelas são compartilhadas; os quatro vizinhos de cada interpolação ficam
+preservados para conferência. Coordenadas e pesos mantêm precisão float64.
+O iterador histórico percorre as chaves uma vez, sem entregar alvos futuros.
+
+O preditor CV com fluxo foi adaptado para 20 posições, 19 pares históricos e
+uso das cinco transições finais, sem fluxo futuro ou interpretação física.
+Noventa testes sintéticos verificam sua matemática, causalidade e falhas;
+64 verificam deduplicação, cobertura e testemunhos. Isso não é avaliação real
+com ADE/FDE. O benchmark mede custo e integridade e não chama o preditor.
+
+A projeção separa custos fixos, laço, tabelas e sentinelas. Considera densidade
+de amostras, janelas e quadros/pares, inclui autenticação escalável e reserva
+para metadados. O gate é provisório: QA e plano operacional completo continuam
+obrigatórios antes de ampliar. A run e seus resultados terão registro próprio
+posterior; nenhuma execução real é declarada nesta entrada prospectiva.
+
+A suíte selecionada completa passou antes dos pixels: **1.728 testes em
+181,93 s**. Os novos controles incluem 30 testes do executor e da projeção,
+40 do verificador, 64 da representação compacta e 90 do preditor. A conferência
+sintética por CLI também passou. Uma exportação sintética completa por vídeo
+testou a compatibilidade entre produtor e verificador; a revisão final não
+encontrou impedimento concreto para executar o plano registrado.
+
 ## 2026-09-09 — nível 7 concluído: fluxo causal conferido no treino
 
 O [smoke causal de Farnebäck](../metodologia/FLUXO_CAUSAL_V1.md#resultados-do-smoke--09092026)

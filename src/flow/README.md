@@ -38,9 +38,16 @@ afim e devolve movimento residual; essa escolha é registrada nos metadados.
 | [synthetic.py](synthetic.py) | Translações com deslocamento verdadeiro conhecido, apropriadas para EPE. |
 | [cache.py](cache.py) | Escrita e leitura do campo `.npz`, índice e amostragem válida. |
 | [causal.py](causal.py) | Novo par autenticado por vídeo/hash, disponibilidade temporal, interpolação float64 estrita e diagnósticos com suporte explícito. |
+| [compact.py](compact.py) | Deduplicação dos centros históricos, ligações por janela, cobertura das19/5 últimas transições e testemunhos dos quatro vizinhos para auditoria. |
 | [Integração com trajetórias](../integration/README.md) | Como o cache gera `tracks_with_flow.csv` para a predição. |
 
 ## Pares de frames, resultados e verificação
+
+O [benchmark compacto](../../docs/metodologia/FLUXO_COMPACTO_V1.md) usa
+[compact_flow_benchmark.py](../experiments/compact_flow_benchmark.py): campos
+forward por par, amostras únicas entre janelas e campos densos apenas nos
+sentinelas fixos. O novo [preditor CV com fluxo](../prediction/hybrid/causal_constant_velocity.py)
+tem entrada causal e aritmética float64; sua avaliação real é etapa posterior.
 
 O [smoke causal v1](../../docs/metodologia/FLUXO_CAUSAL_V1.md) tem caminho
 próprio em [causal_flow_smoke.py](../experiments/causal_flow_smoke.py): prefixo

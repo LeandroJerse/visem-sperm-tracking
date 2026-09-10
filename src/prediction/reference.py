@@ -187,6 +187,42 @@ class VideoReference:
             rows.append(MappingProxyType(row))
         return HistoryBatch(_readonly(histories), tuple(rows))
 
+    def iter_history_batches(self, *, first_origin: int, last_origin: int,
+                             batch_size: int = 128) -> Iterator[HistoryBatch]:
+        """Scan window metadata once and expose only bounded historical slices.
+
+        This is the streaming counterpart of ``history_batch_at_origin``.
+        Complete-future eligibility is inherited from the audited reference;
+        target coordinates are never sliced or returned. Empty origin ranges
+        yield no batches and are not replaced with another cohort.
+        """
+        _require(type(first_origin) is int and first_origin >= HISTORY_LENGTH - 1,
+                 "first_origin must be an integer >= 19")
+        _require(type(last_origin) is int and last_origin >= first_origin,
+                 "last_origin must be an integer >= first_origin")
+        _require(type(batch_size) is int and batch_size > 0,
+                 "batch_size must be a positive integer")
+        pending = []
+        for spec in self._windows:
+            if first_origin <= spec[6] <= last_origin:
+                pending.append(spec)
+                if len(pending) == batch_size:
+                    yield self._history_batch(pending)
+                    pending = []
+        if pending:
+            yield self._history_batch(pending)
+
+    def _history_batch(self, specs: list[tuple[Any, ...]]) -> HistoryBatch:
+        histories = np.empty((len(specs), HISTORY_LENGTH, 2), dtype=np.float64)
+        rows = []
+        for index, spec in enumerate(specs):
+            row = dict(zip(_FIELDS["windows"], spec))
+            segment = row["segment_id"]
+            offset = row["history_start"] - self._starts[segment]
+            histories[index] = self._positions[segment][offset:offset + HISTORY_LENGTH]
+            rows.append(MappingProxyType(row))
+        return HistoryBatch(_readonly(histories), tuple(rows))
+
 
 @dataclass(frozen=True)
 class _File:

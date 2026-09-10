@@ -68,8 +68,10 @@ Documentos substituídos não permanecem misturados à documentação vigente.
 Quando uma remoção definitiva depender de revisão humana, o arquivo é isolado
 temporariamente fora de `docs/`.
 
-## Marco atual: baselines de predição conferidos no treino
+## Marco atual: fluxo causal conferido e preparação da ablação
 
 - [Congelamento do threshold v3 para desenvolvimento](metodologia/CONGELAMENTO_THRESHOLD_V3.md).
 - [Referência de trajetórias individuais v1](metodologia/TRAJETORIAS_INDIVIDUAIS_V1.md).
 - [Baselines de predição com referência individual](metodologia/BASELINES_PREDICAO_V1.md).
+- [Smoke causal de Farnebäck concluído e conferido](metodologia/FLUXO_CAUSAL_V1.md).
+- [Benchmark compacto e desenho da primeira ablação](metodologia/FLUXO_COMPACTO_V1.md).

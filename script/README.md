@@ -607,6 +607,31 @@ Conferência independente, somente nos derivados da run concluída:
 
 O relatório de conferência deve ter nome novo; não sobrescrever tentativas.
 
+## Benchmark compacto de fluxo causal — nível 8a
+
+O [contrato compacto](../docs/metodologia/FLUXO_COMPACTO_V1.md) e o
+[plano fixo](../configs/flow/farneback/compact_benchmark_v1.yaml) definem os
+primeiros 60 quadros dos 12 treinos. Exige código registrado e Git limpo;
+sem overrides, busca ou avaliação de predição. Não repetir runs encerradas.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -B -m script.flow.test.compact_benchmark
+```
+
+Guarda amostras únicas, ligações por janela, cobertura e quatro vizinhos
+por interpolação. Apenas dois sentinelas por vídeo guardam campos densos.
+A projeção indica viabilidade provisória; nunca libera extração completa.
+A conferência lê somente derivados e deve produzir um arquivo novo:
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -B -m script.flow.test.verify_compact_benchmark `
+  --manifest "data/tests/flow/farneback/<config>/benchmark/<run>/manifest.json" `
+  --output "data/tests/flow/farneback/<config>/benchmark/verification_<identificador>.json"
+```
+
+O `--self-test` do verificador usa apenas casos sintéticos e precede os pixels.
+O nível 7 e seus arquivos permanecem preservados.
+
 ## 4. Predição
 
 Implementações e famílias: [mapa da predição](../src/prediction/README.md).

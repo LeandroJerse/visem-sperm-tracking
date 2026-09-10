@@ -21,6 +21,7 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
 | Acompanhar a busca atual de threshold no treino | [Plano prospectivo v3](docs/metodologia/BUSCA_THRESHOLD_V3.md) · [Executor e comandos](script/README.md#busca-threshold-v3) |
 | Conferir alinhamento e próxima avaliação | [Revisão geral](docs/projeto/REVISAO_GERAL_20260908.md) · [Validação de duas finalistas](docs/metodologia/VALIDACAO_THRESHOLD_V3.md) |
 | Acompanhar a primeira avaliação de predição | [Baselines com referência individual](docs/metodologia/BASELINES_PREDICAO_V1.md) · [Comando oficial](script/README.md#baselines-causais-de-predição-no-treino) |
+| Conferir o fluxo causal e a preparação da ablação | [Smoke concluído](docs/metodologia/FLUXO_CAUSAL_V1.md) · [Benchmark compacto e desenho da comparação](docs/metodologia/FLUXO_COMPACTO_V1.md) |
 | Encontrar todos os outros algoritmos | [Mapa do código](src/README.md) |
 | Entender um método e seus parâmetros | [Catálogo de algoritmos](docs/algoritmos/README.md) |
 | Saber o que realmente foi avaliado | [Matriz de experimentos](docs/projeto/MATRIZ_EXPERIMENTOS.md) |
@@ -47,7 +48,9 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
    Essa preparação já foi concluída e conferida: 363.074 observações preservadas
    e 343.776 janelas. A [comparação fixa de persistência e velocidade constante](docs/metodologia/BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
    também foi concluída e conferida nessas janelas, somente no treino com GT.
-   O próximo marco verifica as entradas causais de fluxo aparente local.
+   O smoke causal de Farnebäck também foi concluído e conferido nos prefixos
+   dos treinos 11/12. O próximo marco mede custo e integridade da extração
+   compacta, preparando a comparação pareada com e sem fluxo.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).
