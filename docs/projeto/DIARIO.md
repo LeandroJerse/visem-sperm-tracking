@@ -2,6 +2,29 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-10 — explicação ampliada do projeto, sem novo experimento
+
+Ampliada a síntese didática local para 19 capítulos, com roteiros de estudo,
+funcionamento dos algoritmos, exemplo numérico do quadro à previsão e leitura
+de manifesto, janelas, amostras e cobertura. Os recortes reais do benchmark
+compacto foram autenticados contra o manifesto; os exemplos fictícios estão
+identificados. As explicações das métricas foram alinhadas ao marco 8a e
+suas limitações. O mapa e o guia de navegação foram atualizados localmente.
+
+Quatro laboratórios ilustram F1, ADE/FDE, disponibilidade causal e interpolação
+bilinear. A conferência cobriu links locais, estrutura, interações e leitura
+em computador/celular; uma correção de legenda móvel recebeu nova verificação
+direcionada. Não houve nova extração, avaliação de modelos ou repetição das
+baterias científicas. As execuções e seus hashes foram preservados.
+
+O [estado científico permanece o marco 8a](../metodologia/FLUXO_COMPACTO_V1.md#resultado-do-benchmark--09092026):
+benchmark conferido, projeção de tempo de 134,21 min acima do teto de 120 min,
+sem ADE/FDE com fluxo. O próximo trabalho é instrumentar e ajustar o custo
+antes da extração ampliada e da ablação. Esta edição não promove método,
+não testa a hipótese e não altera a proveniência de código/run em `6110c44`.
+O registro de resultados de 09/09 permanece em `400cc2d`. HTMLs e orientações
+locais continuam fora dos commits.
+
 ## 2026-09-09 — nível 8a conferido: custo ampliado ainda acima do limite
 
 O [benchmark compacto](../metodologia/FLUXO_COMPACTO_V1.md#resultado-do-benchmark--09092026)
