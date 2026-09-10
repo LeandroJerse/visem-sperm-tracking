@@ -33,7 +33,7 @@ impedem que duplicatas próximas sejam ignoradas.
 | Referência individual do treino | Concluída em 33d191d: 363.074 observações, 725 segmentos, 343.776 janelas; 86 arquivos conferidos |
 | Baselines de predição no treino | Concluídos em 5289c93: persistência e CV mediana5 nas mesmas 343.776 janelas; conferência integral aprovada |
 | Nível 7 concluído e conferido | Farnebäck causal em 11/12, origem 19: 40 quadros, 68 janelas, 1.292 amostras válidas; QA 190 arquivos. Sem busca, ablação ou predição |
-| Nível 8a registrado antes dos pixels | Benchmark compacto de custo/integridade nos 12 treinos, prefixos 0..59; CV com fluxo causal testada sinteticamente. Predição real e extração completa ainda pendentes |
+| Nível 8a concluído e conferido | 720 quadros, 10.848 janelas, 15.762 amostras distintas; QA 288 arquivos. Projeção 134,21 min acima do teto 120 min; extração completa bloqueada. Preditor com fluxo só testado sinteticamente |
 | Contrato HOTA | Próprio e ainda pendente |
 
 [Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).

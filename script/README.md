@@ -609,6 +609,12 @@ O relatório de conferência deve ter nome novo; não sobrescrever tentativas.
 
 ## Benchmark compacto de fluxo causal — nível 8a
 
+**Concluído e conferido em `6110c44`.** Os comandos abaixo documentam sua
+reprodução; não repetir o benchmark encerrado na retomada. A projeção de
+134,21 min excedeu o teto de 120 min; esta CLI não libera a extração completa.
+Leia os [resultados e a continuidade](../docs/metodologia/FLUXO_COMPACTO_V1.md#resultado-do-benchmark--09092026)
+antes de preparar um novo ensaio operacional.
+
 O [contrato compacto](../docs/metodologia/FLUXO_COMPACTO_V1.md) e o
 [plano fixo](../configs/flow/farneback/compact_benchmark_v1.yaml) definem os
 primeiros 60 quadros dos 12 treinos. Exige código registrado e Git limpo;

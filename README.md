@@ -49,8 +49,10 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
    e 343.776 janelas. A [comparação fixa de persistência e velocidade constante](docs/metodologia/BASELINES_PREDICAO_V1.md#resultados-da-bateria--08092026)
    também foi concluída e conferida nessas janelas, somente no treino com GT.
    O smoke causal de Farnebäck também foi concluído e conferido nos prefixos
-   dos treinos 11/12. O próximo marco mede custo e integridade da extração
-   compacta, preparando a comparação pareada com e sem fluxo.
+   dos treinos 11/12. O benchmark compacto também terminou nos 12 treinos,
+   com QA aprovado. Sua projeção de 134,21 min excedeu o teto de 120 min;
+   a próxima etapa deve medir e ajustar o custo operacional antes da extração
+   completa e da ablação pareada com e sem fluxo.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).

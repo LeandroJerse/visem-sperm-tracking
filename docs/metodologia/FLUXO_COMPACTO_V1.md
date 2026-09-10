@@ -207,3 +207,88 @@ nos sentinelas, recomputar métricas, suporte, cobertura e projeção.
 Coordenadas, contagens e hashes exatos; tolerância absoluta 1e-9, relativa 0,
 para interpolações e diagnósticos. Preservar falhas em novos arquivos de QA.
 Não declarar o nível 8 inteiro concluído: o marco 8a apenas prepara sua execução.
+
+
+## Resultado do benchmark — 09/09/2026
+
+**Nível 8a concluído e conferido; extração completa bloqueada pelo orçamento
+de tempo.** Código, plano e verificador foram registrados antes dos pixels em
+`6110c44526c30f8f8f7a2fdeb276f7169d2fcd88`, após **1.728 testes em 181,93 s**
+e self-test independente. A run terminou com Git limpo, reconferido ao final.
+O identificador usa UTC em 10/09; a execução ocorreu em 09/09 no fuso de São Paulo.
+
+Os 12 prefixos concluíram 720 quadros, 708 campos forward e 24 backward.
+Foram preservadas **10.848 janelas, 15.762 amostras distintas e 206.112 usos
+históricos**. Todas as amostras foram numericamente válidas e todas as janelas
+tiveram suas cinco amostras finais válidas. Isso não certifica acurácia do fluxo
+ou cobertura dos vídeos completos. As 10.848 janelas não são réplicas independentes.
+
+| Vídeo de treino | Janelas | Amostras distintas | Usos históricos |
+|---|---:|---:|---:|
+| 11 | 1.663 | 2.419 | 31.597 |
+| 12 | 1.077 | 1.617 | 20.463 |
+| 13 | 1.802 | 2.594 | 34.238 |
+| 15 | 902 | 1.298 | 17.138 |
+| 21 | 891 | 1.305 | 16.929 |
+| 22 | 489 | 705 | 9.291 |
+| 23 | 164 | 236 | 3.116 |
+| 29 | 164 | 236 | 3.116 |
+| 30 | 492 | 708 | 9.348 |
+| 35 | 1.356 | 1.968 | 25.764 |
+| 60 | 738 | 1.062 | 14.022 |
+| 82 | 1.110 | 1.614 | 21.090 |
+| **Total** | **10.848** | **15.762** | **206.112** |
+
+O tempo da run foi **199,583442 s**, com **375,145 MiB RSS amostrado** em
+734 observações. Foram guardados 193 artefatos e um manifesto: 153.909.176
+bytes antes do manifesto final e **154.023.508 bytes finais**. Os 24 pares
+sentinelas conservam ambos os sentidos e os 48 quadros cinza correspondentes.
+Os parâmetros, o limite de 60 quadros e a coorte não foram alterados.
+
+### Conferência independente
+
+O QA passou na **primeira tentativa**: **288 arquivos**, **934.668 comparações**,
+incluindo 127.506 numéricas e 94.572 de coordenadas, em **23,4658582 s**.
+Máxima diferença numérica: `3,552713678800501e-15`, abaixo do limite absoluto
+de 1e-9, sem tolerância relativa. Foram conferidos 7.372.800 pixels de pares
+nos diagnósticos sentinelas e 14.745.600 pixels de campos direcionais retidos.
+O QA reconstruiu todas as amostras a partir dos testemunhos e confrontou os
+testemunhos sentinelas com os NPZ densos. Não reabriu MP4s ou labels originais,
+não importou a implementação científica e não repetiu Farnebäck.
+Fora dos sentinelas, os campos descartados continuam não reconstruíveis;
+o vínculo dos quatro vizinhos ao estimador depende da procedência do produtor.
+
+- [Manifesto da run](../../data/tests/flow/farneback/farneback_compact_benchmark_v1__cfgeae42bba/benchmark/20260910T023738734548Z__6110c44__cfgf794175a7060__srca19f8367f9__s42/manifest.json); SHA256 `72c7df2d895d1fa02014dfa1100a1a7defc8351ea19d86392ad09e5473fcd278`.
+- [Conferência aprovada](../../data/tests/flow/farneback/farneback_compact_benchmark_v1__cfgeae42bba/benchmark/verification_20260909.json); SHA256 `20af88c5930434685a86330d98692f99d9a429f0e0e61723ae41138e1af1435c`.
+- Hash das fontes de código da run: `a19f8367f992f31710d50dc6e17bec33cdbce4905eae3a8eb9bc6bb477e0c81d`.
+- [Resumo global](../../data/tests/flow/farneback/farneback_compact_benchmark_v1__cfgeae42bba/benchmark/20260910T023738734548Z__6110c44__cfgf794175a7060__srca19f8367f9__s42/summary.json) e
+  [saídas por vídeo](../../data/tests/flow/farneback/farneback_compact_benchmark_v1__cfgeae42bba/benchmark/20260910T023738734548Z__6110c44__cfgf794175a7060__srca19f8367f9__s42/by_video).
+- Figura [PNG](../../data/derived/flow/reports/farneback_compact_benchmark_v1_20260909/benchmark_fluxo_compacto.png),
+  [SVG](../../data/derived/flow/reports/farneback_compact_benchmark_v1_20260909/benchmark_fluxo_compacto.svg)
+  e [proveniência](../../data/derived/flow/reports/farneback_compact_benchmark_v1_20260909/provenance.json).
+
+### Orçamento e continuidade
+
+A regra registrada projetou **8.052,675671 s (134,21 min)**, acima dos
+7.200 s (120 min) permitidos: excesso de 852,675671 s, aproximadamente 11,84%.
+Projetou **1.854.533.829,14 bytes (1.768,62 MiB)**, abaixo dos 4.096 MiB.
+O estado é `exceeds_planning_budget`; `full_extraction_released=false` e
+`full_rss_certified=false`. O próprio benchmark respeitou seus limites;
+é a projeção de escala que não passou. Não elevar retroativamente o teto,
+retirar o fator de segurança ou omitir parcelas para declarar aprovação.
+
+Com o fator 2 já aplicado, o laço responde por 7.516,522034 s da projeção
+(93,34%), as tabelas por 450,794378 s, os sentinelas por 43,485277 s e a
+parcela fixa por 41,873983 s. O laço reúne decodificação, estimação,
+amostragem e coleta de testemunhos; esses dados não isolam qual subetapa
+domina. O próximo marco deverá instrumentar essas parcelas e registrar um
+ajuste operacional verificável, se necessário, antes de qualquer novo ensaio.
+Eventual paralelismo exige conferir equivalência numérica e recursos, mantendo
+os parâmetros científicos, a causalidade e a referência. Isso é continuidade
+proposta, não uma otimização já implementada ou um novo benchmark executado.
+
+Após resolver o custo sob plano próprio, registrar a extração completa,
+a retenção de índices/memória e a ablação pareada na coorte comum. O preditor
+causal está implementado e testado sinteticamente, mas **não foi chamado em
+dados reais**. Não há ADE/FDE com fluxo, seleção, promoção ou confirmação da
+hipótese. Referência, baselines, smoke e este benchmark permanecem preservados.

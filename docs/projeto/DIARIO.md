@@ -2,6 +2,32 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-09 — nível 8a conferido: custo ampliado ainda acima do limite
+
+O [benchmark compacto](../metodologia/FLUXO_COMPACTO_V1.md#resultado-do-benchmark--09092026)
+terminou em `6110c44`, com Git limpo: 12 treinos, 720 quadros, 708 campos
+forward, 24 backward, 10.848 janelas, 15.762 amostras distintas e 206.112 usos.
+Todas as amostras e as cinco transições finais de cada janela foram válidas.
+Tempo 199,583442 s, RSS amostrado 375,145 MiB e 154.023.508 bytes finais.
+
+Conferência independente aprovada na primeira tentativa: 288 arquivos,
+934.668 comparações, 127.506 numéricas, 23,4658582 s, diferença máxima
+3,552713678800501e-15. O QA usa derivados e testemunhos; não repete MP4s ou
+Farnebäck. A run e seus hashes estão no protocolo, assim como o limite da
+conferência dos campos não retidos. O identificador UTC é de 10/09; a data
+local da execução é 09/09, em São Paulo.
+
+A projeção registrada excedeu o limite de tempo: 8.052,675671 s contra
+7.200 s; os 1.768,62 MiB projetados cabem no limite de 4.096 MiB. A extração
+completa permanece bloqueada. O laço de decodificação/estimação/amostragem
+responde por 93,34% da projeção; a próxima etapa deverá medir suas parcelas
+e registrar um ajuste operacional verificável. O teto original foi preservado.
+
+Este marco não executou preditores em dados reais nem avaliou a hipótese.
+Figura, relatório, atlas, guia e método da monografia foram atualizados
+localmente; HTMLs e orientações locais seguem fora dos commits. Não repetir
+as baterias encerradas nem ampliar a extração por esta CLI.
+
 ## 2026-09-09 — nível 8a: protocolo compacto e comparação planejada
 
 Registrados [protocolo compacto](../metodologia/FLUXO_COMPACTO_V1.md), plano e

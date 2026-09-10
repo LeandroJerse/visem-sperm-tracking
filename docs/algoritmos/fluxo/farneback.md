@@ -17,6 +17,13 @@ amostras históricas válidas. O QA aprovado após a correção de esquema em
 custos, limites e hashes no contrato. O espaço de busca legado não foi
 executado nesta etapa; a hipótese de ganho na predição continua pendente.
 
+O [benchmark compacto do nível 8a](../../metodologia/FLUXO_COMPACTO_V1.md)
+foi concluído em `6110c44` e conferido independentemente: 720 quadros dos
+12 treinos, 10.848 janelas e 15.762 amostras distintas válidas. Sua projeção
+de tempo (134,21 min) ultrapassa o teto de 120 min; a extração completa
+permanece bloqueada. O próximo ajuste deve medir as parcelas do laço e
+preservar os parâmetros científicos. Isso não avalia o preditor ou a hipótese.
+
 [Índice da família](README.md) · [Catálogo de algoritmos](../README.md)
 
 ## Teoria e implementação
