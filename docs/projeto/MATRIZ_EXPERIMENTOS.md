@@ -6,6 +6,56 @@ repositório; `API` significa apenas que construtor/configuração foram validad
 
 ## Detecção
 
+### Comparação estática concluída e conferida — 11/09/2026
+
+O [protocolo comparativo](../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md#resultados-da-busca-e-conferência--11092026)
+concluiu smoke de 516 avaliações e busca de **43 × 576 = 24.768 avaliações**
+em `2547109`, com Git limpo. São 48 quadros por vídeo, somente nos 12 treinos.
+As cinco famílias pesquisadas conservam duas candidatas cada para refinamento;
+T218 entra como referência fixa. A tabela mostra apenas a melhor configuração
+de cada família **dentro da grade registrada**, sem promoção.
+
+| Família | Configurações nesta busca | Melhor da grade | F1 macro 10 px | Detecção ms/quadro | Estado seguinte |
+|---|---:|---|---:|---:|---|
+| Blob | 6 | `blob_v1_003` | 0,791005 | 1,285 | Refinar 003/002 |
+| Threshold fixo | 1 referência | `t218_o0_c2_reference_v1` | 0,775634 | 1,950 | Preservar referência; sem novo ajuste |
+| Watershed | 6 | `watershed_v1_005` | 0,609765 | 21,674 | Refinar 005/002 |
+| Otsu | 4 | `otsu_v1_004` | 0,546675 | 2,172 | Refinar 004/003 |
+| Híbrido CLAHE | 8 | `hybrid_threshold_v1_002` | 0,185388 | 4,950 | Refinar 002/001 |
+| Adaptativo | 18 | `adaptive_threshold_v1_002` | 0,148689 | 3,512 | Refinar 002/008 |
+| MOG2/KNN | Fora desta busca estática | — | — | — | Registrar execução temporal contínua com aquecimento |
+| YOLO | Fora desta busca clássica | — | — | — | Derivado autenticado e novo executor estrito antes do treino |
+
+F1 é calculado após somar TP/FP/FN dentro do vídeo e depois dar peso igual
+aos 12 vídeos. Blob fica acima de T218 em 7/12 vídeos, com diferença macro
+de 0,015371, aproximadamente 1,54 ponto percentual. É uma diferença
+descritiva no treino, sem significância ou generalização demonstradas.
+A grade tem esforço desigual e T218 já havia recebido ajuste extenso.
+Os 576 quadros e as 24.768 avaliações não são réplicas independentes.
+
+A conferência passou na primeira tentativa: 289 arquivos, 30.927.965
+comparações, 21.050.826 numéricas, 148.608 matchings SciPy, diferença máxima
+zero, 338,200844 s. Reconstruiu derivados e métricas sem repetir inferência
+ou decodificação. T218 reproduziu a evidência anterior dos mesmos 576
+quadros, exceto tempo e identidade da nova execução. Fonte e QA estão
+vinculados no [resumo autenticado](../../data/derived/detection/comparison_reports/classical_v1_20260911/summary.json).
+SHA256 do manifesto: `8a08f83d1b81be4dd2bae4b42bfea21bc08531d0e57ea9104f8693072ae606d0`;
+SHA256 do QA: `c51f53f3d0a390a715460ce101c91a36e1d59e7e0c128e73ae12efc5da7da792`.
+
+Run de 752,160737 s após a autenticação inicial do cache, 823,145 MiB de
+RSS amostrado e 523.379.582 bytes de artefatos das candidatas. Tempo da
+tabela mede detecção em cache, sem a pipeline completa. O smoke v1 falhou
+com a guarda de 2.000 previsões; a revisão v2 elevou-a a 307.200 mantendo
+dados, grade e limites de RAM/artefatos de 2.048 MiB. Falha e YAML original
+foram preservados, sem truncar saídas ou remover candidatas.
+
+Próximo marco: novo YAML/executor para refinamento local e, após conferência,
+validação das finalistas nos quatro vídeos completos. Ainda faltam as
+comparações temporal e aprendida pertinentes antes de escolher o detector
+da cadeia. Rastreamento/HOTA e predição/ADE/FDE exigem avaliação própria;
+nenhuma célula dessas etapas é concluída por um F1 de detecção. As tabelas
+históricas abaixo permanecem identificadas com seus contratos originais.
+
 ### Contrato ativo da retomada — 07/09/2026
 
 **`center_distance_v3_individuals_ignore_clusters_10px`**: indivíduos das
@@ -33,8 +83,8 @@ impedem que duplicatas próximas sejam ignoradas.
 | Referência individual do treino | Concluída em 33d191d: 363.074 observações, 725 segmentos, 343.776 janelas; 86 arquivos conferidos |
 | Baselines de predição no treino | Concluídos em 5289c93: persistência e CV mediana5 nas mesmas 343.776 janelas; conferência integral aprovada |
 | Nível 7 concluído e conferido | Farnebäck causal em 11/12, origem 19: 40 quadros, 68 janelas, 1.292 amostras válidas; QA 190 arquivos. Sem busca, ablação ou predição |
-| Nível 8a concluído e conferido | 720 quadros, 10.848 janelas, 15.762 amostras distintas; QA 288 arquivos. Projeção 134,21 min acima do teto 120 min; extração completa bloqueada. Preditor com fluxo só testado sinteticamente |
-| Contrato HOTA | Próprio e ainda pendente |
+| Nível 8a concluído e conferido | 720 quadros, 10.848 janelas, 15.762 amostras distintas; QA 288 arquivos. Projeção 134,21 min não passou no teto histórico de 120 min. Novo plano de 11/09 permite monitorar tempo sem esse corte; a CLI compacta continua sem liberar extração completa. Preditor com fluxo só testado sinteticamente |
+| Contrato HOTA | Desenho próprio em preparação, com YAML de smoke; avaliador e bateria real ainda não liberados |
 
 [Resultados, oito pares configuração–vídeo, figura e conferência](../metodologia/VALIDACAO_THRESHOLD_V3.md#resultados-da-validação--08092026).
 Cada finalista vence em dois vídeos; a diferença macro de 0,11403 ponto
@@ -89,7 +139,8 @@ segmentações. Os artefatos locais ficam em
 `data/derived/detection/annotation_audit/retomada_20260907_nivel2/treino_agrupamentos/`.
 
 A versão `center_distance_v2_10px` e T200 sob a avaliação histórica de 15 px
-permanecem preservados. **Nenhum método está promovido no contrato v3.** A
+permanecem preservados. **Nenhum método está promovido para teste/aplicação
+no contrato v3; T218 está congelado somente para desenvolvimento.** A
 tabela seguinte mantém as evidências anteriores; suas marcas não indicam
 smoke, validação ou congelamento sob a nova política de agrupamentos.
 
@@ -135,16 +186,24 @@ pendentes de execução com a dependência externa. Os contadores locais de
 associação, ID-switch e fragmentação são auditoria, não substitutos dessas
 métricas.
 
+Em 11/09 foi registrado o desenho
+[Rastreamento comparação v1](../metodologia/RASTREAMENTO_COMPARACAO_V1.md):
+diagnóstico com caixas GT sem IDs, depois detecções automáticas e ablação
+do fluxo na associação. O YAML descreve o smoke, mas a CLI histórica não
+implementa ainda todas essas garantias; o contrato e a bateria não estão
+liberados apenas por existirem arquivos. Nenhuma célula da tabela acima
+passa a avaliação VISEM concluída por esse registro documental.
+
 ## Movimento aparente
 
-| Algoritmo | Código | Translação sintética | Busca/val real | Máscara/ablação | Congelar | Teste | Cache 85 |
+| Algoritmo | Código | Sintético/arquitetura | Busca/val real | Máscara/ablação | Congelar | Teste | Cache 85 |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Lucas–Kanade | ✓ | ✓ | — | ✓ contrato; VISEM — | — | — | — |
 | Farneback | ✓ | ✓ | — | ✓ contrato; VISEM — | — | — | — |
 | Horn–Schunck | ✓ | ✓ translação pequena, single-scale | — | ✓ contrato; VISEM — | — | — | — |
-| RAFT | ✓ | sem torch/pesos | — | ✓ contrato; VISEM — | — | — | — |
+| RAFT | ✓ | ✓ small CUDA sem pesos; forma/finitude, sem EPE | — | ✓ contrato; VISEM — | — | — | — |
 | Híbrido robusto CPU | ✓ | ✓ fusão e translação sem compensação | — | ✓ contrato; VISEM — | — | — | — |
-| Híbrido robusto + RAFT | ✓ | sem torch/pesos | — | ✓ contrato; VISEM — | — | — | — |
+| Híbrido robusto + RAFT | ✓ | CUDA disponível; híbrido com pesos ainda pendente | — | ✓ contrato; VISEM — | — | — | — |
 
 **Atualização de 09/09/2026:** [smoke causal de Farnebäck](../metodologia/FLUXO_CAUSAL_V1.md) concluído e conferido em `16eecbb`, QA corrigido em `0fccda8`. Uma configuração fixa, sem máscara, quadros 0..19 dos treinos 11/12. A coluna busca/val real permanece pendente: este smoke não seleciona parâmetros nem testa a hipótese.
 
@@ -168,9 +227,29 @@ descritivo com GT de treino, sem tuning, validação, seleção de vencedor ou f
 | Velocidade constante | ✓ | ✓ | ✓ mediana5 v1 | — | — | — | — | — | — |
 | Kalman | ✓ | ✓ | — | — | — | — | — | — | — |
 | Filtro de partículas | ✓ | ✓ | — | — | — | — | — | — | — |
-| LSTM sem fluxo | ✓ | API; treino pendente | — | — | — | — | — | — | — |
-| LSTM com fluxo | ✓ | API; treino pendente | — | — | — | — | — | — | — |
+| LSTM sem fluxo | ✓ | ✓ arquitetura CUDA e backward; treino pendente | — | — | — | — | — | — | — |
+| LSTM com fluxo | ✓ | ✓ arquitetura CUDA e backward; treino pendente | — | — | — | — | — | — | — |
 | Híbridos clássicos flow-aware | ✓ | ✓ | — | — | — | — | — | — | — |
+
+## Ambiente aprendido — engenharia conferida em 11/09/2026
+
+`.venv-ml` preserva a `.venv` clássica: Python 3.13.3, torch 2.9.1+cu128,
+torchvision 0.24.1+cu128, Ultralytics 8.4.147, 55 versões fixadas e
+`pip check` aprovado. Seis checks passaram em 12,0624322 s na RTX 4070 Ti:
+matmul e NMS CUDA, RAFT small sem pesos, YOLOv8n YAML de três classes, LSTM
+sem/com fluxo com forward e backward finitos. Zero dados VISEM, pesos
+externos e passos de otimização nesse smoke. A capacidade da LSTM aumenta
+de 22.868 para 23.380 parâmetros com fluxo e precisa de controle próprio
+na ablação científica.
+
+Esse resultado não substitui treinamento YOLO, pesos RAFT, avaliação de
+fluxo ou ADE/FDE aprendidos. O próximo preparo YOLO deve produzir cópia
+derivada autenticada, impedir caches/reparos nas fontes e assegurar que o
+executor repasse e registre os parâmetros efetivos. Não usar o executor
+histórico como se essas garantias já estivessem implementadas. Evidência:
+[Ambiente aprendido v1](../metodologia/AMBIENTE_APRENDIDO_V1.md), recibo
+`data/derived/project_audits/learned_environment/20260911_validation_v1.json`,
+SHA256 `29414ce0667c40ccd23e317cc86c07b6ed048e2efa249d968fb60c3fa907312b`.
 
 ## Nível 2 concluído: precisão dos CSVs conferida
 

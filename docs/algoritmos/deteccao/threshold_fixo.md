@@ -13,6 +13,27 @@ A classe é compartilhada com os outros modos de threshold; o YAML e o identific
 
 [Índice da família](README.md) · [Catálogo de algoritmos](../README.md)
 
+## Referência na comparação entre famílias — 11/09/2026
+
+T218/o0/c2 foi mantido fixo como `t218_o0_c2_reference_v1` na busca
+comparativa de 43 configurações, nos mesmos 576 quadros dos 12 treinos.
+F1 macro a 10 px **0,7756341553985521**, precisão 0,728333 e recall
+0,852686; F1 a 15/20 px 0,783613/0,786278. Foram 60 previsões ignoradas
+a 10 px, após a proteção dos indivíduos. Detecção média em cache:
+1,950 ms/quadro. A conferência independente reproduziu centros, GT e
+métricas da execução anterior dos mesmos quadros, exceto tempo e
+identificação. Não é uma nova amostra independente nem novo ajuste de T218.
+
+Blob obteve maior F1 macro nesta grade, mas T218 ficou acima dele em
+5/12 vídeos. O F1 de T218 varia de 0,546182 no vídeo 35 a 0,884910 no 22.
+Esta busca não altera o congelamento de desenvolvimento nem os resultados
+da validação de T218 registrados abaixo. O detector final da cadeia ainda
+depende da comparação pertinente com as demais famílias e de validação.
+
+[Grade comparativa executada](../../../configs/detection/comparison/classical_v1_operational_v2.yaml),
+[valores por vídeo](../../../data/derived/detection/comparison_reports/classical_v1_20260911/summary.json)
+e [manifesto e QA da comparação](../../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md#resultados-da-busca-e-conferência--11092026).
+
 ## Ideia
 
 Um limiar global definido antes da execução separa primeiro plano e fundo. Uma
@@ -90,7 +111,9 @@ seguido de média com peso igual entre os 12 vídeos. Os valores selecionam
 **dois finalistas de treino**, sem demonstrar superioridade fora dessa amostra.
 A diferença de aproximadamente 0,000156 de F1 macro é pequena e descritiva;
 não demonstra generalização ou superioridade estatística.
-Não houve validação completa, teste ou promoção no contrato v3. A morfologia
+Na conclusão desse refinamento ainda não havia validação completa, teste
+ou promoção na v3; a validação e o congelamento de desenvolvimento vieram
+depois, conforme a decisão atual acima. A morfologia
 foi herdada e a área permaneceu fixa em 3–300 pixels; o refinamento não alterou
 o raio principal de 10 px ou as sensibilidades de 15/20 px.
 
@@ -155,7 +178,8 @@ Saídas locais:
 Os seis frames verificam a execução do contrato; seu F1 não estima a qualidade
 geral do threshold e não orienta seleção de parâmetros. Naquele marco ainda
 não havia busca na v3. A busca de treino posterior está registrada acima;
-a validação e a promoção do método na v3 continuam pendentes. O raio é uma convenção
+a validação ainda estava pendente naquele momento. Ela foi concluída depois;
+o método continua sem liberação para teste/aplicação. O raio é uma convenção
 operacional, não uma estimativa de ótimo ou referência anatômica exata.
 
 A verificação independente confirmou TP/FP/FN nos seis frames, mas encontrou
@@ -167,8 +191,9 @@ O registro local `verification_20260907_full_precision.json`, no diretório
 `smoke/`, contém a conferência independente dos erros espaciais exportados.
 Após esse marco, o plano prospectivo foi registrado e a busca grossa foi
 executada, seguida pelo refinamento descrito na decisão atual. Raio e política
-de classes permaneceram iguais. A preparação da validação completa é o
-próximo marco, sem reaproveitar como finalistas os YAMLs históricos a 15 px.
+de classes permaneceram iguais. A validação completa foi o marco seguinte,
+concluído e seguido do congelamento de desenvolvimento descrito acima,
+sem reaproveitar como finalistas os YAMLs históricos a 15 px.
 
 ## Decisão histórica preservada — avaliação de 15 px
 

@@ -12,6 +12,11 @@ A aquisição descrita nos artigos não documenta contracorrente imposta por tub
 ou bomba. A origem dos dados e os limites dessa interpretação estão no
 [protocolo experimental](docs/metodologia/PROTOCOLO.md#escopo-dos-dados-e-interpretação-do-movimento).
 
+**Estado em 11/09/2026:** busca comparativa de seis famílias clássicas concluída
+e conferida no treino: 43 configurações, 576 quadros e 24.768 avaliações.
+Seguem refinamento, validação e YOLO antes da escolha do detector;
+rastreamento e predição terão comparações próprias.
+
 ## Comece por aqui
 
 | Quero… | Abra |
@@ -21,7 +26,7 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
 | Entender a preparação dos rastreadores | [Contrato de tracking e pendências](docs/metodologia/RASTREAMENTO_COMPARACAO_V1.md) |
 | Encontrar o threshold que já usamos | [Algoritmo threshold.py](src/detection/classical/threshold.py) |
 | Inspecionar um frame e as etapas da detecção | [Threshold frame a frame: comandos e menu](script/README.md#threshold-frame-a-frame) |
-| Acompanhar a busca atual de threshold no treino | [Plano prospectivo v3](docs/metodologia/BUSCA_THRESHOLD_V3.md) · [Executor e comandos](script/README.md#busca-threshold-v3) |
+| Consultar a busca concluída de threshold no treino | [Plano prospectivo v3](docs/metodologia/BUSCA_THRESHOLD_V3.md) · [Executor e comandos](script/README.md#busca-threshold-v3) |
 | Conferir alinhamento e próxima avaliação | [Revisão geral](docs/projeto/REVISAO_GERAL_20260908.md) · [Validação de duas finalistas](docs/metodologia/VALIDACAO_THRESHOLD_V3.md) |
 | Acompanhar a primeira avaliação de predição | [Baselines com referência individual](docs/metodologia/BASELINES_PREDICAO_V1.md) · [Comando oficial](script/README.md#baselines-causais-de-predição-no-treino) |
 | Conferir o fluxo causal e a preparação da ablação | [Smoke concluído](docs/metodologia/FLUXO_CAUSAL_V1.md) · [Benchmark compacto e desenho da comparação](docs/metodologia/FLUXO_COMPACTO_V1.md) |

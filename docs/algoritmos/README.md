@@ -27,6 +27,17 @@ implementação existente não significa que houve validação experimental.
 Consulte a [matriz de experimentos](../projeto/MATRIZ_EXPERIMENTOS.md)
 para o estado de cada método. O catálogo não promove resultados.
 
+**Estado em 11/09/2026:** a [comparação estática de detecção](deteccao/README.md#busca-comparativa-conferida--11092026)
+concluiu 43 configurações em 576 quadros do treino, com conferência
+independente. Blob obteve o maior F1 macro nesta grade, seguido da referência
+T218; são resultados de seleção no treino, sem vencedor final ou promoção.
+O próximo marco é o refinamento e depois a validação comparativa, enquanto
+YOLO prepara seus dados/treinamento e tracking prepara seu contrato HOTA.
+O [ambiente aprendido](../metodologia/AMBIENTE_APRENDIDO_V1.md) passou em seis
+checks sintéticos CUDA, incluindo arquiteturas YOLO, RAFT e LSTM. Isso
+confirma execução técnica; não significa treinamento ou avaliação VISEM
+concluídos para esses métodos.
+
 Cada método e cada variante híbrida têm sua própria ficha. O
 [protocolo comum dos preditores com fluxo](predicao/hibridos_com_fluxo.md)
 reúne as ablações compartilhadas; não representa outro algoritmo.

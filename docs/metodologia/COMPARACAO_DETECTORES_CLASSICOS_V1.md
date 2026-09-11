@@ -200,3 +200,85 @@ avaliação e seleção. Alteram-se somente identidade/linhagem operacional e o
 teto de contagem. Registrar código e revisão em novo commit limpo e executar
 um novo smoke completo antes da busca. O primeiro smoke é falha de engenharia
 preservada; não é comparação científica concluída nem seleção de parâmetros.
+
+## Resultados da busca e conferência — 11/09/2026
+
+A revisão operacional v2 concluiu o smoke e a busca com Git limpo em
+`2547109`. O smoke cobriu 43 configurações × 12 quadros = 516
+avaliações; não selecionou candidatas. A busca cobriu as mesmas 43
+configurações × 576 quadros = **24.768 avaliações**, nos 12 vídeos de treino.
+Foram mantidos todos os candidatos e todas as previsões, inclusive
+superdetecções. A falha operacional v1 permanece preservada acima.
+
+| Família | Configuração da grade | F1 macro a 10 px | Precisão macro | Recall macro | ms/quadro |
+|---|---|---:|---:|---:|---:|
+| Blob | `blob_v1_003` | 0,791005 | 0,760180 | 0,848556 | 1,285 |
+| Threshold T218 | `t218_o0_c2_reference_v1` | 0,775634 | 0,728333 | 0,852686 | 1,950 |
+| Watershed | `watershed_v1_005` | 0,609765 | 0,540194 | 0,797990 | 21,674 |
+| Otsu | `otsu_v1_004` | 0,546675 | 0,488463 | 0,699844 | 2,172 |
+| Híbrido CLAHE | `hybrid_threshold_v1_002` | 0,185388 | 0,127623 | 0,450986 | 4,950 |
+| Adaptativo | `adaptive_threshold_v1_002` | 0,148689 | 0,083095 | 0,929020 | 3,512 |
+
+Cada linha mostra a melhor configuração **desta grade** dentro da família.
+A métrica agrega TP/FP/FN dentro do vídeo e depois dá peso igual aos 12
+vídeos. Não é uma média de F1 por quadro. A grade tem esforço desigual entre
+famílias e T218 foi ajustado anteriormente; não descreve os máximos possíveis
+de cada algoritmo. Precisão e recall também são médias por vídeo: seu F1
+harmônico não precisa coincidir com o F1 macro da tabela.
+
+As 11 candidatas registradas em `family_finalists.json` são as duas primeiras
+de cada uma das cinco famílias pesquisadas e a referência T218. São pais
+para a próxima etapa, não configurações promovidas. Ainda não houve
+refinamento dessas novas famílias, validação comparativa completa, teste,
+confirmação por folds ou escolha da pipeline. MOG2/KNN e YOLO não participaram
+desta bateria; necessitam protocolo temporal e treinamento próprios.
+
+A busca durou 752,160737 s após a autenticação inicial do
+cache (4,833700 s). O laço de
+candidatas durou 749,312176 s. RSS máximo
+amostrado 823,145 MiB, em
+24.857 medições;
+523.379.582 bytes de artefatos das
+candidatas. Esse número não inclui os arquivos do agregador. Os limites de
+2.048 MiB de RSS e artefatos foram respeitados. O custo por quadro da tabela
+mede o detector sobre imagem em cache; não é FPS da pipeline completa.
+
+A conferência independente da busca passou na primeira tentativa:
+289 arquivos, 30.927.965 comparações,
+21.050.826 numéricas e
+148.608 matchings SciPy, em 338,200844 s.
+Maior diferença numérica: 0.0.
+T218 reproduziu os centros/GT e métricas dos mesmos 576 quadros da run de
+refinamento anterior, exceto tempo e identificação da nova execução.
+O QA não refaz inferência ou decodificação; verifica os derivados autenticados
+e reconstrói as associações, agregações, ranking e candidatas seguintes.
+As limitações e eventuais empates ótimos estão descritos no recibo completo.
+
+O QA do smoke também passou: 286 arquivos,
+838.040 comparações,
+3.096 matchings, paridade T218 nos 12 quadros.
+O smoke e a busca são execuções diferentes e conservam seus próprios recibos.
+
+Busca: `data/tests/detection/classical_comparison/classical_detection_comparison_v1_operational_v2_20260911_batch__cfgb226c5dc/search/20260911T144742812472Z__2547109__cfgbecfe1d189e7__srcf14ede5a12__s42/manifest.json`.
+SHA256 do manifesto: `8a08f83d1b81be4dd2bae4b42bfea21bc08531d0e57ea9104f8693072ae606d0`.
+QA: `data/tests/detection/classical_comparison/classical_detection_comparison_v1_operational_v2_20260911_batch__cfgb226c5dc/search/verification_20260911.json`.
+SHA256 do QA: `c51f53f3d0a390a715460ce101c91a36e1d59e7e0c128e73ae12efc5da7da792`.
+Fontes da execução: `f14ede5a1240d6e6588f5859a02e408ec99601aa019513af7a6f4478ac86d64c`.
+
+Smoke v2: `data/tests/detection/classical_comparison/classical_detection_comparison_v1_operational_v2_20260911_batch__cfgd3cb65ba/smoke/20260911T144621160257Z__2547109__cfg69087a632a64__srcf14ede5a12__s42/manifest.json`.
+Manifesto SHA256 `2cad2719b618e14fe07a3f45bba658499fa557c798d0fc59f60610b3b1406b54`.
+QA: `data/tests/detection/classical_comparison/classical_detection_comparison_v1_operational_v2_20260911_batch__cfgd3cb65ba/smoke/verification_20260911.json`.
+QA SHA256 `05095ce3c4659b29935df343f1d2b990a4a7f5b38bbc406e232e76e7adb9a1d8`.
+
+A tabela e a figura descritiva derivada estão em
+`data/derived/detection/comparison_reports/classical_v1_20260911/`, com
+manifesto de origem, QA e hashes em `summary.json`. Os CSVs completos e as
+sensibilidades de 15/20 px permanecem nas runs.
+
+Próximo marco: resolver as vizinhanças prospectivas desta seção anterior em
+novo YAML e executor de refinamento, incluindo pais/deduplicação, e conferir
+os resultados. Depois, validar as finalistas nos quatro vídeos completos.
+YOLO deve completar a comparação antes da escolha do detector da cadeia.
+Tracking terá comparação própria: F1 de detecção não substitui HOTA,
+identidade ou cobertura; predição deve medir ADE/FDE sobre trajetórias
+estimadas, além dos controles GT já existentes.

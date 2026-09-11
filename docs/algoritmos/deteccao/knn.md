@@ -15,6 +15,11 @@ Ainda não há pasta de runs específica deste método; o link abre a área do d
 
 [Índice da família](README.md) · [Catálogo de algoritmos](../README.md)
 
+Estado em 11/09/2026: não participa da grade comparativa estática de 43
+configurações nos 576 quadros espaçados. A avaliação temporal continua
+pendente de contrato e bateria próprios, com sequência contínua, reinício
+por vídeo e aquecimento; sua ausência nessa busca não o exclui do TCC.
+
 ## Ideia
 
 Classifica o pixel comparando sua observação recente a amostras do histórico,

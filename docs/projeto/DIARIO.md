@@ -2,6 +2,38 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-11 — busca comparativa clássica concluída e conferida
+
+Concluídos smoke e busca em `2547109`, com Git limpo e proveniência
+revalidada antes da seleção. A busca avaliou 43 configurações de seis
+famílias nos mesmos 576 quadros dos 12 treinos: **24.768 avaliações**.
+QA independente aprovado na primeira tentativa, incluindo paridade T218 em
+576 quadros: 289 arquivos,
+30.927.965 comparações e 148.608 matchings.
+Tempo de bateria 752,160737 s; RSS amostrado
+823,145 MiB. O QA durou 338,200844 s.
+
+| Família | Configuração da grade | F1 macro a 10 px | Precisão macro | Recall macro | ms/quadro |
+|---|---|---:|---:|---:|---:|
+| Blob | `blob_v1_003` | 0,791005 | 0,760180 | 0,848556 | 1,285 |
+| Threshold T218 | `t218_o0_c2_reference_v1` | 0,775634 | 0,728333 | 0,852686 | 1,950 |
+| Watershed | `watershed_v1_005` | 0,609765 | 0,540194 | 0,797990 | 21,674 |
+| Otsu | `otsu_v1_004` | 0,546675 | 0,488463 | 0,699844 | 2,172 |
+| Híbrido CLAHE | `hybrid_threshold_v1_002` | 0,185388 | 0,127623 | 0,450986 | 4,950 |
+| Adaptativo | `adaptive_threshold_v1_002` | 0,148689 | 0,083095 | 0,929020 | 3,512 |
+
+São as melhores configurações da grade por família, selecionadas **no treino**.
+T218 já foi ajustado antes e o esforço entre famílias é desigual. As 11
+candidatas seguintes não são promoção nem escolha final da pipeline. O
+próximo passo é refinamento prospectivo e validação; YOLO e MOG2/KNN têm
+etapas próprias, seguidas pela comparação de rastreadores e preditores.
+Nenhum resultado novo de HOTA, ADE/FDE com fluxo ou treinamento aprendido.
+
+[Protocolo, recursos, caminhos e hashes completos](../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md#resultados-da-busca-e-conferência--11092026).
+O smoke v1 interrompido permanece registrado; a revisão v2 apenas ampliou o
+teto operacional de previsões, sem truncar ou mudar dados/grade/métricas.
+Os commits documentais seguintes não mudam a proveniência das runs.
+
 ## 2026-09-11 — início da execução comparativa: protocolo e ambiente
 
 Atualização operacional: o smoke de `574038b` parou após 36 candidatas

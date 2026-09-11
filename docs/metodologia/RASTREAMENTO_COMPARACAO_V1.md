@@ -12,7 +12,7 @@ de desenho; a CLI atual não implementa seus bloqueios nem seu avaliador.
 A pergunta desta frente é: mantendo as detecções fixas, qual método preserva
 melhor as identidades e produz trajetórias úteis para a predição? A comparação
 de detector+rastreador é posterior e considera também as falhas da detecção.
-Um bom F1 por quadro não assegura boas identidades ao longo do tempo.
+Um bom F1 de detecção não assegura boas identidades ao longo do tempo.
 
 | Braço | Entrada | O que permite investigar | Limitação |
 |---|---|---|---|
