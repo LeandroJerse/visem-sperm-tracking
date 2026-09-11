@@ -2,6 +2,32 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-11 — continuidade orientada às comparações experimentais
+
+Registrado o [plano executivo](../metodologia/CONTINUIDADE_EXPERIMENTAL_V1.md).
+A prioridade passa a ser a primeira ablação exploratória com/sem fluxo nas
+10.848 janelas dos 12 prefixos já conferidos, sem repetir a extração. Antes
+dos erros, serão registrados contrato e configuração e implementados leitor
+autenticado e executor. CV mediana5 versus CV causal com fluxo é o contraste
+principal; velocidade pelo último deslocamento é controle secundário proposto.
+As origens são 19..59; os alvos podem chegar ao quadro 69 e entram somente
+na avaliação. O resultado exploratório não decidirá retrospectivamente a
+coorte nem eliminará o braço com fluxo da ampliação prevista.
+
+O pesquisador retirou o tempo como impedimento permanente à continuidade.
+O teto de 120 minutos e a projeção de 134,21 do plano anterior permanecem
+inalterados. Novas etapas podem monitorar tempo sem esse corte, com memória,
+armazenamento, falhas e completude definidos prospectivamente. A CLI de 60
+quadros não será convertida por override em executor completo.
+
+Frentes paralelas: contrato HOTA e rastreadores em dados reais; ambiente
+aprendido para YOLO, RAFT e LSTM. Inspeção local identificou RTX 4070 Ti,
+com 12.282 MiB reportados; PyTorch, torchvision e Ultralytics não constam
+na .venv clássica. Nenhum pacote foi instalado nem modelo executado nesta
+revisão. Foram atualizados roteiro, relatório, atlas e navegação. O último
+resultado científico continua o 8a de 09/09; este registro não é nova ablação,
+extração, seleção, promoção ou teste confirmatório.
+
 ## 2026-09-10 — explicação ampliada do projeto, sem novo experimento
 
 Ampliada a síntese didática local para 19 capítulos, com roteiros de estudo,

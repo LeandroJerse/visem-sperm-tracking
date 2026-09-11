@@ -51,8 +51,10 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
    O smoke causal de Farnebäck também foi concluído e conferido nos prefixos
    dos treinos 11/12. O benchmark compacto também terminou nos 12 treinos,
    com QA aprovado. Sua projeção de 134,21 min excedeu o teto de 120 min;
-   a próxima etapa deve medir e ajustar o custo operacional antes da extração
-   completa e da ablação pareada com e sem fluxo.
+   o [plano de continuidade de 11/09](docs/metodologia/CONTINUIDADE_EXPERIMENTAL_V1.md)
+   prioriza a primeira ablação exploratória nas 10.848 janelas já conferidas,
+   sem nova extração. Rastreamento e ambiente aprendido avançam em paralelo;
+   a extração completa terá plano próprio, sem o corte temporal histórico.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).

@@ -1,5 +1,14 @@
 # Protocolo experimental mestre
 
+**Continuidade revista em 11/09/2026:** o
+[plano executivo](CONTINUIDADE_EXPERIMENTAL_V1.md) prioriza a primeira ablação
+exploratória nas 10.848 janelas dos 12 prefixos já conferidos, antes de nova
+extração. Rastreamento e ambiente aprendido avançam em paralelo. O limite
+histórico de 120 minutos não é um corte obrigatório para novos planos; sua
+reprovação no 8a permanece registrada. Contratos próprios, causalidade,
+memória, integridade e separação dos dados continuam obrigatórios. Esta
+revisão de prioridades não registra experimento ou promoção novos.
+
 Este documento registra decisões metodológicas e o planejamento das etapas.
 Na retomada de 07/09/2026, foram aprovados os centros como referência e o raio
 principal de 10 px, com sensibilidade obrigatória a 15/20 px, e a política
