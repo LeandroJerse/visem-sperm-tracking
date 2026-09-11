@@ -248,3 +248,86 @@ def test_failed_csv_export_preserves_partial_bytes_without_retry(setup, monkeypa
     assert len(attempts) == 1
     assert Path(attempts[0]).read_bytes() == b"partial immutable export\n"
     assert not list(setup[2].rglob("ranking.csv"))
+
+
+def test_operational_revision_preserves_exact_scientific_grid_and_parent_bytes(plan):
+    original_path = comparison.REPOSITORY_ROOT / comparison.ORIGINAL_PLAN
+    before = original_path.read_bytes()
+    original = comparison.load_config(original_path)
+    assert comparison.config_hash(original, 64) == comparison.ORIGINAL_PLAN_HASH
+    assert comparison.expand_candidates(plan) == comparison.expand_candidates(original)
+    restored = copy.deepcopy(plan)
+    lineage = restored.pop("operational_revision")
+    restored["plan_id"] = original["plan_id"]
+    restored["budget"]["max_predictions_per_frame"] = 2000
+    assert restored == original
+    assert lineage["previous_max_predictions_per_frame"] == 2000
+    assert plan["budget"]["max_predictions_per_frame"] == 307200
+    assert plan["budget"]["wall_seconds_limit"] is None
+    assert plan["budget"]["max_rss_mb"] == plan["budget"]["max_batch_artifact_mb"] == 2048
+    assert original_path.read_bytes() == before
+
+
+@pytest.mark.parametrize("fault", ["parent_path", "parent_hash", "unregistered_ceiling", "ram", "storage", "reason",
+                                  "selection", "grid", "input", "lineage_removed", "parent_changed"])
+def test_operational_revision_rejects_scientific_or_unrelated_budget_changes(plan, monkeypatch, fault):
+    if fault == "parent_path":
+        plan["operational_revision"]["parent_plan_path"] = "another.yaml"
+    elif fault == "parent_hash":
+        plan["operational_revision"]["parent_plan_canonical_sha256"] = "0" * 64
+    elif fault == "unregistered_ceiling":
+        plan["budget"]["max_predictions_per_frame"] = 5000
+    elif fault == "ram":
+        plan["budget"]["max_rss_mb"] = 4096
+    elif fault == "storage":
+        plan["budget"]["max_batch_artifact_mb"] = 4096
+    elif fault == "reason":
+        plan["operational_revision"]["reason"] = "choose_better_candidates"
+    elif fault == "selection":
+        plan["selection"]["finalists_per_family"] = 1
+    elif fault == "grid":
+        plan["families"][2]["search_space"]["adaptive_c"] = [-2, 0, 2]
+    elif fault == "input":
+        plan["input"]["sample_hash"] = "0" * 64
+    elif fault == "lineage_removed":
+        plan.pop("operational_revision")
+    else:
+        original_load = comparison.load_config
+        def changed_parent(path):
+            result = original_load(path)
+            result["budget"]["max_rss_mb"] = 4096
+            return result
+        monkeypatch.setattr(comparison, "load_config", changed_parent)
+    with pytest.raises(ValueError):
+        comparison.expand_candidates(plan)
+
+
+def test_original_plan_cannot_silently_raise_prediction_ceiling():
+    original = comparison.load_config(comparison.REPOSITORY_ROOT / comparison.ORIGINAL_PLAN)
+    original["budget"]["max_predictions_per_frame"] = 307200
+    with pytest.raises(ValueError, match="immutable"):
+        comparison.expand_candidates(original)
+
+
+@pytest.mark.parametrize("ceiling,accepted", [(2000, False), (307200, True)])
+def test_operational_guard_records_observed_count_and_never_truncates(setup, monkeypatch, ceiling, accepted):
+    plan, sample, output = setup
+    one_candidate = comparison.expand_candidates(plan)[:1]
+    monkeypatch.setattr(comparison, "expand_candidates", lambda unused: copy.deepcopy(one_candidate))
+    monkeypatch.setattr(SyntheticDetector, "detect", lambda *args: [Detection(54, 54, 3, 3) for _ in range(2001)])
+    plan["budget"]["max_predictions_per_frame"] = ceiling
+    if accepted:
+        path = _run(setup)
+        batch = json.loads(path.read_text())
+        child = json.loads(Path(batch["candidate_manifests"][0]["path"]).read_text())
+        assert child["summary"]["n_predictions_raw"] == 2001 * 12
+        with Path(child["artifacts"]["detections_csv"]).open(newline="") as stream:
+            exported = list(csv.DictReader(stream))
+        assert sum(row["source"] == "detection" for row in exported) == 2001 * 12
+    else:
+        with pytest.raises(ValueError, match="observed=2001, limit=2000; no truncation permitted"):
+            _run(setup)
+        failed = [json.loads(path.read_text()) for path in output.rglob("manifest.json")]
+        assert all(item["status"] == "failed" for item in failed)
+        assert all("observed=2001, limit=2000" in item["error"] for item in failed)
+        assert not list(output.rglob("ranking.csv"))

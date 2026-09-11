@@ -16,6 +16,9 @@ ou bomba. A origem dos dados e os limites dessa interpretação estão no
 
 | Quero… | Abra |
 |---|---|
+| Acompanhar a comparação entre detectores | [Protocolo clássico e evidências](docs/metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md) · [Execução e conferência](script/README.md#comparacao-classicos-v1) |
+| Preparar YOLO, RAFT e LSTM na GPU | [Ambiente aprendido validado](docs/metodologia/AMBIENTE_APRENDIDO_V1.md) · [Comandos](script/README.md#ambiente-aprendido-v1) |
+| Entender a preparação dos rastreadores | [Contrato de tracking e pendências](docs/metodologia/RASTREAMENTO_COMPARACAO_V1.md) |
 | Encontrar o threshold que já usamos | [Algoritmo threshold.py](src/detection/classical/threshold.py) |
 | Inspecionar um frame e as etapas da detecção | [Threshold frame a frame: comandos e menu](script/README.md#threshold-frame-a-frame) |
 | Acompanhar a busca atual de threshold no treino | [Plano prospectivo v3](docs/metodologia/BUSCA_THRESHOLD_V3.md) · [Executor e comandos](script/README.md#busca-threshold-v3) |

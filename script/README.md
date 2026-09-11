@@ -82,6 +82,13 @@ e o [YAML](../configs/detection/comparison/classical_v1.yaml) registram
 Watershed. Reutilizam a amostra autenticada de 576 quadros do treino.
 Não há seleção de validação, promoção ou acesso ao teste nesta CLI.
 
+O padrão atual é a
+[revisão operacional v2](../configs/detection/comparison/classical_v1_operational_v2.yaml),
+que mantém os mesmos candidatos e altera apenas o limite de contagem após
+o smoke v1 interrompido. O plano original e os recibos de falha permanecem
+autenticados. O limite de 307.200 previsões permite avaliar superdetecção;
+memória e armazenamento continuam limitados a 2.048 MiB.
+
 ```powershell
 .\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.compare_classical --mode smoke --dry-run
 .\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.compare_classical --mode smoke

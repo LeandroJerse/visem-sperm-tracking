@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import copy
 import csv
 import hashlib
 import io
@@ -30,7 +31,13 @@ from scipy.optimize import linear_sum_assignment
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
-PLAN = "configs/detection/comparison/classical_v1.yaml"
+LEGACY_PLAN = "configs/detection/comparison/classical_v1.yaml"
+PLAN = "configs/detection/comparison/classical_v1_operational_v2.yaml"
+PARENT_PLAN_CANONICAL_SHA256 = "6dd487d03f4de19ee27983fc9c4308d7a6c5bfcd0f444bfc8c21290a9f85d43b"
+FAILED_MANIFEST_HASHES = {
+    "failed_batch_manifest": "a11c69b9c4b8165835f8db3333cd541b9a4a1d660f2b9fa69ef26290394e1711",
+    "failed_candidate_manifest": "7422d4b4ffb833632419dc0f68a306d629cc12ae0aef138245e79557ec7721db",
+}
 TRAIN = ("11", "12", "13", "15", "21", "22", "23", "29", "30", "35", "60", "82")
 FAMILIES = ("threshold", "otsu", "adaptive_threshold", "hybrid_threshold", "blob", "watershed")
 COUNTS = (1, 4, 18, 8, 6, 6)
@@ -189,6 +196,54 @@ def under(root: Path, raw: str) -> Path:
     path = (path if path.is_absolute() else root / path).resolve()
     require(path.is_relative_to(root.resolve()), f"path escapes permitted root: {raw}")
     return path
+
+
+def authenticated_plan(root: Path, path: Path, audit: Audit) -> tuple[dict, dict]:
+    """Admit original v1 or the explicit, scientifically identical operational retry.
+
+    Failed parent receipts are authenticated as failed history, never evaluated
+    against the completeness contract of a new successful smoke or search.
+    """
+    path = under(root, str(path))
+    require(path in {root / LEGACY_PLAN, root / PLAN}, "only registered canonical comparison plans are accepted")
+    parent = yaml.load(audit.read(root / LEGACY_PLAN), Loader=StrictYaml)
+    audit.equal(canonical_hash(parent), PARENT_PLAN_CANONICAL_SHA256, "immutable v1 parent plan canonical hash")
+    if path == root / LEGACY_PLAN:
+        return parent, {"revision": "original_v1", "plan_path": LEGACY_PLAN,
+                        "plan_canonical_sha256": PARENT_PLAN_CANONICAL_SHA256}
+    plan = yaml.load(audit.read(path), Loader=StrictYaml)
+    require(plan.get("plan_id") == "classical_detection_comparison_v1_operational_v2_20260911", "unexpected operational plan ID")
+    require(plan.get("budget", {}).get("max_predictions_per_frame") == 307200,
+            "operational v2 requires the explicit 307200 prediction guard")
+    revision = plan.get("operational_revision")
+    expected_keys = {"parent_plan_path", "parent_plan_canonical_sha256", "reason",
+                     "previous_max_predictions_per_frame", *FAILED_MANIFEST_HASHES}
+    require(isinstance(revision, dict) and set(revision) == expected_keys, "operational lineage schema differs")
+    audit.subset(revision, {"parent_plan_path": LEGACY_PLAN,
+                    "parent_plan_canonical_sha256": PARENT_PLAN_CANONICAL_SHA256,
+                    "reason": "retry_prediction_guard_without_scientific_change",
+                    "previous_max_predictions_per_frame": 2000}, "operational revision")
+    restored = copy.deepcopy(plan)
+    restored.pop("operational_revision")
+    restored["plan_id"] = parent["plan_id"]
+    restored["budget"]["max_predictions_per_frame"] = 2000
+    audit.equal(restored, parent, "v2 preserves the entire scientific and remaining operational contract")
+    receipts = {}
+    for role, expected_hash in FAILED_MANIFEST_HASHES.items():
+        record = revision[role]
+        require(isinstance(record, dict) and set(record) == {"path", "sha256"}, "failure receipt reference schema differs")
+        audit.equal(record["sha256"], expected_hash, "pinned failure receipt hash")
+        receipt_path = under(root, record["path"])
+        receipt = _json(audit.read(receipt_path, expected_hash))
+        audit.equal(receipt.get("status"), "failed", "historical failure status")
+        if role == "failed_batch_manifest":
+            audit.equal(receipt["config"]["plan"], parent, "failed batch belongs to immutable v1")
+        receipts[role] = {"path": str(receipt_path), "sha256": expected_hash, "status": "failed"}
+    return plan, {"revision": "operational_v2", "plan_path": PLAN,
+                  "parent_plan_path": LEGACY_PLAN, "parent_plan_canonical_sha256": PARENT_PLAN_CANONICAL_SHA256,
+                  "scientific_contract_identical_to_parent": True,
+                  "previous_prediction_guard": 2000, "current_prediction_guard": 307200,
+                  "historical_failure_receipts": receipts}
 
 
 def independent_candidates(plan: dict) -> list[dict]:
@@ -519,8 +574,7 @@ def verify_batch(manifest_path: Path, *, root: Path = ROOT, plan_path: Path | No
     root = Path(root).resolve()
     manifest_path = under(root, str(manifest_path))
     plan_path = under(root, str(plan_path or root / PLAN))
-    require(plan_path == root / PLAN, "only the canonical comparison plan is accepted")
-    plan = yaml.load(audit.read(plan_path), Loader=StrictYaml)
+    plan, operational_lineage = authenticated_plan(root, plan_path, audit)
     candidates = independent_candidates(plan)
     batch_bytes = audit.read(manifest_path)
     batch = _json(batch_bytes)
@@ -641,6 +695,7 @@ def verify_batch(manifest_path: Path, *, root: Path = ROOT, plan_path: Path | No
     audit.read(manifest_path, hashlib.sha256(batch_bytes).hexdigest())
     return {"status": "passed", "mode": mode, "manifest": str(manifest_path),
             "manifest_sha256": hashlib.sha256(batch_bytes).hexdigest(), "plan_hash": plan_hash,
+            "operational_lineage": operational_lineage,
             "candidates": 43, "frames_per_candidate": len(pairs), "frame_evaluations": 43 * len(pairs),
             "family_finalist_ids": finalists_ids, "new_detector_runs": 0,
             "historical_t218_parity": {"status": "passed", "manifest": THRESHOLD_REFERENCE,
@@ -657,6 +712,8 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--plan", type=Path, default=Path(PLAN),
+                        help="Registered plan; defaults to the explicit operational v2 retry. Original v1 remains available for historical complete runs.")
     args = parser.parse_args(argv)
     output = args.output.resolve()
     require(output.is_relative_to(ROOT) and not output.is_relative_to(ROOT / "data/sources"), "QA output outside derived workspace")
@@ -666,7 +723,7 @@ def main(argv=None) -> int:
               "numpy_version": np.__version__, "scipy_version": scipy.__version__}
     exit_code = 0
     try:
-        result.update(verify_batch(args.manifest, audit=audit))
+        result.update(verify_batch(args.manifest, plan_path=args.plan, audit=audit))
     except Exception as exc:
         result.update(status="failed", error=str(exc), error_type=type(exc).__name__, **audit.summary())
         exit_code = 1

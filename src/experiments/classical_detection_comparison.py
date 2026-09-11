@@ -33,7 +33,9 @@ from src.experiments.runs import RunContext, RunSnapshot, _git_dirty, _source_ha
 from src.experiments.sweep import parameter_grid
 
 
-DEFAULT_PLAN = "configs/detection/comparison/classical_v1.yaml"
+ORIGINAL_PLAN = "configs/detection/comparison/classical_v1.yaml"
+ORIGINAL_PLAN_HASH = "6dd487d03f4de19ee27983fc9c4308d7a6c5bfcd0f444bfc8c21290a9f85d43b"
+DEFAULT_PLAN = "configs/detection/comparison/classical_v1_operational_v2.yaml"
 FAMILIES = {"threshold": "threshold", "otsu": "threshold", "adaptive_threshold": "threshold",
             "hybrid_threshold": "hybrid_threshold", "blob": "blob", "watershed": "watershed"}
 PROTOCOL = "center_distance_v3_individuals_ignore_clusters_10px"
@@ -49,9 +51,50 @@ def _positive(value: Any, label: str) -> None:
              and math.isfinite(value) and value > 0, f"{label} must be finite and positive")
 
 
+def validate_operational_revision(plan: dict) -> None:
+    """Authenticate the parent and permit only the registered guard revision.
+
+    The 640*480 ceiling is an operational allowance, not a proof that every
+    detector can emit at most one center per pixel. RAM/storage remain guarded.
+    """
+    revision = plan.get("operational_revision")
+    if revision is None:
+        _require(plan.get("plan_id") == "classical_detection_comparison_v1_20260911",
+                 "unknown plan identity without operational lineage")
+        _require(plan.get("budget", {}).get("max_predictions_per_frame") == 2000,
+                 "the original prediction ceiling is immutable; use operational v2")
+        return
+    _require(isinstance(revision, dict) and set(revision) == {
+        "parent_plan_path", "parent_plan_canonical_sha256", "reason", "previous_max_predictions_per_frame",
+        "failed_batch_manifest", "failed_candidate_manifest"}, "unknown operational revision metadata")
+    _require(revision["parent_plan_path"] == ORIGINAL_PLAN
+             and revision["parent_plan_canonical_sha256"] == ORIGINAL_PLAN_HASH,
+             "operational revision must identify the immutable v1 parent")
+    _require(revision["reason"] == "retry_prediction_guard_without_scientific_change"
+             and revision["previous_max_predictions_per_frame"] == 2000, "unexpected operational revision reason or previous ceiling")
+    _require(plan.get("plan_id") == "classical_detection_comparison_v1_operational_v2_20260911"
+             and plan.get("budget", {}).get("max_predictions_per_frame") == 640 * 480,
+             "operational v2 requires its own identity and registered 307200 prediction ceiling")
+    parent = load_config(resolve_from_repository(ORIGINAL_PLAN))
+    _require(config_hash(parent, 64) == ORIGINAL_PLAN_HASH, "original parent YAML changed")
+    restored = copy.deepcopy(plan)
+    restored.pop("operational_revision")
+    restored["plan_id"] = parent["plan_id"]
+    restored["budget"]["max_predictions_per_frame"] = 2000
+    _require(canonical_json(restored) == canonical_json(parent),
+             "operational revision changed scientific parameters, inputs, selection or another resource limit")
+    for key in ("failed_batch_manifest", "failed_candidate_manifest"):
+        reference = revision[key]
+        _require(isinstance(reference, dict) and set(reference) == {"path", "sha256"}
+                 and isinstance(reference["path"], str) and reference["path"].endswith("/manifest.json")
+                 and isinstance(reference["sha256"], str) and len(reference["sha256"]) == 64
+                 and all(char in "0123456789abcdef" for char in reference["sha256"]), "invalid failed-run lineage reference")
+
+
 def expand_candidates(plan: dict) -> list[dict]:
     """Validate the declared experiment before reading any sample or results."""
     _require(plan.get("kind") == "static_classical_detection_comparison_v1", "unsupported comparison contract")
+    validate_operational_revision(plan)
     _require(isinstance(plan.get("plan_id"), str) and bool(plan["plan_id"]), "missing plan ID")
     _evaluation(plan.get("evaluation"))
     _selection(plan.get("selection"))
@@ -121,6 +164,23 @@ def _pin(path: Path, expected: str) -> str:
 def load_comparison_sample(plan: dict) -> TrainingSample:
     """Authenticate the existing cache with its unchanged original plan."""
     expand_candidates(plan)
+    if "operational_revision" in plan:
+        revision = plan["operational_revision"]
+        failures = []
+        for key in ("failed_batch_manifest", "failed_candidate_manifest"):
+            reference = revision[key]
+            path = resolve_from_repository(reference["path"])
+            _require(path.is_relative_to(REPOSITORY_ROOT / "data/tests/detection"), "failed-run lineage must stay under detection experiments")
+            _pin(path, reference["sha256"])
+            failures.append(json.loads(path.read_text(encoding="utf-8")))
+        batch, candidate = failures
+        _require(batch.get("status") == candidate.get("status") == "failed"
+                 and batch.get("selection_allowed") is False and batch.get("completed_candidates") == 36
+                 and candidate.get("observed_frames") == 8
+                 and candidate.get("config", {}).get("configuration_id") == "adaptive_threshold_v1_004"
+                 and batch.get("git_sha") == candidate.get("git_sha") == "574038b"
+                 and batch.get("error") == candidate.get("error") == "prediction ceiling exceeded at 30/781; no truncation permitted",
+                 "lineage does not identify the preserved v1 operational failure")
     inputs = plan["input"]
     base_path = resolve_from_repository(inputs["sample_plan"])
     base = load_config(base_path)
@@ -285,7 +345,8 @@ def run_candidate(candidate: dict, sample: Any, plan: dict, mode: str, batch: Ru
             elapsed = time.perf_counter() - began
             detector_seconds += elapsed
             _require(len(detections) <= plan["budget"]["max_predictions_per_frame"],
-                     f"prediction ceiling exceeded at {video}/{frame}; no truncation permitted")
+                     f"prediction ceiling exceeded at {video}/{frame}: observed={len(detections)}, "
+                     f"limit={plan['budget']['max_predictions_per_frame']}; no truncation permitted")
             began = time.perf_counter()
             row = evaluator.add_frame(detections, gt, video_id=str(video), frame=frame,
                                       annotated=True, detection_ms=elapsed * 1000)

@@ -4,6 +4,16 @@ Registro simples e cronológico do que foi feito e testado. Entrada mais recente
 
 ## 2026-09-11 — início da execução comparativa: protocolo e ambiente
 
+Atualização operacional: o smoke de `574038b` parou após 36 candidatas
+completas; a 37ª excedeu 2.000 previsões no quadro 781 do vídeo 30. Não houve
+ranking nem truncamento. Registrada uma revisão operacional própria, com
+limite 307.200, mantendo grade/dados/métricas, RSS e armazenamento. O YAML
+v1 e os manifestos de falha foram preservados e vinculados por hash;
+[detalhes da falha e da revisão](../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md#revisão-operacional-v2--após-o-primeiro-smoke).
+Antes do novo smoke, passaram 89 testes do produtor em 15,27 s e 76 do
+verificador em 41,75 s. Incluem preservação do contrato original, recusas de
+mudança científica e exportação integral de 2.001 previsões sob o novo teto.
+
 A orientação seguinte priorizou testar e validar os demais algoritmos antes
 da escolha da cadeia final. Registrado o
 [protocolo dos detectores estáticos](../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md):

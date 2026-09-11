@@ -169,3 +169,34 @@ não autoriza essa validação por si só.
 Esse roteiro não resolve treinamento YOLO ou os detectores temporais; a
 escolha do detector da cadeia final permanece posterior às comparações e
 validações pertinentes.
+
+## Revisão operacional v2 — após o primeiro smoke
+
+O smoke registrado em `574038b` foi interrompido após 36 candidatas completas.
+A candidata 37, `adaptive_threshold_v1_004` (bloco 15, C=0, abertura 1,
+fechamento 1), excedeu 2.000 previsões no vídeo 30, quadro 781. Não houve
+truncamento, ranking ou descarte de candidatas. O manifesto de falha e os
+arquivos parciais permanecem preservados:
+
+`data/tests/detection/classical_comparison/classical_detection_comparison_v1_20260911_batch__cfgcbbae012/smoke/20260911T143918692719Z__574038b__cfgbff0b8bab575__src8b42901b3a__s42/manifest.json`.
+
+SHA256 `a11c69b9c4b8165835f8db3333cd541b9a4a1d660f2b9fa69ef26290394e1711`.
+Tempo até a falha: 15,643522 s, sem incluir a autenticação inicial do cache.
+O erro original não guardou a contagem exata acima de 2.000; não inferi-la
+das saídas parciais, que não incluem a avaliação do quadro interrompido.
+
+Superdetecção é um comportamento a medir, inclusive pelos falsos positivos;
+o teto de 2.000 impedia avaliá-lo. A configuração nova
+`configs/detection/comparison/classical_v1_operational_v2.yaml` eleva apenas
+o limite operacional de previsões a **307.200**, o número de pixels de uma
+imagem 640×480. É um limite conservador de engenharia para estes detectores,
+não um número biologicamente plausível de células nem um filtro de qualidade.
+Os limites de RSS e artefatos permanecem 2.048 MiB; não há corte temporal.
+
+O YAML v1 permanece intacto e é vinculado pelo hash canônico
+`6dd487d03f4de19ee27983fc9c4308d7a6c5bfcd0f444bfc8c21290a9f85d43b`.
+A revisão deve comprovar igualdade de dados, grade, sementes, ordem,
+avaliação e seleção. Alteram-se somente identidade/linhagem operacional e o
+teto de contagem. Registrar código e revisão em novo commit limpo e executar
+um novo smoke completo antes da busca. O primeiro smoke é falha de engenharia
+preservada; não é comparação científica concluída nem seleção de parâmetros.

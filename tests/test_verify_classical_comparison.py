@@ -166,10 +166,31 @@ def seal(path, manifest):
     dump_json(path, manifest)
 
 
+def synthetic_operational_plan(root, parent, monkeypatch):
+    dump_json(root / qa.LEGACY_PLAN, parent)
+    parent_hash = qa.canonical_hash(parent)
+    failed_batch = dump_json(root / "failures/batch/manifest.json", {"status": "failed", "config": {"plan": parent}})
+    failed_candidate = dump_json(root / "failures/candidate/manifest.json", {"status": "failed"})
+    failure_hashes = {"failed_batch_manifest": digest(failed_batch), "failed_candidate_manifest": digest(failed_candidate)}
+    monkeypatch.setattr(qa, "PARENT_PLAN_CANONICAL_SHA256", parent_hash)
+    monkeypatch.setattr(qa, "FAILED_MANIFEST_HASHES", failure_hashes)
+    plan = copy.deepcopy(parent)
+    plan["plan_id"] = "classical_detection_comparison_v1_operational_v2_20260911"
+    plan["budget"]["max_predictions_per_frame"] = 307200
+    plan["operational_revision"] = {
+        "parent_plan_path": qa.LEGACY_PLAN, "parent_plan_canonical_sha256": parent_hash,
+        "reason": "retry_prediction_guard_without_scientific_change", "previous_max_predictions_per_frame": 2000,
+        "failed_batch_manifest": {"path": str(failed_batch), "sha256": failure_hashes["failed_batch_manifest"]},
+        "failed_candidate_manifest": {"path": str(failed_candidate), "sha256": failure_hashes["failed_candidate_manifest"]},
+    }
+    dump_json(root / qa.PLAN, plan)
+    return plan
+
+
 @pytest.fixture
 def fixture_batch(tmp_path, monkeypatch):
     root = tmp_path
-    plan = yaml.safe_load((qa.ROOT / qa.PLAN).read_text(encoding="utf8"))
+    plan = yaml.safe_load((qa.ROOT / qa.LEGACY_PLAN).read_text(encoding="utf8"))
     source_plan = yaml.safe_load((qa.ROOT / plan["input"]["sample_plan"]).read_text(encoding="utf8"))
     dump_json(root / plan["input"]["sample_plan"], source_plan)  # JSON is valid YAML.
     cache_path = root / plan["input"]["cache_manifest"]
@@ -203,7 +224,7 @@ def fixture_batch(tmp_path, monkeypatch):
     cache["sample_hash"] = qa.canonical_hash({key: cache[key] for key in ("schema_version", "plan_sha256", "split", "audit", "video_ids", "sampling", "selections", "videos", "ground_truth", "frames")})
     dump_json(cache_path, cache)
     plan["input"].update(cache_manifest_sha256=digest(cache_path), sample_hash=cache["sample_hash"], sample_plan_canonical_sha256=qa.canonical_hash(source_plan))
-    dump_json(root / qa.PLAN, plan)
+    plan = synthetic_operational_plan(root, plan, monkeypatch)
     candidates = qa.independent_candidates(plan)
     pairs = [(video, 24) for video in qa.TRAIN]
     batch_path = root / "outputs/batch/manifest.json"
@@ -278,6 +299,8 @@ def test_full_synthetic_smoke_and_historical_reference(fixture_batch):
     assert result["historical_t218_parity"]["frames_compared"] == 12
     assert result["distance_tie_limits"] == []
     assert result["comparisons"] > 100000
+    assert result["operational_lineage"]["scientific_contract_identical_to_parent"] is True
+    assert result["operational_lineage"]["current_prediction_guard"] == 307200
 
 
 @pytest.mark.parametrize("fault", ["hash", "fp", "ignored", "sensitivity", "secondary", "gt", "extra_frame", "missing_candidate", "plan", "provenance", "undeclared"])
@@ -374,3 +397,54 @@ def test_full_ranking_and_family_finalists(tmp_path, fault):
     else:
         ids = qa.verify_ranking(files, summaries, qa.Audit())
         assert len(ids) == 11 and len(set(ids)) == 11
+
+
+@pytest.mark.parametrize("fault", [None, "grade", "data", "metric", "seed", "ram", "time", "guard", "parent_hash", "parent_file", "failure_hash", "failure_status", "extra_field"])
+def test_operational_plan_authenticates_parent_and_allows_only_explicit_guard_revision(tmp_path, monkeypatch, fault):
+    parent = yaml.safe_load((qa.ROOT / qa.LEGACY_PLAN).read_text(encoding="utf8"))
+    plan = synthetic_operational_plan(tmp_path, parent, monkeypatch)
+    if fault == "grade":
+        plan["families"][1]["search_space"]["morph_iterations"] = [1, 2]
+    elif fault == "data":
+        plan["input"]["sample_hash"] = "e" * 64
+    elif fault == "metric":
+        plan["evaluation"]["center_gate_px"] = 20
+    elif fault == "seed":
+        plan["run"]["seed"] = 123
+    elif fault == "ram":
+        plan["budget"]["max_rss_mb"] = 4096
+    elif fault == "time":
+        plan["budget"]["wall_seconds_limit"] = 3600
+    elif fault == "guard":
+        plan["budget"]["max_predictions_per_frame"] = 307201
+    elif fault == "parent_hash":
+        plan["operational_revision"]["parent_plan_canonical_sha256"] = "f" * 64
+    elif fault == "parent_file":
+        changed = copy.deepcopy(parent)
+        changed["families"][0]["params"]["threshold_value"] = 217
+        dump_json(tmp_path / qa.LEGACY_PLAN, changed)
+    elif fault == "failure_hash":
+        plan["operational_revision"]["failed_batch_manifest"]["sha256"] = "f" * 64
+    elif fault == "failure_status":
+        path = Path(plan["operational_revision"]["failed_candidate_manifest"]["path"])
+        dump_json(path, {"status": "complete"})
+        changed_hash = digest(path)
+        monkeypatch.setattr(qa, "FAILED_MANIFEST_HASHES", {**qa.FAILED_MANIFEST_HASHES, "failed_candidate_manifest": changed_hash})
+        plan["operational_revision"]["failed_candidate_manifest"]["sha256"] = changed_hash
+    elif fault == "extra_field":
+        plan["unregistered"] = "scientific change"
+    dump_json(tmp_path / qa.PLAN, plan)
+    if fault:
+        with pytest.raises(qa.VerificationError):
+            qa.authenticated_plan(tmp_path, tmp_path / qa.PLAN, qa.Audit())
+    else:
+        actual, lineage = qa.authenticated_plan(tmp_path, tmp_path / qa.PLAN, qa.Audit())
+        assert actual == plan and lineage["scientific_contract_identical_to_parent"] is True
+        assert qa.independent_candidates(plan) == qa.independent_candidates(parent)
+        legacy, history = qa.authenticated_plan(tmp_path, tmp_path / qa.LEGACY_PLAN, qa.Audit())
+        assert legacy == parent and history["revision"] == "original_v1"
+
+
+def test_cannot_pass_unregistered_plan_filename(tmp_path):
+    with pytest.raises(qa.VerificationError, match="canonical"):
+        qa.authenticated_plan(tmp_path, tmp_path / "unregistered.yaml", qa.Audit())
