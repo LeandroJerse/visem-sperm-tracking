@@ -12,18 +12,21 @@ A aquisição descrita nos artigos não documenta contracorrente imposta por tub
 ou bomba. A origem dos dados e os limites dessa interpretação estão no
 [protocolo experimental](docs/metodologia/PROTOCOLO.md#escopo-dos-dados-e-interpretação-do-movimento).
 
-**Estado em 11/09/2026:** busca comparativa de seis famílias clássicas concluída
-e conferida no treino: 43 configurações, 576 quadros e 24.768 avaliações.
-Seguem refinamento, validação e YOLO antes da escolha do detector;
-rastreamento e predição terão comparações próprias.
+<!-- refinement-dataset-completion-20260911 -->
+**Estado em 11/09/2026:** refinamento das cinco famílias clássicas concluído e
+conferido no treino: 45 configurações, 576 quadros e 25.920 avaliações; dez
+finalistas seguem para validação completa. Dataset YOLO materializado e
+conferido com 23.316 pares de treino/validação; ainda sem treinamento.
+T218 é referência histórica. A escolha da cadeia de tracking/predição
+permanece posterior às comparações e validações pertinentes.
 
 ## Comece por aqui
 
 | Quero… | Abra |
 |---|---|
 | Acompanhar a comparação entre detectores | [Protocolo clássico e evidências](docs/metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md) · [Execução e conferência](script/README.md#comparacao-classicos-v1) |
-| Refinar os demais detectores no treino | [Contrato e grade local](docs/metodologia/REFINAMENTO_CLASSICOS_V1.md) · [Comandos](script/README.md#refinamento-classicos-v1) |
-| Preparar os dados para YOLO | [Dataset autenticado](docs/metodologia/DATASET_YOLO_V1.md) · [Comandos](script/README.md#dataset-yolo-v1) |
+| Consultar o refinamento concluído dos demais detectores | [Contrato, grade e resultados](docs/metodologia/REFINAMENTO_CLASSICOS_V1.md) · [Comandos](script/README.md#refinamento-classicos-v1) |
+| Conferir os dados preparados para YOLO | [Dataset autenticado](docs/metodologia/DATASET_YOLO_V1.md) · [Comandos](script/README.md#dataset-yolo-v1) |
 | Preparar YOLO, RAFT e LSTM na GPU | [Ambiente aprendido validado](docs/metodologia/AMBIENTE_APRENDIDO_V1.md) · [Comandos](script/README.md#ambiente-aprendido-v1) |
 | Entender a preparação dos rastreadores | [Contrato de tracking e pendências](docs/metodologia/RASTREAMENTO_COMPARACAO_V1.md) |
 | Encontrar o threshold que já usamos | [Algoritmo threshold.py](src/detection/classical/threshold.py) |
@@ -62,9 +65,10 @@ rastreamento e predição terão comparações próprias.
    dos treinos 11/12. O benchmark compacto também terminou nos 12 treinos,
    com QA aprovado. Sua projeção de 134,21 min excedeu o teto de 120 min;
    o [plano de continuidade de 11/09](docs/metodologia/CONTINUIDADE_EXPERIMENTAL_V1.md)
-   prioriza a primeira ablação exploratória nas 10.848 janelas já conferidas,
-   sem nova extração. Rastreamento e ambiente aprendido avançam em paralelo;
-   a extração completa terá plano próprio, sem o corte temporal histórico.
+   preserva a ablação exploratória nas 10.848 janelas já conferidas e prioriza,
+   neste momento, validar as finalistas clássicas e treinar YOLO para a comparação
+   de detectores. Rastreamento e predição terão avaliações próprias; a extração
+   completa de fluxo terá novo plano, sem o corte temporal histórico.
 3. **Bancada visual:** [menu](script/detection/test/threshold/interactive.py),
    [frame único](script/detection/test/threshold/single_frame.py) e
    [lote de frames](script/detection/test/threshold/batch_frames.py).

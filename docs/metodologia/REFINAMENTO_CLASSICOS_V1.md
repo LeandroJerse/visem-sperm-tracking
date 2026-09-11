@@ -1,5 +1,10 @@
 # Refinamento das famílias clássicas — protocolo v1
 
+**Atualização de 11/09/2026:** refinamento concluído e conferido, com 45
+configurações e dez finalistas. Resultados e evidências estão ao fim deste
+documento. As seções prospectivas abaixo preservam o desenho anterior à
+execução; a validação completa das novas finalistas continua pendente.
+
 Registrado em 11/09/2026, antes de executar os novos candidatos. A busca
 anterior terminou e foi conferida em `2547109`; seus resultados foram
 documentados em `27bec7a`. Este protocolo resolve a vizinhança já proposta
@@ -184,3 +189,38 @@ os métodos temporais ainda precisam de comparações pertinentes antes da
 escolha da cadeia. Os rastreadores receberão detecções comuns e terão
 métricas próprias; a predição sobre trajetórias estimadas e a ablação
 causal com/sem fluxo permanecem necessárias para responder à hipótese.
+
+<!-- refinement-dataset-completion-20260911 -->
+## Resultados do refinamento e conferência — 11/09/2026
+
+Refinamento concluído e conferido em `ca68f16`, com Git limpo na execução: **45 configurações × 576 quadros = 25.920 avaliações**, somente nos 12 treinos. A vizinhança previamente definida gerou 54 propostas, 51 válidas e 45 configurações únicas. Os dez pais passaram na paridade de objetos brutos e métricas; T218 permaneceu histórico, sem nova execução. Há dez finalistas, duas por família, sem promoção ou liberação automática da validação.
+
+Bateria: 528,244100 s; RSS amostrado 410,406 MiB; 394.820.008 bytes dos artefatos das candidatas, excluindo o agregador. QA: 1.061 arquivos, 39.670.198 comparações, 26.831.879 numéricas e 155.520 matchings SciPy em 281,243874 s; diferença numérica máxima 0.
+
+[Manifesto do refinamento](../../data/tests/detection/classical_refinement/classical_detection_refinement_v1_20260911_batch__cfgb8ebddfb/refinement/20260911T155556062315Z__ca68f16__cfgd1733d666bdc__srcf2ecb55da1__s42/manifest.json) · [Conferência independente](../../data/tests/detection/classical_refinement/classical_detection_refinement_v1_20260911_batch__cfgb8ebddfb/refinement/verification_20260911.json) · [Resumo e resultados por vídeo](../../data/derived/detection/comparison_reports/classical_refinement_v1_20260911/revision_02/summary.json).
+
+SHA256 do manifesto: `0c686f61f51af3129b89e878ba60ce2067e15c8c3bcceb478eee074f5e407e6b`.
+SHA256 do QA: `d82c58bff8d0ba8323ec1d43af23dc18f470c9da8f72c1c86d7aec14769f8118`.
+Fontes da execução: `f2ecb55da1bf19ff1fd2247f0e196d30f064fc95fc399c6b465c805c219a8766`.
+
+| Família | Melhor configuração local | F1 macro 10 px | Precisão | Recall | ms/quadro |
+|---|---|---:|---:|---:|---:|
+| Blob | `blob_refinement_v1_001` | 0,791005 | 0,760180 | 0,848556 | 1,257 |
+| Watershed | `watershed_refinement_v1_003` | 0,627005 | 0,567531 | 0,794746 | 21,020 |
+| Otsu | `otsu_refinement_v1_003` | 0,626315 | 0,591799 | 0,742933 | 2,208 |
+| Adaptativo | `adaptive_threshold_refinement_v1_007` | 0,446885 | 0,338566 | 0,854802 | 3,303 |
+| Híbrido CLAHE | `hybrid_threshold_refinement_v1_002` | 0,364491 | 0,273488 | 0,662509 | 4,770 |
+
+Os números apresentados descrevem a melhor configuração da vizinhança por família no treino. Frames e configurações não são réplicas independentes; F1 é calculado dentro de cada vídeo e depois recebe peso igual entre vídeos. Esforço desigual e seleção prévia de T218 impedem interpretar este ranking como superioridade universal ou detector final da pipeline. Tempo com imagem em cache não mede a cadeia completa.
+
+Finalistas para o próximo contrato, preservando todos os parâmetros e a linhagem:
+
+- Otsu: `otsu_refinement_v1_003` e `otsu_refinement_v1_008`.
+- Adaptativo: `adaptive_threshold_refinement_v1_007` e `adaptive_threshold_refinement_v1_013`.
+- Híbrido CLAHE: `hybrid_threshold_refinement_v1_002` e `hybrid_threshold_refinement_v1_007`.
+- Blob: `blob_refinement_v1_001` e `blob_refinement_v1_003`.
+- Watershed: `watershed_refinement_v1_003` e `watershed_refinement_v1_005`.
+
+Próximo marco: registrar validação completa das dez finalistas nos quatro vídeos 14/19/36/52, 5.850 quadros por candidata, 40 runs e 58.500 avaliações novas; T218 só entra como referência histórica autenticada. Em paralelo, registrar receita e executor de treinamento YOLO usando clone do dataset selado. MOG2/KNN precisam de protocolo temporal; rastreadores terão comparação com HOTA e a predição exigirá trajetórias estimadas e ablação causal. Os baselines de ADE/FDE com trajetórias GT já estão concluídos e conferidos; isso não avalia a cadeia com trajetórias estimadas nem a contribuição do fluxo. Não há novo HOTA, ADE/FDE com fluxo, teste ou confirmação 5-fold.
+
+O commit documental posterior não altera o commit do código, os hashes ou os recursos das runs. Os registros prospectivos acima permanecem como histórico do plano executado.

@@ -1,5 +1,20 @@
 # YOLO
 
+<!-- refinement-dataset-completion-20260911 -->
+## Dataset concluído e conferido — 11/09/2026
+
+Dataset YOLO materializado e conferido em `ca68f16`: **23.316 pares JPEG/anotação**, sendo 17.466 de treino e 5.850 de validação; 174 lacunas de anotação excluídas. Preservadas as três classes e as caixas da referência FTID. O conjunto contém 491.729 observações anotadas, não indivíduos únicos. Foram copiados 46.632 arquivos e gerados três descritores.
+
+Preparação: 1.237,798253 s; RSS amostrado 198,160 MiB; dataset com 1.471.015.512 bytes. QA: 116.590 arquivos, 8.724.385 comparações e 23.316 cópias JPEG decodificadas em 195,027052 s. A conferência verificou paridade de 491.729 anotações, com diferença máxima 0.
+
+[Manifesto do dataset](../../../data/datasets/yolo/materialized/yolo_dataset_v1_20260911__cfgfbd698da/preparation/20260911T161002135908Z__ca68f16__cfgf16cf2018592__srcf2ecb55da1__s42/manifest.json) · [Conferência independente](../../../data/datasets/yolo/materialized/yolo_dataset_v1_20260911__cfgfbd698da/preparation/verification_20260911.json). O teste ficou fora da preparação. **Não houve treinamento YOLO:** `training_allowed=false` e `consumer_clone_required=true`; o consumidor deve gerar outro clone independente dentro de sua própria run antes de chamar a biblioteca.
+
+A paridade geométrica entre anotações YOLO e FTID não certifica igualdade de pixels entre JPEG e MP4. Os JPEGs servem ao treinamento e à validação nativa do modelo aprendido. Para comparar F1 v3 com os clássicos, YOLO deverá processar os mesmos quadros MP4/cache usados por eles, com pré-processamento explicitamente registrado. Essa distinção delimita o derivado e o futuro contrato de comparação; não representa falha na organização atual do dataset.
+
+[Contrato, recursos e hashes do dataset](../../metodologia/DATASET_YOLO_V1.md).
+
+A GPU permanece validada sinteticamente; qualidade de treinamento YOLO no protocolo vigente continua pendente. Arquitetura/pesos, receita, checkpoints e seeds devem ser registrados antes do smoke/treino. A infraestrutura e os pilotos descritos abaixo são históricos e não substituem o novo consumidor estrito.
+
 ## Onde encontrar
 
 | Procurar | Abrir |
@@ -60,7 +75,7 @@ construído por YAML, sem pesos externos. Foram conferidos 55 pacotes e
 não leu VISEM nem mediu qualidade de detecção. Recibo, hashes e limites:
 [Ambiente aprendido v1](../../metodologia/AMBIENTE_APRENDIDO_V1.md).
 
-## Infraestrutura existente e preparação necessária
+## Infraestrutura histórica e preparação do treinamento
 
 O executor existente lê `configs/protocol/splits.yaml`: `train.txt` contém os 12
 vídeos de treino, `val.txt` os quatro de validação e `test.txt` os quatro de

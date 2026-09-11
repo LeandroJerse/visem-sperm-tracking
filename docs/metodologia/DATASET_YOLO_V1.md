@@ -1,5 +1,10 @@
 # Dataset YOLO independente — contrato v1
 
+**Atualização de 11/09/2026:** materialização e conferência concluídas,
+com 23.316 pares de treino/validação. Resultados e evidências estão ao fim
+deste documento. As seções prospectivas abaixo preservam o desenho anterior
+à execução; o treinamento YOLO continua pendente.
+
 Registrado em 11/09/2026 antes da materialização. Esta etapa prepara entradas
 reproduzíveis para futuros ensaios YOLO. Não treina, seleciona hiperparâmetros,
 executa inferência ou promove um detector. A preparação antiga continua
@@ -14,7 +19,7 @@ por isso o novo preparo produz cópias independentes, autenticadas por conteúdo
 Hardlinks, symlinks, junctions e outros reparse points são recusados nos
 caminhos utilizados. Não apagar ou reparar material antigo.
 
-**Estado deste registro:** código e testes sintéticos preparados; fontes foram
+**Estado no registro prospectivo, antes da execução:** código e testes sintéticos preparados; fontes foram
 inspecionadas apenas por nomes, stat e conteúdo de anotações nos 16 vídeos
 permitidos. Nenhum JPEG VISEM foi aberto/decodificado ou copiado, e nenhuma
 materialização real foi executada nesta preparação de código.
@@ -200,3 +205,21 @@ artefatos antes do smoke de treinamento YOLO. Arquitetura/pesos, receita,
 augmentations, seeds, checkpoint e preservação de scores para ByteTrack
 pertencem a um contrato posterior. Preparar o dataset não resolve essas
 decisões nem promove os pilotos históricos.
+
+<!-- refinement-dataset-completion-20260911 -->
+## Materialização e conferência concluídas — 11/09/2026
+
+Dataset YOLO materializado e conferido em `ca68f16`: **23.316 pares JPEG/anotação**, sendo 17.466 de treino e 5.850 de validação; 174 lacunas de anotação excluídas. Preservadas as três classes e as caixas da referência FTID. O conjunto contém 491.729 observações anotadas, não indivíduos únicos. Foram copiados 46.632 arquivos e gerados três descritores.
+
+Preparação: 1.237,798253 s; RSS amostrado 198,160 MiB; dataset com 1.471.015.512 bytes. QA: 116.590 arquivos, 8.724.385 comparações e 23.316 cópias JPEG decodificadas em 195,027052 s. A conferência verificou paridade de 491.729 anotações, com diferença máxima 0.
+
+[Manifesto do dataset](../../data/datasets/yolo/materialized/yolo_dataset_v1_20260911__cfgfbd698da/preparation/20260911T161002135908Z__ca68f16__cfgf16cf2018592__srcf2ecb55da1__s42/manifest.json) · [Conferência independente](../../data/datasets/yolo/materialized/yolo_dataset_v1_20260911__cfgfbd698da/preparation/verification_20260911.json). O teste ficou fora da preparação. **Não houve treinamento YOLO:** `training_allowed=false` e `consumer_clone_required=true`; o consumidor deve gerar outro clone independente dentro de sua própria run antes de chamar a biblioteca.
+
+A paridade geométrica entre anotações YOLO e FTID não certifica igualdade de pixels entre JPEG e MP4. Os JPEGs servem ao treinamento e à validação nativa do modelo aprendido. Para comparar F1 v3 com os clássicos, YOLO deverá processar os mesmos quadros MP4/cache usados por eles, com pré-processamento explicitamente registrado. Essa distinção delimita o derivado e o futuro contrato de comparação; não representa falha na organização atual do dataset.
+
+SHA256 do manifesto: `e13f65035d1ae90dcb2337a8942022d70a45cfbb926a611df21b83add2c8bf42`.
+SHA256 do QA: `0ad645d9cd20825984b70d5dab2b6d5dfd1a36970e10bd2a8b0129f81b2490be`.
+
+Contagens de observações por classe: classe 0: 458.327; classe 1: 13.026; classe 2: 20.376.
+
+O dataset selado não contém pesos nem qualidade de um detector aprendido. O próximo contrato deve fixar arquitetura/pesos, augmentations, seeds, checkpoint, seleção e preservação de scores. Não repetir a materialização concluída nem modificar suas fontes/cópias; caches pertencem apenas ao clone consumidor.

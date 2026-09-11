@@ -24,6 +24,9 @@ data/datasets/**
 data/derived/**
 !data/derived/**/
 !data/derived/**/README.md
+# Snapshots documentais de auditoria permanecem locais, inclusive seus READMEs.
+data/derived/project_audits/**/before/
+data/derived/project_audits/**/documentation_before/
 data/tests/**
 !data/tests/**/
 !data/tests/**/README.md

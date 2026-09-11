@@ -1,5 +1,18 @@
 # Simple Blob Detector
 
+<!-- refinement-dataset-completion-20260911 -->
+## Refinamento de treino concluído e conferido — 11/09/2026
+
+Foram avaliadas 6 configurações locais desta família, nos mesmos 576 quadros dos 12 treinos, dentro da bateria completa de 45 configurações em `ca68f16`. Melhor da vizinhança: `blob_refinement_v1_001`, F1 macro a 10 px **0,791005**, precisão 0,760180, recall 0,848556; F1 a 15/20 px 0,798632/0,799925. Detecção média em cache: 1,257 ms/quadro; 79 previsões ignoradas a 10 px.
+
+Parâmetros completos: `{"dark": false, "max_area": 300, "max_threshold": 255, "min_area": 3, "min_circularity": null, "min_convexity": null, "min_threshold": 180, "threshold_step": 10}`.
+
+Finalistas: `blob_refinement_v1_001` e `blob_refinement_v1_003`. A paridade dos pais e as métricas passaram no QA independente; a validação comparativa completa ainda precisa de contrato e execução. A diferença local de F1 em relação à melhor da busca anterior foi 0,000000; é seleção no mesmo treino, sem confirmação independente, promoção ou demonstração de melhor tracking.
+
+[Protocolo, resultados e hashes](../../metodologia/REFINAMENTO_CLASSICOS_V1.md) · [Resumo e valores por vídeo](../../../data/derived/detection/comparison_reports/classical_refinement_v1_20260911/revision_02/summary.json).
+
+A seção da busca abaixo é histórica; os parâmetros e números anteriores foram preservados.
+
 ## Onde encontrar
 
 | Procurar | Abrir |
@@ -11,7 +24,7 @@
 
 [Índice da família](README.md) · [Catálogo de algoritmos](../README.md)
 
-## Resultado de treino conferido — 11/09/2026
+## Histórico — resultado da busca de treino — 11/09/2026
 
 Seis configurações foram avaliadas nos mesmos 576 quadros dos 12 treinos,
 sob o contrato v3. A melhor desta grade foi `blob_v1_003`: objetos claros,

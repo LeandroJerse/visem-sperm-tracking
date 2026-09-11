@@ -1,12 +1,43 @@
 # Matriz algoritmo × teste
 
+<!-- refinement-dataset-completion-20260911 -->
+## Estado vigente — refinamento clássico e dataset conferidos
+
+Refinamento concluído e conferido em `ca68f16`, com Git limpo na execução: **45 configurações × 576 quadros = 25.920 avaliações**, somente nos 12 treinos. A vizinhança previamente definida gerou 54 propostas, 51 válidas e 45 configurações únicas. Os dez pais passaram na paridade de objetos brutos e métricas; T218 permaneceu histórico, sem nova execução. Há dez finalistas, duas por família, sem promoção ou liberação automática da validação.
+
+Bateria: 528,244100 s; RSS amostrado 410,406 MiB; 394.820.008 bytes dos artefatos das candidatas, excluindo o agregador. QA: 1.061 arquivos, 39.670.198 comparações, 26.831.879 numéricas e 155.520 matchings SciPy em 281,243874 s; diferença numérica máxima 0.
+
+[Manifesto do refinamento](../../data/tests/detection/classical_refinement/classical_detection_refinement_v1_20260911_batch__cfgb8ebddfb/refinement/20260911T155556062315Z__ca68f16__cfgd1733d666bdc__srcf2ecb55da1__s42/manifest.json) · [Conferência independente](../../data/tests/detection/classical_refinement/classical_detection_refinement_v1_20260911_batch__cfgb8ebddfb/refinement/verification_20260911.json) · [Resumo e resultados por vídeo](../../data/derived/detection/comparison_reports/classical_refinement_v1_20260911/revision_02/summary.json).
+
+| Família | Melhor configuração local | F1 macro 10 px | Precisão | Recall | ms/quadro |
+|---|---|---:|---:|---:|---:|
+| Blob | `blob_refinement_v1_001` | 0,791005 | 0,760180 | 0,848556 | 1,257 |
+| Watershed | `watershed_refinement_v1_003` | 0,627005 | 0,567531 | 0,794746 | 21,020 |
+| Otsu | `otsu_refinement_v1_003` | 0,626315 | 0,591799 | 0,742933 | 2,208 |
+| Adaptativo | `adaptive_threshold_refinement_v1_007` | 0,446885 | 0,338566 | 0,854802 | 3,303 |
+| Híbrido CLAHE | `hybrid_threshold_refinement_v1_002` | 0,364491 | 0,273488 | 0,662509 | 4,770 |
+
+Os números apresentados descrevem a melhor configuração da vizinhança por família no treino. Frames e configurações não são réplicas independentes; F1 é calculado dentro de cada vídeo e depois recebe peso igual entre vídeos. Esforço desigual e seleção prévia de T218 impedem interpretar este ranking como superioridade universal ou detector final da pipeline. Tempo com imagem em cache não mede a cadeia completa.
+
+Dataset YOLO materializado e conferido em `ca68f16`: **23.316 pares JPEG/anotação**, sendo 17.466 de treino e 5.850 de validação; 174 lacunas de anotação excluídas. Preservadas as três classes e as caixas da referência FTID. O conjunto contém 491.729 observações anotadas, não indivíduos únicos. Foram copiados 46.632 arquivos e gerados três descritores.
+
+Preparação: 1.237,798253 s; RSS amostrado 198,160 MiB; dataset com 1.471.015.512 bytes. QA: 116.590 arquivos, 8.724.385 comparações e 23.316 cópias JPEG decodificadas em 195,027052 s. A conferência verificou paridade de 491.729 anotações, com diferença máxima 0.
+
+[Manifesto do dataset](../../data/datasets/yolo/materialized/yolo_dataset_v1_20260911__cfgfbd698da/preparation/20260911T161002135908Z__ca68f16__cfgf16cf2018592__srcf2ecb55da1__s42/manifest.json) · [Conferência independente](../../data/datasets/yolo/materialized/yolo_dataset_v1_20260911__cfgfbd698da/preparation/verification_20260911.json). O teste ficou fora da preparação. **Não houve treinamento YOLO:** `training_allowed=false` e `consumer_clone_required=true`; o consumidor deve gerar outro clone independente dentro de sua própria run antes de chamar a biblioteca.
+
+A paridade geométrica entre anotações YOLO e FTID não certifica igualdade de pixels entre JPEG e MP4. Os JPEGs servem ao treinamento e à validação nativa do modelo aprendido. Para comparar F1 v3 com os clássicos, YOLO deverá processar os mesmos quadros MP4/cache usados por eles, com pré-processamento explicitamente registrado. Essa distinção delimita o derivado e o futuro contrato de comparação; não representa falha na organização atual do dataset.
+
+Próximo marco: registrar validação completa das dez finalistas nos quatro vídeos 14/19/36/52, 5.850 quadros por candidata, 40 runs e 58.500 avaliações novas; T218 só entra como referência histórica autenticada. Em paralelo, registrar receita e executor de treinamento YOLO usando clone do dataset selado. MOG2/KNN precisam de protocolo temporal; rastreadores terão comparação com HOTA e a predição exigirá trajetórias estimadas e ablação causal. Os baselines de ADE/FDE com trajetórias GT já estão concluídos e conferidos; isso não avalia a cadeia com trajetórias estimadas nem a contribuição do fluxo. Não há novo HOTA, ADE/FDE com fluxo, teste ou confirmação 5-fold.
+
+As tabelas e etapas seguintes preservam os resultados anteriores; suas pendências de busca/refinamento/preparação correspondem ao momento histórico indicado.
+
 Esta tabela é o quadro de acompanhamento. `✓` significa que há evidência no
 repositório; `API` significa apenas que construtor/configuração foram validados;
 `piloto` não é resultado do protocolo; `—` ainda precisa ser executado.
 
 ## Detecção
 
-### Comparação estática concluída e conferida — 11/09/2026
+### Histórico — busca estática concluída e conferida — 11/09/2026
 
 O [protocolo comparativo](../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md#resultados-da-busca-e-conferência--11092026)
 concluiu smoke de 516 avaliações e busca de **43 × 576 = 24.768 avaliações**

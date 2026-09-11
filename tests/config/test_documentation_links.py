@@ -12,6 +12,7 @@ MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 
 
 def _active_markdown_files() -> list[Path]:
+    audit_root = REPOSITORY_ROOT / "data" / "derived" / "project_audits"
     files = [REPOSITORY_ROOT / "README.md"]
     for relative in ("docs", "src", "script", "tests", "configs", "monografia"):
         files.extend((REPOSITORY_ROOT / relative).rglob("*.md"))
@@ -19,6 +20,12 @@ def _active_markdown_files() -> list[Path]:
         path
         for path in (REPOSITORY_ROOT / "data").rglob("README.md")
         if "quarantine" not in path.parts
+        # Audit snapshots preserve original bytes and relative links. Their
+        # canonical documents are checked above; snapshots are not entry points.
+        and not (
+            path.is_relative_to(audit_root)
+            and {"before", "documentation_before"}.intersection(path.relative_to(audit_root).parts)
+        )
     )
     return sorted({path for path in files if path.is_file()})
 
