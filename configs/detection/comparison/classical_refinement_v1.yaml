@@ -1,0 +1,147 @@
+plan_id: classical_detection_refinement_v1_20260911
+kind: static_classical_detection_refinement_v1
+expected_candidates: 45
+expected_proposals: 54
+expected_valid_proposals: 51
+expected_by_family:
+  otsu: 8
+  adaptive_threshold: 13
+  hybrid_threshold: 11
+  blob: 6
+  watershed: 7
+parents:
+  search_manifest:
+    path: data/tests/detection/classical_comparison/classical_detection_comparison_v1_operational_v2_20260911_batch__cfgb226c5dc/search/20260911T144742812472Z__2547109__cfgbecfe1d189e7__srcf14ede5a12__s42/manifest.json
+    sha256: 8a08f83d1b81be4dd2bae4b42bfea21bc08531d0e57ea9104f8693072ae606d0
+  search_qa:
+    path: data/tests/detection/classical_comparison/classical_detection_comparison_v1_operational_v2_20260911_batch__cfgb226c5dc/search/verification_20260911.json
+    sha256: c51f53f3d0a390a715460ce101c91a36e1d59e7e0c128e73ae12efc5da7da792
+  comparison_plan:
+    path: configs/detection/comparison/classical_v1_operational_v2.yaml
+    canonical_sha256: a86c8a68180e89802150a2cb3d354a5dc9657e64270d820d9fb7269f64a6dbf5
+  finalists:
+    path: data/tests/detection/classical_comparison/classical_detection_comparison_v1_operational_v2_20260911_batch__cfgb226c5dc/search/20260911T144742812472Z__2547109__cfgbecfe1d189e7__srcf14ede5a12__s42/family_finalists.json
+    sha256: 1a8bc9ece78fe62d643b974b324d00ff32eccf6628f4ce165e1fede2c4febe74
+input:
+  sample_plan: configs/detection/threshold/search_v3.yaml
+  sample_plan_canonical_sha256: b787deb8d49c6adf7902c9370bf567631545fac5e749beef943d54083be7d35d
+  cache_manifest: data/derived/detection/frame_samples/threshold_search_v3_20260908/manifest.json
+  cache_manifest_sha256: 4f2712a43b1da795aaee2d5d73750fa29d5c47231d34cf72d8f6cb2bc7c01501
+  sample_hash: 77ad9cbda76c03d61f3b28dd99520d0c1d6e285452929d847742bc6331473478
+evaluation:
+  protocol_id: center_distance_v3_individuals_ignore_clusters_10px
+  center_gate_px: 10
+  sensitivity_gates_px:
+  - 15
+  - 20
+  class_policy: individuals_ignore_clusters
+train_ids:
+- 11
+- 12
+- 13
+- 15
+- 21
+- 22
+- 23
+- 29
+- 30
+- 35
+- 60
+- 82
+sampling:
+  smoke_mode: benchmark
+  refinement_mode: master
+  smoke_frames_per_video: 1
+  refinement_frames_per_video: 48
+run:
+  split: train
+  seed: 42
+  opencv_threads: 1
+  save_video: false
+budget:
+  wall_seconds_limit: null
+  max_rss_mb: 2048
+  max_batch_artifact_mb: 2048
+  max_predictions_per_frame: 307200
+  on_failure: stop_without_selection_preserve_partial_artifacts
+selection:
+  primary: macro_video_f1_individuals_center_10px
+  tie_breakers:
+  - macro_video_recall_desc
+  - macro_video_count_mae_asc
+  - configuration_id_asc
+  comparisons_require_all_candidates_and_all_planned_frames: true
+  timing_used_for_ranking: false
+  finalists_per_family: 2
+  expected_finalists: 10
+  historical_threshold_reference_reexecuted: false
+  promotion_allowed: false
+  validation_released: false
+  interpretation: limited_training_refinement_for_full_validation_contract
+  comparability_limit: unequal_search_effort_and_previously_selected_threshold_reference
+neighborhood:
+- family: otsu
+  axes:
+  - parameter: morph_iterations
+    step: 1
+    min: 0
+    max: 2
+    odd: false
+  - parameter: close_iterations
+    step: 1
+    min: 0
+    max: 3
+    odd: false
+- family: adaptive_threshold
+  axes:
+  - parameter: adaptive_block
+    step: 8
+    min: 3
+    max: 127
+    odd: true
+  - parameter: adaptive_c
+    step: 2
+    min: null
+    max: null
+    odd: false
+  - parameter: morph_iterations
+    step: 1
+    min: 0
+    max: 2
+    odd: false
+- family: hybrid_threshold
+  axes:
+  - parameter: clip_limit
+    step: 0.5
+    min: 0.5
+    max: 4
+    odd: false
+  - parameter: background_kernel
+    step: 8
+    min: 3
+    max: 63
+    odd: true
+  - parameter: open_iterations
+    step: 1
+    min: 0
+    max: 2
+    odd: false
+- family: blob
+  axes:
+  - parameter: min_threshold
+    step: 20
+    min: 0
+    max: 245
+    odd: false
+- family: watershed
+  axes:
+  - parameter: blur
+    step: 2
+    min: 1
+    max: 7
+    odd: true
+  - parameter: dist_ratio
+    step: 0.1
+    min: 0.1
+    max: 0.9
+    odd: false

@@ -22,6 +22,8 @@ rastreamento e predição terão comparações próprias.
 | Quero… | Abra |
 |---|---|
 | Acompanhar a comparação entre detectores | [Protocolo clássico e evidências](docs/metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md) · [Execução e conferência](script/README.md#comparacao-classicos-v1) |
+| Refinar os demais detectores no treino | [Contrato e grade local](docs/metodologia/REFINAMENTO_CLASSICOS_V1.md) · [Comandos](script/README.md#refinamento-classicos-v1) |
+| Preparar os dados para YOLO | [Dataset autenticado](docs/metodologia/DATASET_YOLO_V1.md) · [Comandos](script/README.md#dataset-yolo-v1) |
 | Preparar YOLO, RAFT e LSTM na GPU | [Ambiente aprendido validado](docs/metodologia/AMBIENTE_APRENDIDO_V1.md) · [Comandos](script/README.md#ambiente-aprendido-v1) |
 | Entender a preparação dos rastreadores | [Contrato de tracking e pendências](docs/metodologia/RASTREAMENTO_COMPARACAO_V1.md) |
 | Encontrar o threshold que já usamos | [Algoritmo threshold.py](src/detection/classical/threshold.py) |

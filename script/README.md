@@ -11,6 +11,8 @@ do repositório. Para entender um algoritmo, abra sua implementação em
 ## Navegação rápida
 
 - [Comparação de detectores clássicos v1](#comparacao-classicos-v1)
+- [Refinamento local das cinco famílias clássicas](#refinamento-classicos-v1)
+- [Preparação autenticada do dataset YOLO](#dataset-yolo-v1)
 - [Ambiente aprendido com CUDA](#ambiente-aprendido-v1)
 - [Entender arquivos curtos e os três lugares chamados teste](#como-ler-esta-pasta)
 - [0. Verificações de código antes de uma bateria](#0-verificação-antes-de-uma-bateria)
@@ -109,6 +111,53 @@ Guardar os JSONs de QA ao lado da pasta da run, nunca dentro dela. O
 verificador confere o universo exato e recusa arquivos não declarados dentro
 da execução. Recalcula matchings com SciPy e não importa o avaliador produtor;
 autentica também a referência histórica T218 para conferir paridade.
+
+<a id="refinamento-classicos-v1"></a>
+
+## Refinamento local das cinco famílias clássicas
+
+O [contrato prospectivo](../docs/metodologia/REFINAMENTO_CLASSICOS_V1.md)
+e o [plano](../configs/detection/comparison/classical_refinement_v1.yaml)
+expandem as dez finalistas da busca concluída: 45 configurações únicas,
+540 avaliações no smoke e 25.920 no refinamento. Cada proposta muda somente
+um eixo. A referência T218 anterior é autenticada, sem nova execução.
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.refine_classical --mode refine --dry-run
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.refine_classical --mode smoke
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.verify_classical_refinement --manifest CAMINHO_DO_MANIFESTO_SMOKE --output CAMINHO_NOVO_QA_SMOKE
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.refine_classical --mode refine --smoke-manifest CAMINHO_DO_MANIFESTO_SMOKE --smoke-qa CAMINHO_DO_QA_SMOKE
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.verify_classical_refinement --manifest CAMINHO_DO_MANIFESTO_REFINAMENTO --output CAMINHO_NOVO_QA_REFINAMENTO
+```
+
+Registrar os arquivos em commit limpo antes do smoke. O refinamento exige
+manifesto e QA aprovado compatíveis; a conferência independente reconstrói
+vizinhança, métricas, classificação e paridade das dez configurações pais.
+Guardar o QA ao lado da pasta da run. As etapas internas se chamam
+`refinement_smoke` e `refinement`; saídas por família ficam em
+`data/tests/detection/`, ligadas pelo manifesto agregador. Nenhuma execução
+desta CLI abre a validação ou o teste, promove detector ou escolhe a pipeline.
+
+<a id="dataset-yolo-v1"></a>
+
+## Preparação autenticada do dataset YOLO
+
+O [contrato do dataset](../docs/metodologia/DATASET_YOLO_V1.md) define
+cópias independentes de imagens e anotações dos 12 vídeos de treino e quatro
+de validação. As 174 lacunas do vídeo 23 são excluídas; não são negativos.
+As caixas YOLO são conferidas contra as anotações com ID usadas na avaliação.
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.yolo.prepare_dataset --mode plan
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.yolo.prepare_dataset --mode materialize
+```
+
+O modo `plan` inspeciona nomes e metadados. A materialização exige commit
+limpo, copia os 23.316 pares, valida os JPEGs copiados e reconfere hashes
+dos originais. A run em `data/datasets/yolo/` preserva falhas e impede
+sobrescrita. Não há treinamento nem acesso ao teste. O consumidor de treino
+deverá criar outra cópia independente para que caches ou reparos da biblioteca
+não alterem o dataset autenticado. O ambiente CUDA tem preparação separada.
 
 <a id="ambiente-aprendido-v1"></a>
 

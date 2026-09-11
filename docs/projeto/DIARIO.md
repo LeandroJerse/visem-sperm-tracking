@@ -2,6 +2,34 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-11 — protocolo de refinamento e preparação YOLO
+
+Registrada a [vizinhança local dos clássicos](../metodologia/REFINAMENTO_CLASSICOS_V1.md)
+antes das novas inferências: dez pais autenticados, 54 propostas, 51 válidas
+e 45 configurações únicas após deduplicação, mantendo todas as origens.
+Smoke de 540 avaliações, seguido por 25.920 no refinamento, apenas nos
+mesmos quadros de treino. A referência T218 não é reexecutada. O QA do
+smoke é requisito executável; classificação somente após completude e
+reconferência. Sem teto temporal novo; RSS e artefatos limitados a 2.048 MiB.
+Esta entrada é prospectiva, não resultado de uma nova bateria.
+
+Verificações antes das execuções: 119 testes finais do produtor passaram em
+60,07 s; 36 do verificador passaram em duas rodadas complementares
+(29 em 139,22 s e sete em 10,33 s); 50 testes de dataset/YOLO passaram em
+6,11 s; os links documentais passaram em um teste de 0,88 s. São 206 casos
+selecionados, não uma repetição da suíte completa do repositório.
+O smoke sintético do QA reconstruiu 45 × 12 avaliações e 3.240 matchings.
+A autenticação independente dos pais reais conferiu 487 arquivos e as 222
+fontes históricas, sem novos pixels ou inferências.
+
+O [dataset YOLO](../metodologia/DATASET_YOLO_V1.md) terá cópias independentes
+de 23.316 pares JPEG/anotação dos 12 treinos e quatro validações. Metadados
+e anotações foram inspecionados sem abrir JPEGs: 17.466 quadros de treino,
+5.850 de validação e 174 lacunas excluídas. As caixas coincidem exatamente
+com a referência FTID, ignorando somente IDs. Preservar as três classes;
+não recortar ou reescrever desvios numéricos de borda. Materialização não
+é treinamento, e o teste permanece fora do descriptor e da leitura.
+
 ## 2026-09-11 — busca comparativa clássica concluída e conferida
 
 Concluídos smoke e busca em `2547109`, com Git limpo e proveniência

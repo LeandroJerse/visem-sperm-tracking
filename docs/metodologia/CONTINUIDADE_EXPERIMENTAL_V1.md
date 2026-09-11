@@ -11,6 +11,10 @@ bateria concluída e conferida está descrita em
 576 quadros de treino, totalizando 24.768 avaliações. Smoke e busca passaram
 pela conferência independente; refinamento, validação e YOLO têm etapas
 próprias. Não há escolha antecipada do melhor detector.
+O [refinamento local](REFINAMENTO_CLASSICOS_V1.md) resolve a próxima grade
+em 45 configurações únicas e exige smoke com QA antes de 25.920 avaliações.
+O [dataset YOLO](DATASET_YOLO_V1.md) possui contrato separado de cópias
+autenticadas e paridade das anotações; sua preparação não é treinamento.
 Preparação do ambiente aprendido e contrato de tracking avançam em paralelo.
 A ablação nos derivados abaixo permanece prevista; sua numeração registra
 o roteiro anterior, não precedência obrigatória sobre esta comparação.
@@ -43,7 +47,7 @@ Nova extração completa exige seu próprio executor e plano operacional.
 |---|---|
 | O fluxo acrescenta informação útil à previsão? | Ablação causal pareada, primeiro com GT e depois com trajetórias estimadas |
 | Qual rastreador preserva melhor as identidades? | Comparação real de HOTA, IDF1, MOTA, trocas de ID e fragmentações |
-| Como um detector aprendido se compara ao clássico? | YOLO treinado/avaliado no protocolo atual versus T218 |
+| Como um detector aprendido se compara aos clássicos? | YOLO treinado/avaliado no protocolo atual e finalistas clássicas validadas, com T218 como referência |
 | Uma rede recorrente aproveita o fluxo? | LSTM sem/com fluxo com controle de entradas, treinamento e capacidade |
 | Um fluxo aprendido muda o resultado? | Farnebäck versus RAFT sob suporte e preditor equivalentes |
 | O resultado se mantém fora dos dados de escolha? | Avaliação externa com seleção e treinamento restritos aos dados permitidos |
@@ -141,8 +145,9 @@ testada inferência real ou compatibilidade CUDA nesta retomada.
 
 Preparar ambiente aprendido reproduzível preservando a referência CPU.
 Conferir importações, GPU, pesos e uma execução curta real antes de treinar.
-Depois treinar YOLO apenas nas divisões permitidas e compará-lo ao T218 sob
-o mesmo contrato v3. Fixar entrada/saída, pré-processamento, seleção, sementes
+Depois treinar YOLO apenas nas divisões permitidas e compará-lo às finalistas
+clássicas, incluindo a referência T218, sob o mesmo contrato v3. Fixar
+entrada/saída, pré-processamento, seleção, sementes
 e condições de avaliação. Não promover o piloto histórico como resultado atual.
 
 Comparar LSTM sem/com fluxo com mesmas janelas, alvos, divisões e processo de
@@ -180,7 +185,8 @@ para medir erro, preservando trocas de ID, lacunas e perdas. Relatar cobertura
 junto ao ADE/FDE: perder casos difíceis pode reduzir o erro médio entre os
 casos restantes sem melhorar o sistema completo.
 
-O núcleo prioritário é T218/YOLO; centroide/Húngaro/SORT/ByteTrack-style;
+O núcleo prioritário inclui os detectores clássicos comparados e YOLO,
+sem fixar antecipadamente T218 como vencedor; centroide/Húngaro/SORT/ByteTrack-style;
 Farnebäck/RAFT; persistência/CV/CV+fluxo/LSTM sem e com fluxo. Kalman de
 predição e Adaptive Flow-SORT são extensões coerentes. O restante do catálogo
 continua disponível, sem necessidade de testar todo produto cartesiano antes
