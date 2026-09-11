@@ -2,6 +2,18 @@
 
 ## Direção e estado
 
+Atualização de execução em 11/09: a orientação seguinte do pesquisador
+priorizou testar os demais algoritmos, compará-los e validá-los antes de
+escolher o componente da cadeia final de rastreamento e predição. A primeira
+bateria em implementação está descrita em
+[Comparação de detectores estáticos v1](COMPARACAO_DETECTORES_CLASSICOS_V1.md):
+43 configurações de seis famílias, incluindo T218 como referência, nos mesmos
+576 quadros de treino. Ela começa por smoke e busca; refinamento, validação
+e YOLO têm etapas próprias. Não há escolha antecipada do melhor detector.
+Preparação do ambiente aprendido e contrato de tracking avançam em paralelo.
+A ablação nos derivados abaixo permanece prevista; sua numeração registra
+o roteiro anterior, não precedência obrigatória sobre esta comparação.
+
 A próxima prioridade é produzir comparações reais que respondam aos objetivos
 do TCC. Há código e infraestrutura suficientes para avançar; implementar mais
 variantes ou repetir verificações encerradas não é pré-requisito para todas

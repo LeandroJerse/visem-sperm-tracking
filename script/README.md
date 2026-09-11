@@ -10,6 +10,8 @@ do repositório. Para entender um algoritmo, abra sua implementação em
 
 ## Navegação rápida
 
+- [Comparação de detectores clássicos v1](#comparacao-classicos-v1)
+- [Ambiente aprendido com CUDA](#ambiente-aprendido-v1)
 - [Entender arquivos curtos e os três lugares chamados teste](#como-ler-esta-pasta)
 - [0. Verificações de código antes de uma bateria](#0-verificação-antes-de-uma-bateria)
 - [Retomada: inspeção de anotações em um quadro de treino](#inspecao-de-anotacoes)
@@ -69,6 +71,58 @@ pasta de saída em `data/`. Isso evita manter várias cópias divergentes do mes
 executor. Ferramentas que realmente têm um protocolo próprio, como threshold
 frame a frame, MOG2/KNN por clipes e treino/avaliação YOLO, ganham subpastas
 específicas em `test/`.
+
+<a id="comparacao-classicos-v1"></a>
+
+## Comparação de detectores clássicos v1
+
+O [protocolo](../docs/metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md)
+e o [YAML](../configs/detection/comparison/classical_v1.yaml) registram
+43 configurações de threshold fixo, Otsu, adaptativo, híbrido, Blob e
+Watershed. Reutilizam a amostra autenticada de 576 quadros do treino.
+Não há seleção de validação, promoção ou acesso ao teste nesta CLI.
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.compare_classical --mode smoke --dry-run
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.compare_classical --mode smoke
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.verify_classical_comparison --manifest CAMINHO_DO_MANIFESTO_SMOKE --output CAMINHO_NOVO_QA_SMOKE
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.compare_classical --mode search --smoke-manifest CAMINHO_DO_MANIFESTO_SMOKE
+.\.venv\Scripts\python.exe -X utf8 -B -m script.detection.test.verify_classical_comparison --manifest CAMINHO_DO_MANIFESTO_BUSCA --output CAMINHO_NOVO_QA_BUSCA
+```
+
+Registrar código e protocolo em commit limpo antes do smoke. Conferir os
+artefatos do smoke antes da busca. A busca exige o manifesto completo e
+compatível; somente após todos os candidatos produz ranking e duas
+finalistas por família pesquisada. T218 é referência fixa. Cada família
+tem sua pasta em `data/tests/detection/`; o manifesto agregador está sob
+`classical_comparison/`. CSVs brutos preservam previsões e GT juntos, com
+a coluna `source` distinguindo `detection` e `manual`.
+
+Guardar os JSONs de QA ao lado da pasta da run, nunca dentro dela. O
+verificador confere o universo exato e recusa arquivos não declarados dentro
+da execução. Recalcula matchings com SciPy e não importa o avaliador produtor;
+autentica também a referência histórica T218 para conferir paridade.
+
+<a id="ambiente-aprendido-v1"></a>
+
+## Ambiente aprendido com CUDA
+
+O [perfil aprendido](../docs/metodologia/AMBIENTE_APRENDIDO_V1.md) usa
+`.venv-ml/`, separado da referência clássica. Recriação em Windows x64
+com Python 3.13, a partir da raiz:
+
+```powershell
+py -3.13 -m venv .venv-ml
+.\.venv-ml\Scripts\python.exe -m pip install torch==2.9.1 torchvision==0.24.1 --index-url https://download.pytorch.org/whl/cu128
+.\.venv-ml\Scripts\python.exe -m pip install -r requirements-ml.lock --extra-index-url https://download.pytorch.org/whl/cu128
+.\.venv-ml\Scripts\python.exe -X utf8 -B -m script.project.test.validate_learned_environment
+```
+
+O verificador exige CUDA, confere as versões e executa somente tensores
+sintéticos e arquiteturas sem pesos externos. O recibo em
+`data/derived/project_audits/learned_environment/` não é treinamento nem
+resultado científico de YOLO, RAFT ou LSTM. Não substituir o interpretador
+da `.venv/` nas baterias clássicas por este ambiente.
 
 <a id="busca-threshold-v3"></a>
 

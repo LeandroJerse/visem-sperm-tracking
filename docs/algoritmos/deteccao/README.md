@@ -7,6 +7,13 @@ como algoritmos experimentais separados porque escolhem o limiar de maneira
 diferente. MOG2 e KNN também compartilham uma interface, porém mantêm estado e
 hiperparâmetros distintos.
 
+Em 11/09 foi registrado o
+[protocolo comparativo estático v1](../../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md)
+para executar 43 configurações de threshold fixo, Otsu, adaptativo, híbrido,
+Blob e Watershed na mesma amostra do treino. O protocolo distingue busca,
+refinamento e validação; a shortlist inicial não é um vencedor final. YOLO
+e métodos temporais precisam de seus próprios executores de dados/treinamento.
+
 | Método | Família | Principal vantagem | Principal risco |
 |---|---|---|---|
 | [Threshold fixo](threshold_fixo.md) | clássico puro | rapidez e interpretação | mudança de iluminação |

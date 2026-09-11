@@ -2,6 +2,44 @@
 
 Registro simples e cronológico do que foi feito e testado. Entrada mais recente no topo.
 
+## 2026-09-11 — início da execução comparativa: protocolo e ambiente
+
+A orientação seguinte priorizou testar e validar os demais algoritmos antes
+da escolha da cadeia final. Registrado o
+[protocolo dos detectores estáticos](../metodologia/COMPARACAO_DETECTORES_CLASSICOS_V1.md):
+43 configurações, seis famílias, mesmos 576 quadros do treino, referência
+T218 fixa e duas finalistas por família pesquisada. Smoke de 516 avaliações
+antecede busca de 24.768. Este registro precede os pixels; ainda não relata
+resultados da comparação. Sem teto de tempo novo, preservando os limites
+prospectivos de memória, armazenamento e completude.
+
+Testes do código existente utilizado: 530 aprovados em 90,66 s. O novo
+executor acrescentou 74 testes aprovados; uma rodada dirigida de 214 testes
+em 44,11 s inclui esses 74 e testes reutilizados, não 214 casos novos.
+O verificador independente da comparação é registrado antes da bateria.
+Seus 62 testes passaram: 57 em 51,93 s e cinco de ranking em 1,14 s.
+A fixture integral cobre 43 candidatos, 516 avaliações e 3.096 matchings,
+incluindo adulterações de métricas, GT, cobertura e proveniência. A
+conferência somente leitura do cache real aprovou 15 arquivos e 37.377
+comparações: 576 quadros e 12.040 objetos GT brutos, sem executar detector.
+
+O [ambiente aprendido](../metodologia/AMBIENTE_APRENDIDO_V1.md) foi instalado
+separadamente e passou em seis verificações CUDA em 12,0624322 s. Python
+3.13.3, PyTorch 2.9.1+cu128, torchvision 0.24.1+cu128 e Ultralytics 8.4.147;
+55 versões conferidas e `pip check` aprovado. RAFT, YOLOv8n e LSTM usaram
+somente entradas sintéticas e pesos aleatórios, sem VISEM ou treinamento.
+A verificação ocorreu em `a924fe5` com alterações locais, declaradas no
+recibo; o commit seguinte não muda retrospectivamente essa proveniência.
+Recibo `data/derived/project_audits/learned_environment/20260911_validation_v1.json`,
+SHA256 `29414ce0667c40ccd23e317cc86c07b6ed048e2efa249d968fb60c3fa907312b`.
+
+O [contrato de tracking](../metodologia/RASTREAMENTO_COMPARACAO_V1.md)
+documenta os cinco métodos, HOTA/Identity/CLEAR e as pendências concretas de
+regiões ignoradas, adaptador e fluxo causal. Está como rascunho não executável.
+A preparação de YOLO precisa de dataset derivado autenticado para evitar
+que caches da biblioteca sejam escritos nas fontes imutáveis. Ainda não há
+HOTA real, treinamento YOLO atual ou nova predição com fluxo.
+
 ## 2026-09-11 — continuidade orientada às comparações experimentais
 
 Registrado o [plano executivo](../metodologia/CONTINUIDADE_EXPERIMENTAL_V1.md).
