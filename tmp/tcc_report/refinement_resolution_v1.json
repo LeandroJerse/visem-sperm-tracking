@@ -1,0 +1,1192 @@
+{
+  "scope": "parent_metadata_only_no_new_detector_runs",
+  "parents": [
+    {
+      "configuration_id": "t218_o0_c2_reference_v1",
+      "family": "threshold",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": 218,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 0,
+        "close_iterations": 2
+      },
+      "method": "threshold"
+    },
+    {
+      "configuration_id": "otsu_v1_004",
+      "family": "otsu",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": 2
+      },
+      "method": "threshold"
+    },
+    {
+      "configuration_id": "otsu_v1_003",
+      "family": "otsu",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": 0
+      },
+      "method": "threshold"
+    },
+    {
+      "configuration_id": "adaptive_threshold_v1_002",
+      "family": "adaptive_threshold",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 15,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      },
+      "method": "threshold"
+    },
+    {
+      "configuration_id": "adaptive_threshold_v1_008",
+      "family": "adaptive_threshold",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 31,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      },
+      "method": "threshold"
+    },
+    {
+      "configuration_id": "hybrid_threshold_v1_002",
+      "family": "hybrid_threshold",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": 1
+      },
+      "method": "hybrid_threshold"
+    },
+    {
+      "configuration_id": "hybrid_threshold_v1_001",
+      "family": "hybrid_threshold",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": 0
+      },
+      "method": "hybrid_threshold"
+    },
+    {
+      "configuration_id": "blob_v1_003",
+      "family": "blob",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 180
+      },
+      "method": "blob"
+    },
+    {
+      "configuration_id": "blob_v1_002",
+      "family": "blob",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 100
+      },
+      "method": "blob"
+    },
+    {
+      "configuration_id": "watershed_v1_005",
+      "family": "watershed",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 3,
+        "dist_ratio": 0.4
+      },
+      "method": "watershed"
+    },
+    {
+      "configuration_id": "watershed_v1_002",
+      "family": "watershed",
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 1,
+        "dist_ratio": 0.4
+      },
+      "method": "watershed"
+    }
+  ],
+  "proposals": [
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_004",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": 2
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_004",
+      "axis": "morph_iterations",
+      "delta": -1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 0,
+        "close_iterations": 2
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_004",
+      "axis": "morph_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 2,
+        "close_iterations": 2
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_004",
+      "axis": "close_iterations",
+      "delta": -1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": 1
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_004",
+      "axis": "close_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": 3
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_003",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": 0
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_003",
+      "axis": "morph_iterations",
+      "delta": -1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 0,
+        "close_iterations": 0
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_003",
+      "axis": "morph_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 2,
+        "close_iterations": 0
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_003",
+      "axis": "close_iterations",
+      "delta": -1,
+      "valid": false,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": -1
+      }
+    },
+    {
+      "family": "otsu",
+      "parent": "otsu_v1_003",
+      "axis": "close_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": false,
+        "adaptive_block": 21,
+        "adaptive_c": 5,
+        "morph_kernel": 3,
+        "morph_iterations": 1,
+        "close_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_002",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 15,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_002",
+      "axis": "adaptive_block",
+      "delta": -8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 7,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_002",
+      "axis": "adaptive_block",
+      "delta": 8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 23,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_002",
+      "axis": "adaptive_c",
+      "delta": -2,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 15,
+        "adaptive_c": -7,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_002",
+      "axis": "adaptive_c",
+      "delta": 2,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 15,
+        "adaptive_c": -3,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_002",
+      "axis": "morph_iterations",
+      "delta": -1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 15,
+        "adaptive_c": -5,
+        "morph_iterations": 0
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_002",
+      "axis": "morph_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 15,
+        "adaptive_c": -5,
+        "morph_iterations": 2
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_008",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 31,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_008",
+      "axis": "adaptive_block",
+      "delta": -8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 23,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_008",
+      "axis": "adaptive_block",
+      "delta": 8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 39,
+        "adaptive_c": -5,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_008",
+      "axis": "adaptive_c",
+      "delta": -2,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 31,
+        "adaptive_c": -7,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_008",
+      "axis": "adaptive_c",
+      "delta": 2,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 31,
+        "adaptive_c": -3,
+        "morph_iterations": 1
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_008",
+      "axis": "morph_iterations",
+      "delta": -1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 31,
+        "adaptive_c": -5,
+        "morph_iterations": 0
+      }
+    },
+    {
+      "family": "adaptive_threshold",
+      "parent": "adaptive_threshold_v1_008",
+      "axis": "morph_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "blur": 1,
+        "invert": false,
+        "threshold_value": null,
+        "adaptive": true,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "adaptive_block": 31,
+        "adaptive_c": -5,
+        "morph_iterations": 2
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_002",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": 1
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_002",
+      "axis": "clip_limit",
+      "delta": -0.5,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 0.5,
+        "background_kernel": 15,
+        "open_iterations": 1
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_002",
+      "axis": "clip_limit",
+      "delta": 0.5,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1.5,
+        "background_kernel": 15,
+        "open_iterations": 1
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_002",
+      "axis": "background_kernel",
+      "delta": -8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 7,
+        "open_iterations": 1
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_002",
+      "axis": "background_kernel",
+      "delta": 8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 23,
+        "open_iterations": 1
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_002",
+      "axis": "open_iterations",
+      "delta": -1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": 0
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_002",
+      "axis": "open_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": 2
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_001",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": 0
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_001",
+      "axis": "clip_limit",
+      "delta": -0.5,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 0.5,
+        "background_kernel": 15,
+        "open_iterations": 0
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_001",
+      "axis": "clip_limit",
+      "delta": 0.5,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1.5,
+        "background_kernel": 15,
+        "open_iterations": 0
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_001",
+      "axis": "background_kernel",
+      "delta": -8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 7,
+        "open_iterations": 0
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_001",
+      "axis": "background_kernel",
+      "delta": 8,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 23,
+        "open_iterations": 0
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_001",
+      "axis": "open_iterations",
+      "delta": -1,
+      "valid": false,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": -1
+      }
+    },
+    {
+      "family": "hybrid_threshold",
+      "parent": "hybrid_threshold_v1_001",
+      "axis": "open_iterations",
+      "delta": 1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "tile_grid_size": 8,
+        "dark_objects": false,
+        "threshold_value": null,
+        "morph_kernel": 3,
+        "close_iterations": 1,
+        "clip_limit": 1,
+        "background_kernel": 15,
+        "open_iterations": 1
+      }
+    },
+    {
+      "family": "blob",
+      "parent": "blob_v1_003",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 180
+      }
+    },
+    {
+      "family": "blob",
+      "parent": "blob_v1_003",
+      "axis": "min_threshold",
+      "delta": -20,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 160
+      }
+    },
+    {
+      "family": "blob",
+      "parent": "blob_v1_003",
+      "axis": "min_threshold",
+      "delta": 20,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 200
+      }
+    },
+    {
+      "family": "blob",
+      "parent": "blob_v1_002",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 100
+      }
+    },
+    {
+      "family": "blob",
+      "parent": "blob_v1_002",
+      "axis": "min_threshold",
+      "delta": -20,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 80
+      }
+    },
+    {
+      "family": "blob",
+      "parent": "blob_v1_002",
+      "axis": "min_threshold",
+      "delta": 20,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "max_threshold": 255,
+        "threshold_step": 10,
+        "min_circularity": null,
+        "min_convexity": null,
+        "dark": false,
+        "min_threshold": 120
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_005",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 3,
+        "dist_ratio": 0.4
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_005",
+      "axis": "blur",
+      "delta": -2,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 1,
+        "dist_ratio": 0.4
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_005",
+      "axis": "blur",
+      "delta": 2,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 5,
+        "dist_ratio": 0.4
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_005",
+      "axis": "dist_ratio",
+      "delta": -0.1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 3,
+        "dist_ratio": 0.3
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_005",
+      "axis": "dist_ratio",
+      "delta": 0.1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 3,
+        "dist_ratio": 0.5
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_002",
+      "axis": null,
+      "delta": 0,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 1,
+        "dist_ratio": 0.4
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_002",
+      "axis": "blur",
+      "delta": -2,
+      "valid": false,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": -1,
+        "dist_ratio": 0.4
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_002",
+      "axis": "blur",
+      "delta": 2,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 3,
+        "dist_ratio": 0.4
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_002",
+      "axis": "dist_ratio",
+      "delta": -0.1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 1,
+        "dist_ratio": 0.3
+      }
+    },
+    {
+      "family": "watershed",
+      "parent": "watershed_v1_002",
+      "axis": "dist_ratio",
+      "delta": 0.1,
+      "valid": true,
+      "params": {
+        "min_area": 3,
+        "max_area": 300,
+        "invert": false,
+        "morph_kernel": 3,
+        "blur": 1,
+        "dist_ratio": 0.5
+      }
+    }
+  ],
+  "unique_by_family": {
+    "otsu": 8,
+    "adaptive_threshold": 13,
+    "hybrid_threshold": 11,
+    "blob": 6,
+    "watershed": 7
+  }
+}

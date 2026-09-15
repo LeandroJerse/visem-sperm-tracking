@@ -1,0 +1,17 @@
+<div class="lab" id="lab-causalidade">
+<h3>3. Quais imagens estão disponíveis na origem da previsão?</h3>
+<p>Mova a origem de uma janela fictícia. Os números seguem o contrato de 20 posições observadas e dez alvos futuros. O desenho demonstra disponibilidade temporal; não lê vídeos ou anotações do projeto.</p>
+<div class="controls"><label>Origem da previsão t: <output id="lab-origin-value">29</output><input id="lab-origin" type="range" min="19" max="59" value="29" step="1"></label></div>
+<svg id="lab-causal-chart" class="teaching-chart" viewBox="0 0 740 150" role="img" aria-label="Vinte posições históricas observadas e dez alvos futuros separados pela origem da previsão"></svg>
+<div id="lab-causal-output" class="lab-output" aria-live="polite"></div>
+<p>Um campo termina de ficar disponível quando seu segundo quadro é observado. O par t→t+1 não pode entrar numa previsão em t. Ter o futuro guardado no dataset para avaliar depois não o torna uma entrada permitida. Esta distinção vale mesmo quando o experimento é executado offline.</p>
+</div>
+<div class="lab" id="lab-bilinear">
+<h3>4. Como quatro pixels produzem um vetor local?</h3>
+<p>Nesta célula de interpolação inventada, os vetores dos vizinhos são (0;0), (4;0), (0;2) e (4;2), na ordem superior esquerdo, superior direito, inferior esquerdo e inferior direito. Os controles definem a posição relativa dentro da célula. α=0,25 e β=0,5 reproduzem a conta do <a href="#exemplo-completo">exemplo completo</a>.</p>
+<div class="controls"><label>Deslocamento horizontal α<input id="lab-alpha" type="range" min="0" max="1" step="0.05" value="0.25"></label><label>Deslocamento vertical β<input id="lab-beta" type="range" min="0" max="1" step="0.05" value="0.5"></label></div>
+<label class="checkbox-label"><input id="lab-invalid-corner" type="checkbox"> Marcar o vizinho inferior direito como inválido</label>
+<div id="lab-bilinear-output" class="lab-output" aria-live="polite"></div>
+<p>Se um vizinho com peso positivo é inválido, a amostra não vira (0;0): ela permanece ausente. Se o peso desse vizinho é exatamente zero, ele não contribui nem invalida o resultado. O código científico verifica tipos, limites, finitude e procedência além desta conta didática.</p>
+</div>
+<noscript><p>Sem JavaScript: em t=29, histórico 10..29, alvos 30..39 e último fluxo permitido 28→29; 29→30 é futuro. Na interpolação com α=0,25 e β=0,5, os pesos são 0,375; 0,125; 0,375; 0,125 e o vetor é (1;1). Invalidar o último vizinho invalida essa amostra; em α=0 ele teria peso zero.</p></noscript>

@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "scope": "Manual visual inspection of report next-steps desktop/mobile and atlas desktop; browser geometry covers both documents at 1440 and 390 pixels.",
+  "screenshots": [
+    {
+      "path": "tmp/tcc_report/qa_20260911_continuidade/report_next_desktop.png",
+      "sha256": "33dba14f2ccf46ba23c60fcfdd79152a523b42fc72f986f954d98d6e02db4fa0",
+      "bytes": 151737
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_continuidade/report_next_mobile.png",
+      "sha256": "55f3064185ffa5390c55dc068834b381ba1782e2d20543ec2c0507c74e62fb74",
+      "bytes": 47004
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_continuidade/atlas_next_desktop.png",
+      "sha256": "b1673fa1944b7be4c1c0205bb6c09cc0fc12127088d12e2230280fa15ca42ba6",
+      "bytes": 234351
+    }
+  ],
+  "interactive_javascript": "unchanged versus preceding reviewed edition, verified in browser QA script",
+  "scientific_figures": "five existing figures retained; no new figure or experiment"
+}

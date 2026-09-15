@@ -1,0 +1,63 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-09-11T15:16:31.830161+00:00",
+  "scope": "Visual review of new comparison table, figure, expanded by-video table, next steps and atlas on desktop/mobile. Horizontal scroll confirmed on the wrapper. Original PNG inspected separately. Existing interactive JS unchanged; previous widget QA is not repeated.",
+  "report_hashes": [
+    {
+      "path": "docs/projeto/RELATORIO_COMPLETO_TCC.html",
+      "sha256": "7d9bb9752501633771d0f88b5ae9eb4c00ca9b66968950caa65aeb4f4845ae89"
+    },
+    {
+      "path": "docs/projeto/mapa-tcc-didatico.html",
+      "sha256": "1a20abf97503cb3f44619b561582bf3dcb551652b976c28f4265bd433c3a7dd9"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical_final_retry1/atlas_comparison_desktop.png",
+      "sha256": "4131122a2ba3f6c5e39f387975f3d67172e4ed2d2132521952f93970d5f2ef9b"
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical_final_retry1/atlas_comparison_mobile.png",
+      "sha256": "915880a659e8e12f476fcd023285a9840ab1bd53a09764d65835a8e1101fd5e2"
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical_final_retry1/report_comparison_mobile_right_columns.png",
+      "sha256": "e8ba3f417728a5e34ce5598596883624b5e7544801a8a4ef50da58dee0cb8860"
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical_final_retry1/report_by_video_mobile.png",
+      "sha256": "530cb799862b1db9c4a81c582fcf1c3335cc50e24da0c802164b6e6403c10240"
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical_final_retry1/report_next_mobile.png",
+      "sha256": "44568c07cbd90679cd81b23d0e44e506d706373c1576b377adfdd9988762ac87"
+    }
+  ],
+  "earlier_layout_views": [
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical/report_overview.png",
+      "sha256": "e2d7732b832bc3ed50336c629101de5a6e97e421d0cb2cde4ae3d35155864f52"
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical/report_comparison_desktop.png",
+      "sha256": "e647522f8f865e70282476feeb1b24437778d8083cfbcaf9af2476ce3595dc3a"
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical/report_figure_desktop.png",
+      "sha256": "b4986c58c719291fa75ac62932163cf50b3104160d28e1db5b87b6eb6f824f73"
+    },
+    {
+      "path": "tmp/tcc_report/qa_20260911_classical/report_comparison_mobile.png",
+      "sha256": "6330afe9d2f2e64f36a5a09ac8fd1b859e3ee97c347dcc785085ad1c72086cfd"
+    }
+  ],
+  "limitations": [
+    "On narrow screens, tables scroll horizontally. Figures can be opened at original size.",
+    "No PDF generated; external URLs were not checked for current HTTP availability."
+  ],
+  "prior_qa_attempts_preserved": [
+    "tmp/tcc_report/qa_20260911_classical/visual_review.json",
+    "tmp/tcc_report/qa_20260911_classical_final/failure.json"
+  ]
+}

@@ -1,0 +1,61 @@
+\chapter[Introdução]{Introdução}
+
+Este Trabalho de Conclusão de Curso investiga a análise e a predição de trajetórias de espermatozoides em vídeos microscópicos por meio de técnicas de Visão Computacional. O estudo está inserido no contexto dos sistemas de análise seminal assistida por computador, conhecidos como \ac{CASA}, nos quais vídeos de amostras seminais são utilizados para observar o deslocamento celular e extrair informações relacionadas à motilidade. A automatização dessa análise exige transformar uma sequência de quadros em localizações, identidades persistentes e trajetórias mensuráveis.
+
+Esse processo apresenta dificuldades próprias do domínio. As cabeças dos espermatozoides ocupam poucos pixels, têm aparência semelhante e podem apresentar baixo contraste em relação ao fundo. O movimento é rápido e irregular, e cruzamentos, sobreposições, detritos, variações de iluminação e deslocamentos globais da imagem podem produzir detecções incorretas ou trocas de identidade. O estudo utiliza exclusivamente vídeos microscópicos do VISEM e as anotações disponibilizadas pelo VISEM-Tracking para parte dessa coleção \cite{haugen2019visem,thambawita2023visemtracking}. O movimento observado será analisado em coordenadas de imagem, sem pressupor um escoamento imposto ou atribuir uma causa física à deriva. A proposta articula detecção, rastreamento multiobjeto, fluxo óptico e predição temporal em uma pipeline modular.
+
+\section{Motivação}
+
+A infertilidade constitui um problema de saúde pública com repercussões pessoais e sociais. A Organização Mundial da Saúde estima que aproximadamente uma em cada seis pessoas adultas vivencie infertilidade ao longo da vida \cite{who2023infertility}. Como a motilidade espermática integra a avaliação da fertilidade masculina, métodos computacionais que contribuam para uma análise mais objetiva, reprodutível e escalável podem apoiar estudos laboratoriais e pesquisas em reprodução humana. O presente trabalho, contudo, não pretende realizar diagnóstico clínico; seu objeto é a avaliação computacional de trajetórias em vídeos microscópicos.
+
+Do ponto de vista acadêmico, o problema reúne desafios clássicos e atuais de Visão Computacional: detecção de objetos pequenos, associação temporal, manutenção de identificadores, estimação de movimento e modelagem de sequências. O conjunto VISEM reuniu vídeos microscópicos e dados de análise seminal de 85 participantes \cite{haugen2019visem}. Posteriormente, o VISEM-Tracking disponibilizou caixas delimitadoras, classes e identificadores persistentes em trechos de 30 segundos de 20 desses vídeos, viabilizando avaliações sistemáticas de detecção e \ac{MOT} \cite{thambawita2023visemtracking}. Esses trechos anotados permitem desenvolver e avaliar os módulos supervisionados. Os outros 65 vídeos da mesma coleção serão reservados à aplicação posterior e à análise qualitativa, pois não possuem anotações manuais de rastreamento para avaliar a acurácia das trajetórias.
+
+Os trabalhos existentes demonstram avanços em partes do problema. O \textit{motilitAI} emprega fluxo óptico e aprendizado de máquina para estimar proporções agregadas de classes de motilidade \cite{ottl2022motilitai}; Noy et al. \cite{noy2023location} utilizam redes recorrentes para prever posições futuras a partir de trajetórias previamente obtidas; e Zhang et al. \cite{zhang2024spermyolo} combinam um detector especializado com rastreamento para o VISEM-Tracking. Permanece, entretanto, a oportunidade de avaliar de forma controlada se o movimento aparente estimado no entorno de cada célula acrescenta informação útil à predição individual, além do histórico de posições e velocidades.
+
+\section{Problema}
+
+O problema de pesquisa consiste em determinar se uma pipeline computacional consegue detectar e rastrear múltiplos espermatozoides em vídeos microscópicos e se características locais de fluxo óptico contribuem para prever suas posições futuras. A questão envolve dois níveis de dificuldade. No primeiro, erros do detector e do rastreador afetam a continuidade das trajetórias. No segundo, mesmo uma trajetória corretamente observada pode mudar de direção ou velocidade de modo que modelos cinemáticos simples deixem de representar sua dinâmica.
+
+O fluxo óptico oferece uma descrição do deslocamento aparente de padrões de intensidade entre quadros, mas não corresponde automaticamente à velocidade física do fluido. Nos dados considerados, o campo observado pode misturar movimento das células, estruturas do meio, artefatos e movimento da câmera. Além disso, não há uma medição física de referência do escoamento. Assim, o trabalho precisa avaliar a utilidade computacional desse campo sem atribuir a ele uma interpretação física que os dados não sustentem.
+
+A delimitação adotada concentra-se na localização bidimensional das cabeças dos espermatozoides e na predição de suas coordenadas em horizontes curtos. Morfologia detalhada, vitalidade, concentração seminal, diagnóstico médico e modelagem física completa do escoamento não fazem parte do escopo. Essa delimitação permite avaliar cada módulo com critérios objetivos e relacionar os resultados à hipótese de pesquisa.
+
+\section{Hipótese}
+
+A hipótese principal é que a inclusão de características locais de fluxo óptico, associadas ao histórico de posições de cada espermatozoide, reduz o erro de predição de posições futuras em comparação com modelos equivalentes que utilizam somente posição e velocidade. A verificação será feita por uma ablação pareada: serão mantidos os mesmos dados, divisões, horizontes, arquiteturas e hiperparâmetros, alterando-se apenas a presença das características de fluxo.
+
+Três perguntas orientam a investigação:
+
+\begin{enumerate}
+	\item Qual combinação de detector e rastreador preserva melhor as identidades dos espermatozoides nas sequências avaliadas?
+	\item O campo de movimento aparente apresenta consistência temporal suficiente para ser utilizado como atributo de predição?
+	\item A inclusão desse campo reduz os erros de predição e em quais condições de densidade celular, duração de trajetória e horizonte temporal esse efeito ocorre?
+\end{enumerate}
+
+\section{Objetivos}
+
+\subsection{Objetivo geral}
+
+Investigar, implementar e avaliar uma pipeline computacional para análise e predição de trajetórias de espermatozoides em vídeos microscópicos, combinando técnicas de detecção, rastreamento multiobjeto e fluxo óptico, com ênfase na avaliação do efeito do movimento aparente sobre a previsão de posições futuras.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}
+	\item organizar os vídeos, metadados e anotações em divisões experimentais independentes e reproduzíveis;
+	\item implementar e comparar abordagens clássicas e aprendidas para detectar espermatozoides;
+	\item implementar e avaliar métodos de associação temporal capazes de manter identificadores persistentes;
+	\item extrair trajetórias e calcular medidas cinemáticas compatíveis com a calibração disponível;
+	\item estimar e analisar o campo de movimento aparente entre quadros, compensando movimento global quando necessário;
+	\item comparar preditores de trajetórias com e sem características derivadas do fluxo óptico; e
+	\item analisar quantitativa e qualitativamente os resultados, identificando limitações e condições de sucesso ou falha.
+\end{enumerate}
+
+\section{Contribuições esperadas}
+
+A principal contribuição esperada é uma avaliação controlada da utilidade de características de fluxo óptico para a predição individual de trajetórias de espermatozoides. A comparação será feita tanto sobre trajetórias anotadas, isolando o preditor, quanto sobre trajetórias produzidas pela pipeline, permitindo medir a propagação dos erros de detecção e rastreamento.
+
+Também se espera produzir uma organização reprodutível dos dados, linhas de base clássicas e modernas para cada módulo e uma análise das limitações envolvidas na transferência de métodos de Visão Computacional para vídeos microscópicos. O código, os modelos e os arquivos de resultados constituirão artefatos necessários aos experimentos, mas a contribuição científica será a evidência obtida sob critérios comuns de avaliação.
+
+\section{Organização da Monografia}
+
+Além desta introdução, a monografia está organizada em quatro capítulos. O Capítulo 2 apresenta os conceitos de análise seminal assistida por computador, processamento de imagens, detecção, rastreamento multiobjeto, fluxo óptico, predição de trajetórias, conjuntos de dados e métricas. O Capítulo 3 analisa os trabalhos relacionados e explicita a lacuna investigada. O Capítulo 4 descreve os dados, os módulos da pipeline, os experimentos e os critérios de validação. Por fim, o Capítulo 5 registra as alterações realizadas para consolidar as entregas anteriores e apresenta as expectativas para a continuidade do trabalho.

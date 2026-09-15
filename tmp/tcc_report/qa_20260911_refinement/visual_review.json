@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-09-11T16:44:46.612832+00:00",
+  "method": "Direct visual inspection of all eleven listed browser screenshots.",
+  "html_hashes": [
+    {
+      "path": "docs/projeto/RELATORIO_COMPLETO_TCC.html",
+      "sha256": "b35c03ed67bb291569391ba78a21ae4e2d5e8307c3ac3ac68de5dc7141933ed5"
+    },
+    {
+      "path": "docs/projeto/mapa-tcc-didatico.html",
+      "sha256": "de7cae748efaee96a09e44ea304bbd662cc91663fe7c1951f9dc4ea2be3211bb"
+    }
+  ],
+  "screenshots": {
+    "report_overview.png": "695f0ec9c018b9fe6a3eb802bdf16025f4f21876e864b07fa661a2dfd3543862",
+    "report_comparison_desktop.png": "04f389fa53e364b4828cfb660f11867251c887690609ff60e9fd611293132174",
+    "report_figure_desktop.png": "f941e169511e14c55fd22e57805636999e8b328ec393bf3d90e8ec62b2ab4b78",
+    "report_comparison_mobile.png": "6ecfb06f22cfef2903ee3818a53e65e969942860de2cc47f620b6c7ee2868a7b",
+    "report_figure_mobile.png": "57739ca80f88bc1771567b175dee7ee85c6e8ba1b07b89b4d4cd3bcb34416ec1",
+    "report_comparison_mobile_right_columns.png": "ef3f19d5c9b8536c640eeb7472b01e88ef80701bccb90f4f8aa40f5b51b4f320",
+    "report_next_desktop.png": "a23cb65535164fb2d747f3aeb9eacfd532d98736c62e002803c113267430657a",
+    "report_next_mobile.png": "ceb9416db853cbe0ba099ec26f5aa7f2e0a94e1d3a1354f23c36d593659b3ea3",
+    "atlas_comparison_desktop.png": "9b7f168ab2eaf42849e69919f56dc8319abbbcedca37a0d2a338b14ee1a96ac5",
+    "atlas_comparison_mobile.png": "270a2365538c4131aae1a4bb86c24282922d6346e1ff883e661f7b026473763c",
+    "report_by_video_mobile.png": "f971243f11f12d1a21e43f9ba9ee41befef1c08dc3ef88c4e97f57c6a3238b9d"
+  },
+  "findings": [
+    "Desktop comparison columns and figure are legible and aligned.",
+    "Mobile paragraphs and headings fit the viewport without page overflow.",
+    "Wide tables scroll horizontally; right-hand columns were inspected.",
+    "The figure scales down on mobile; links expose its full PNG and SVG.",
+    "Per-video details open correctly and retain the distance sensitivities.",
+    "Current milestone, historical references and next steps remain explicit.",
+    "Atlas and report navigation pass at desktop and mobile viewport sizes."
+  ],
+  "limits": "Visual review of changed areas; unchanged JavaScript identity checked separately. No new scientific experiment."
+}

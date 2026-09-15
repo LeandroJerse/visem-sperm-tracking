@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "browser": "152.0.4191.66",
+  "hashes": [
+    {
+      "path": "docs\\projeto\\RELATORIO_COMPLETO_TCC.html",
+      "sha256": "d34edf1e3e63ca678f4ed6227f2f5e7e2997916b0c62f9e9c2427f5b5515af6a"
+    },
+    {
+      "path": "docs\\projeto\\mapa-tcc-didatico.html",
+      "sha256": "3c8c35e7cd174f02d07435b39286b2503ead3430326b68a7d911a6b1708e62d0"
+    }
+  ],
+  "reportSize": {
+    "width": 1440,
+    "viewport": 1440,
+    "figures": 5
+  },
+  "atlas": {
+    "desktop": {
+      "width": 1440,
+      "viewport": 1440
+    },
+    "mobile": {
+      "width": 390,
+      "viewport": 390
+    }
+  },
+  "console_errors": [],
+  "checks": [
+    "causal prediction adaptation and next stage",
+    "report and atlas no document overflow",
+    "five embedded report figures",
+    "atlas root redirect preserves new anchor",
+    "atlas new figure loads",
+    "atlas theme toggle",
+    "new section desktop and mobile"
+  ],
+  "visual_review": "passed",
+  "visual_review_scope": "Opening desktop/mobile, atlas new section desktop/mobile, new figure and updated next steps inspected; no overlap or unreadable layout found."
+}

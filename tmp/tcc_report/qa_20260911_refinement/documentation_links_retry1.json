@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "result": "1 passed in 1.64s",
+  "log": "tmp/tcc_report/qa_20260911_refinement/documentation_links_retry1.log",
+  "log_sha256": "2573401ead335201db48c4605362c991791a6cd86bdc36a49818990c3c57cdda",
+  "test_sha256": "9389c4c5fb295f7aafa481d1022094b9b8bb5a2ee94856bd81d4c69e432dcfcb",
+  "initial_failure": "documentation_links_initial_failure.json"
+}

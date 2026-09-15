@@ -1,0 +1,118 @@
+{
+  "width": 697,
+  "viewport": 390,
+  "wide": [
+    {
+      "tag": "CODE",
+      "id": "",
+      "cls": "",
+      "width": 420.484375,
+      "right": 453.46875,
+      "text": "center_distance_v3_individuals_ignore_clusters_10px"
+    },
+    {
+      "tag": "ARTICLE",
+      "id": "",
+      "cls": "card",
+      "width": 408.25,
+      "right": 417.84375,
+      "text": "\n              20 vídeos com tracking manual\n              Os trechos anotados têm caixas, classes e"
+    },
+    {
+      "tag": "H3",
+      "id": "",
+      "cls": "",
+      "width": 369.46875,
+      "right": 398.453125,
+      "text": "20 vídeos com tracking manual"
+    },
+    {
+      "tag": "P",
+      "id": "",
+      "cls": "",
+      "width": 369.46875,
+      "right": 398.453125,
+      "text": "Os trechos anotados têm caixas, classes e IDs persistentes por frame. Servem para desenvolvimento, v"
+    },
+    {
+      "tag": "P",
+      "id": "",
+      "cls": "term",
+      "width": 369.46875,
+      "right": 398.453125,
+      "text": "data/sources/visem_tracking/dataset/Train/"
+    },
+    {
+      "tag": "ARTICLE",
+      "id": "",
+      "cls": "card",
+      "width": 408.25,
+      "right": 417.84375,
+      "text": "\n              65 vídeos sem tracking manual\n              Receberão detecções, IDs, trajetórias, fl"
+    },
+    {
+      "tag": "H3",
+      "id": "",
+      "cls": "",
+      "width": 369.46875,
+      "right": 398.453125,
+      "text": "65 vídeos sem tracking manual"
+    },
+    {
+      "tag": "P",
+      "id": "",
+      "cls": "",
+      "width": 369.46875,
+      "right": 398.453125,
+      "text": "Receberão detecções, IDs, trajetórias, fluxo e previsões depois do congelamento. Como não há gabarit"
+    },
+    {
+      "tag": "P",
+      "id": "",
+      "cls": "term",
+      "width": 369.46875,
+      "right": 398.453125,
+      "text": "data/sources/visem/videos/"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "width": 412.484375,
+      "right": 445.46875,
+      "text": "configs/frozen/detection/threshold/t200_o1_c2.yaml"
+    },
+    {
+      "tag": "CODE",
+      "id": "",
+      "cls": "",
+      "width": 412.484375,
+      "right": 445.46875,
+      "text": "configs/frozen/detection/threshold/t200_o1_c2.yaml"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "width": 660.640625,
+      "right": 693.625,
+      "text": "data/results/detection/threshold/t200_o1_c2__cfg3276cf65/selection/selection.json"
+    },
+    {
+      "tag": "CODE",
+      "id": "",
+      "cls": "",
+      "width": 660.640625,
+      "right": 693.625,
+      "text": "data/results/detection/threshold/t200_o1_c2__cfg3276cf65/selection/selection.json"
+    },
+    {
+      "tag": "CODE",
+      "id": "",
+      "cls": "",
+      "width": 420.484375,
+      "right": 447.078125,
+      "text": "center_distance_v3_individuals_ignore_clusters_10px"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "status": "passed",
+  "browser": "152.0.4191.66",
+  "hashes": [
+    {
+      "path": "docs\\projeto\\RELATORIO_COMPLETO_TCC.html",
+      "sha256": "5629f67773ad15e04092e4018c737d8a88732a713c5940c64534adbb39ff1756"
+    },
+    {
+      "path": "docs\\projeto\\mapa-tcc-didatico.html",
+      "sha256": "eea1bb995f789f25f1437a72cd4bf6e47e2d2b6c03654183ff04cdc52047e05e"
+    }
+  ],
+  "reportSize": {
+    "width": 1440,
+    "viewport": 1440,
+    "figures": 4
+  },
+  "atlas": {
+    "desktop": {
+      "width": 1440,
+      "viewport": 1440
+    },
+    "mobile": {
+      "width": 390,
+      "viewport": 390
+    }
+  },
+  "console_errors": [],
+  "checks": [
+    "corrected final text",
+    "report and atlas no document overflow",
+    "four embedded report figures",
+    "atlas root redirect preserves new anchor",
+    "atlas new figure loads",
+    "atlas theme toggle",
+    "new section desktop and mobile"
+  ],
+  "visual_review": "passed_representative_pages",
+  "inspected_images": [
+    "desktop_abertura.png",
+    "mobile_abertura.png",
+    "resultados_fluxo_causal.png",
+    "atlas_nivel7_desktop.png",
+    "atlas_nivel7_mobile.png",
+    "proximos_atualizados.png"
+  ]
+}

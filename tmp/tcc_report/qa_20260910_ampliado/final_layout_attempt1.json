@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "scope": "Documentary HTML mobile SVG layout, not a scientific experiment",
+  "report_sha256": "613818e48f9c79689e8afa01534c82ffe7980dca8dc079031b25d933a9e4e07d",
+  "reason": "After increasing mobile label size to 30 SVG units, upper text bounds reached y=-10.28657 outside the viewBox.",
+  "correction": "Move label baselines, rectangles and separator down and expand viewBox height to 150; leave the mathematical logic unchanged. Repeat targeted layout checks."
+}

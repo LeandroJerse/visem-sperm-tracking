@@ -1,0 +1,848 @@
+PÁGINA 1
+Análise e Predição de Trajetórias de
+Espermatozoides em Vídeos Microscópicos
+Leandro Marques Gontijo Jersé
+Universidade Federal de Uberlândia
+F aculdade de Computação
+Bacharelado em Ciência da Computação
+Uberlândia - MG
+2026
+
+PÁGINA 2
+Leandro Marques Gontijo Jersé
+Análise e Predição de Trajetórias de
+Espermatozoides em Vídeos Microscópicos
+Trabalho de Conclusão de Curso apresentado à Fa-
+culdade de Computação da Universidade Federal de
+Uberlândia, Minas Gerais, como requisito parcial para a
+obtenção do Título de Bacharel em Ciência da Compu-
+tação
+Área de concentração: Ciência da Computação
+Orientador: Prof. Dr. Bruno Augusto Nassif Travencolo
+Uberlândia - MG
+2026
+
+PÁGINA 3
+Resumo
+Este trabalho investiga a análise e a predição de trajetórias de espermatozoides em
+vídeos microscópicos por meio de técnicas de Visão Computacional. O problema en-
+volve objetos pequenos, visualmente semelhantes e de baixo contraste, cujos movimentos
+rápidos, irregulares e sujeitos a sobreposições dificultam a detecção e a preservação de
+identidades ao longo do tempo. O objetivo é implementar e avaliar uma pipeline com-
+posta por detecção, rastreamento multiobjeto, estimação de movimento aparente por fluxo
+óptico e predição de posições futuras. A pesquisa será aplicada, quantitativa e experi-
+mental. Serão utilizados o conjunto público VISEM-Tracking e vídeos do cenário-alvo
+com contracorrente gerada por um tubo, organizados em divisões independentes por ví-
+deo ou unidade de aquisição. Métodos clássicos, como limiarização, Filtro de Kalman,
+SORT e Farnebäck, serão comparados a abordagens aprendidas, como YOLO, ByteTrack,
+RAFT e redes recorrentes. A hipótese principal é que características locais de fluxo óp-
+tico, combinadas ao histórico de posições, podem reduzir os erros ADE e FDE em relação
+a preditores equivalentes que utilizem somente posição e velocidade. A avaliação tam-
+bém utilizará métricas de detecção e rastreamento, com atenção à reprodutibilidade e à
+distinção entre movimento aparente na imagem e velocidade física do fluido.
+Palavras-chave:Visãocomputacional, espermatozoides, rastreamentomultiobjeto, fluxo
+óptico, predição de trajetórias.
+
+PÁGINA 4
+Abstract
+This work investigates the analysis and prediction of spermatozoa trajectories in mi-
+croscopy videos using Computer Vision techniques. The problem involves small, visually
+similar, low-contrast objects whose fast and irregular motion, overlaps, and temporary oc-
+clusions make detection and identity preservation difficult. The objective is to implement
+and evaluate a pipeline composed of detection, multi-object tracking, apparent-motion
+estimation through optical flow, and future-position prediction. The study will follow an
+applied, quantitative, and experimental design. The public VISEM-Tracking dataset and
+target-domain videos containing a tube-generated counter-current will be organized into
+independent splits by video or acquisition unit. Classical methods, including threshol-
+ding, Kalman filtering, SORT, and Farnebäck optical flow, will be compared with learned
+approaches such as YOLO, ByteTrack, RAFT, and recurrent neural networks. The main
+hypothesis is that local optical-flow features combined with position histories can reduce
+ADE and FDE relative to equivalent predictors that use only position and velocity. De-
+tection and tracking metrics will also be reported, with emphasis on reproducibility and
+on the distinction between image-based apparent motion and the physical velocity of the
+fluid.
+Keywords:Computer vision. Spermatozoa. Multi-object tracking. Optical flow. Tra-
+jectory prediction.
+
+PÁGINA 5
+Lista de tabelas
+Tabela 1 – Comparação dos trabalhos relacionados . . . . . . . . . . . . . . . . . 21
+
+PÁGINA 6
+Lista de siglas
+ADEErro Médio de Deslocamento –Average Displacement Error
+CASAAnálise Seminal Assistida por Computador –Computer-Aided
+Sperm Analysis
+FDEErro de Deslocamento Final –Final Displacement Error
+GRUUnidade Recorrente Fechada –Gated Recurrent Unit
+HOTAAcurácia de Rastreamento de Ordem Superior –Higher Order
+Tracking Accuracy
+IDF1medida F1 de identificação
+IoUInterseção sobre União –Intersection over Union
+LINlinearidade
+LSTMMemória de Longo e Curto Prazo –Long Short-Term Memory
+mAPprecisão média –mean Average Precision
+MOTRastreamento Multiobjeto –Multi-Object Tracking
+MOTAAcurácia de Rastreamento Multiobjeto –Multi-Object Tracking
+Accuracy
+VAPvelocidade do percurso médio
+VCLvelocidade curvilínea
+VSLvelocidade em linha reta
+
+PÁGINA 7
+Lista de símbolos
+∆tintervalo de tempo entre dois quadros consecutivos
+pt posição bidimensional de uma célula no quadrot
+pquantidade de quadros da janela observada
+qquantidade de quadros do horizonte de predição
+Tquantidade de posições de uma trajetória
+u,vcomponentes horizontal e vertical do fluxo óptico
+
+PÁGINA 8
+Sumário
+1 INTRODUÇÃO . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.1 Motivação. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .9
+1.2 Problema. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .10
+1.3 Hipótese. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .11
+1.4 Objetivos. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .11
+1.4.1 Objetivo geral . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+1.4.2 Objetivos específicos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+1.5 Contribuições esperadas. . . . . . . . . . . . . . . . . . . . . . . . .12
+1.6 Organização da Monografia. . . . . . . . . . . . . . . . . . . . . . .12
+2 FUNDAMENTAÇÃO TEÓRICA . . . . . . . . . . . . . . . . . 13
+2.1 Análise seminal assistida por computador. . . . . . . . . . . . . .13
+2.2 Processamento de imagens e detecção. . . . . . . . . . . . . . . .14
+2.3 Rastreamento multiobjeto. . . . . . . . . . . . . . . . . . . . . . .15
+2.4 Fluxo óptico e movimento aparente. . . . . . . . . . . . . . . . .15
+2.5 Predição de trajetórias. . . . . . . . . . . . . . . . . . . . . . . . .16
+2.6 Conjuntos de dados. . . . . . . . . . . . . . . . . . . . . . . . . . .17
+2.7 Métricas de avaliação. . . . . . . . . . . . . . . . . . . . . . . . . .17
+3 TRABALHOS RELACIONADOS . . . . . . . . . . . . . . . . . 19
+3.1 Comparação entre os trabalhos. . . . . . . . . . . . . . . . . . . .20
+3.2 Lacuna investigada. . . . . . . . . . . . . . . . . . . . . . . . . . . .21
+4 MÉTODO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+4.1 Produtos e dados da pesquisa. . . . . . . . . . . . . . . . . . . . .22
+4.2 Levantamento, geração e organização dos dados. . . . . . . . . .22
+4.3 Detecção e rastreamento multiobjeto. . . . . . . . . . . . . . . .23
+4.4 Estimação do movimento aparente. . . . . . . . . . . . . . . . . .23
+
+PÁGINA 9
+4.5 Predição das trajetórias. . . . . . . . . . . . . . . . . . . . . . . . .24
+4.6 Critérios de validação e comparação. . . . . . . . . . . . . . . . .24
+4.7 Etapas de desenvolvimento. . . . . . . . . . . . . . . . . . . . . . .25
+4.8 Declaração sobre o uso de Inteligência Artificial. . . . . . . . . .25
+5 CONCLUSÃO. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+5.1 Expectativas para a continuidade. . . . . . . . . . . . . . . . . . .26
+REFERÊNCIAS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+
+PÁGINA 10
+9
+Capítulo 1
+Introdução
+Este Trabalho de Conclusão de Curso investiga a análise e a predição de trajetórias
+de espermatozoides em vídeos microscópicos por meio de técnicas de Visão Computaci-
+onal. O estudo está inserido no contexto dos sistemas de análise seminal assistida por
+computador, conhecidos como Análise Seminal Assistida por Computador (CASA), nos
+quais vídeos de amostras seminais são utilizados para observar o deslocamento celular e
+extrair informações relacionadas à motilidade. A automatização dessa análise exige trans-
+formar uma sequência de quadros em localizações, identidades persistentes e trajetórias
+mensuráveis.
+Esse processo apresenta dificuldades próprias do domínio. As cabeças dos espermato-
+zoides ocupam poucos pixels, têm aparência semelhante e podem apresentar baixo con-
+traste em relação ao fundo. O movimento é rápido e irregular, e cruzamentos, sobrepo-
+sições, detritos, variações de iluminação e deriva da câmera podem produzir detecções
+incorretas ou trocas de identidade. No cenário específico deste trabalho, há ainda uma
+contracorrente gerada por um tubo. A influência visual desse movimento precisa ser sepa-
+rada, tanto quanto possível, do deslocamento individual das células. Por isso, a proposta
+articula detecção, rastreamento multiobjeto, fluxo óptico e predição temporal em uma
+pipeline modular.
+1.1 Motivação
+A infertilidade constitui um problema de saúde pública com repercussões pessoais e
+sociais. A Organização Mundial da Saúde estima que aproximadamente uma em cada
+seis pessoas adultas vivencie infertilidade ao longo da vida (World Health Organization,
+2023). Como a motilidade espermática integra a avaliação da fertilidade masculina, mé-
+todos computacionais que contribuam para uma análise mais objetiva, reprodutível e
+escalável podem apoiar estudos laboratoriais e pesquisas em reprodução humana. O pre-
+sente trabalho, contudo, não pretende realizar diagnóstico clínico; seu objeto é a avaliação
+computacional de trajetórias em vídeos microscópicos.
+
+PÁGINA 11
+Capítulo 1. Introdução 10
+Do ponto de vista acadêmico, o problema reúne desafios clássicos e atuais de Vi-
+são Computacional: detecção de objetos pequenos, associação temporal, manutenção de
+identificadores, estimação de movimento e modelagem de sequências. O conjunto VISEM
+reuniu vídeos microscópicos e dados de análise seminal de 85 participantes (HAUGEN et
+al., 2019). Posteriormente, o VISEM-Tracking disponibilizou caixas delimitadoras, classes
+e identificadores persistentes em 20 vídeos, viabilizando avaliações sistemáticas de detec-
+ção e Rastreamento Multiobjeto (MOT) (THAMBAWITA et al., 2023). Esses recursos
+permitem construir referências experimentais antes de transferir a pipeline para os vídeos
+do cenário-alvo.
+Os trabalhos existentes demonstram avanços em partes do problema. OmotilitAIem-
+prega fluxo óptico e aprendizado de máquina para estimar proporções agregadas de classes
+de motilidade (OTTL et al., 2022); Noy et al. (NOY et al., 2023) utilizam redes recorren-
+tes para prever posições futuras a partir de trajetórias previamente obtidas; e Zhang et
+al. (ZHANG et al., 2024) combinam um detector especializado com rastreamento para o
+VISEM-Tracking. Permanece, entretanto, a oportunidade de avaliar de forma controlada
+se o movimento aparente estimado no entorno de cada célula acrescenta informação útil
+à predição individual, além do histórico de posições e velocidades.
+1.2 Problema
+O problema de pesquisa consiste em determinar se uma pipeline computacional con-
+segue detectar e rastrear múltiplos espermatozoides em vídeos microscópicos e se carac-
+terísticas locais de fluxo óptico contribuem para prever suas posições futuras. A questão
+envolve dois níveis de dificuldade. No primeiro, erros do detector e do rastreador afetam a
+continuidade das trajetórias. No segundo, mesmo uma trajetória corretamente observada
+pode mudar de direção ou velocidade de modo que modelos cinemáticos simples deixem
+de representar sua dinâmica.
+O fluxo óptico oferece uma descrição do deslocamento aparente de padrões de intensi-
+dade entre quadros, mas não corresponde automaticamente à velocidade física do fluido.
+Nos dados considerados, o campo observado pode misturar movimento das células, estru-
+turas do meio, artefatos e movimento da câmera. Além disso, não há uma medição física
+de referência do escoamento. Assim, o trabalho precisa avaliar a utilidade computacional
+desse campo sem atribuir a ele uma interpretação física que os dados não sustentem.
+A delimitação adotada concentra-se na localização bidimensional das cabeças dos es-
+permatozoides e na predição de suas coordenadas em horizontes curtos. Morfologia deta-
+lhada, vitalidade, concentração seminal, diagnóstico médico e modelagem física completa
+do escoamento não fazem parte do escopo. Essa delimitação permite avaliar cada módulo
+com critérios objetivos e relacionar os resultados à hipótese de pesquisa.
+
+PÁGINA 12
+Capítulo 1. Introdução 11
+1.3 Hipótese
+A hipótese principal é que a inclusão de características locais de fluxo óptico, associa-
+das ao histórico de posições de cada espermatozoide, reduz o erro de predição de posições
+futuras em comparação com modelos equivalentes que utilizam somente posição e veloci-
+dade. A verificação será feita por uma ablação pareada: serão mantidos os mesmos dados,
+divisões, horizontes, arquiteturas e hiperparâmetros, alterando-se apenas a presença das
+características de fluxo.
+Três perguntas orientam a investigação:
+1. Qual combinação de detector e rastreador preserva melhor as identidades dos esper-
+matozoides nas sequências avaliadas?
+2. O campo de movimento aparente apresenta consistência temporal suficiente para
+ser utilizado como atributo de predição?
+3. A inclusão desse campo reduz os erros de predição e em quais condições de densidade
+celular, duração de trajetória e horizonte temporal esse efeito ocorre?
+1.4 Objetivos
+1.4.1 Objetivo geral
+Investigar, implementar e avaliar uma pipeline computacional para análise e predi-
+ção de trajetórias de espermatozoides em vídeos microscópicos, combinando técnicas de
+detecção, rastreamento multiobjeto e fluxo óptico, com ênfase na avaliação do efeito do
+movimento aparente sobre a previsão de posições futuras.
+1.4.2 Objetivos específicos
+1. organizarosvídeos, metadadoseanotaçõesemdivisõesexperimentaisindependentes
+e reproduzíveis;
+2. implementar e comparar abordagens clássicas e aprendidas para detectar esperma-
+tozoides;
+3. implementar e avaliar métodos de associação temporal capazes de manter identifi-
+cadores persistentes;
+4. extrair trajetórias e calcular medidas cinemáticas compatíveis com a calibração dis-
+ponível;
+5. estimar e analisar o campo de movimento aparente entre quadros, compensando
+movimento global quando necessário;
+
+PÁGINA 13
+Capítulo 1. Introdução 12
+6. comparar preditores de trajetórias com e sem características derivadas do fluxo
+óptico; e
+7. analisar quantitativa e qualitativamente os resultados, identificando limitações e
+condições de sucesso ou falha.
+1.5 Contribuições esperadas
+A principal contribuição esperada é uma avaliação controlada da utilidade de carac-
+terísticas de fluxo óptico para a predição individual de trajetórias de espermatozoides. A
+comparação será feita tanto sobre trajetórias anotadas, isolando o preditor, quanto sobre
+trajetórias produzidas pela pipeline, permitindo medir a propagação dos erros de detecção
+e rastreamento.
+Também se espera produzir uma organização reprodutível dos dados, linhas de base
+clássicas e modernas para cada módulo e uma análise das limitações envolvidas na trans-
+ferência de métodos de Visão Computacional para vídeos microscópicos. O código, os
+modelos e os arquivos de resultados constituirão artefatos necessários aos experimentos,
+mas a contribuição científica será a evidência obtida sob critérios comuns de avaliação.
+1.6 Organização da Monografia
+Além desta introdução, a monografia está organizada em quatro capítulos. O Capítulo
+2 apresenta os conceitos de análise seminal assistida por computador, processamento de
+imagens, detecção, rastreamento multiobjeto, fluxo óptico, predição de trajetórias, con-
+juntos de dados e métricas. O Capítulo 3 analisa os trabalhos relacionados e explicita a
+lacuna investigada. O Capítulo 4 descreve os dados, os módulos da pipeline, os experi-
+mentos e os critérios de validação. Por fim, o Capítulo 5 registra as alterações realizadas
+para consolidar as entregas anteriores e apresenta as expectativas para a continuidade do
+trabalho.
+
+PÁGINA 14
+13
+Capítulo 2
+Fundamentação Teórica
+Este capítulo apresenta os conceitos necessários para compreender a análise e a predi-
+ção de trajetórias de espermatozoides em vídeos microscópicos. A organização acompanha
+o fluxo dos dados na pipeline: o domínio de aplicação define as medidas de interesse; o
+processamento de imagens permite localizar as células; o rastreamento associa observa-
+ções ao longo do tempo; o fluxo óptico descreve movimento aparente; e a predição estima
+posições ainda não observadas. Ao final, são apresentados os conjuntos de dados e as
+métricas que permitem avaliar cada módulo separadamente.
+2.1 Análise seminal assistida por computador
+A análise seminal examina características do sêmen e dos espermatozoides, entre elas
+concentração, contagem total, morfologia, vitalidade e motilidade. A sexta edição do
+manual da Organização Mundial da Saúde sistematiza procedimentos de laboratório e
+ressalta a importância do controle de qualidade para produzir resultados comparáveis
+(WorldHealthOrganization, 2021). Naavaliaçãobásica, amotilidadepodeserclassificada
+como progressiva, não progressiva ou imóvel.
+Sistemas CASA combinam microscopia, aquisição digital de vídeo e algoritmos para
+tornar essa avaliação quantitativa. Em vez de resumir a amostra somente pela inspe-
+ção visual, esses sistemas localizam cabeças de espermatozoides, associam observações da
+mesma célula e calculam grandezas cinemáticas a partir das coordenadas registradas no
+tempo. A automação, entretanto, não elimina a necessidade de padronização: taxa de
+quadros, ampliação, profundidade da câmara, contraste e regras de classificação influen-
+ciam diretamente os valores obtidos.
+Considere uma trajetória bidimensional formada pelas posiçõespt = (x t,y t), obser-
+vadas em intervalos constantes∆t. Para uma trajetória comTposições, a velocidade
+curvilínea, velocidade curvilínea (VCL), corresponde ao comprimento acumulado do ca-
+minho dividido pelo tempo, enquanto a velocidade em linha reta, velocidade em linha
+reta (VSL), considera apenas a distância entre a primeira e a última posição:
+
+PÁGINA 15
+Capítulo 2. Fundamentação Teórica14
+VCL =
+∑T−1
+t=1∥pt+1−pt∥2
+(T−1)∆t ,(1)
+VSL =∥pT−p1∥2
+(T−1)∆t.(2)
+A velocidade do percurso médio, velocidade do percurso médio (VAP), é calculada
+ao longo de uma versão suavizada da trajetória. A linearidade, linearidade (LIN), com-
+para o deslocamento líquido com o caminho curvilíneo e pode ser expressa porLIN =
+100 VSL/VCL(World Health Organization, 2021). Para que as velocidades sejam apre-
+sentadas emµm/s, é necessário conhecer a escala espacial e a taxa de quadros. Sem essa
+calibração, as medidas devem permanecer em pixels por unidade de tempo.
+2.2 Processamento de imagens e detecção
+Uma imagem digital pode ser representada por uma função discreta de intensidade
+ou por múltiplos canais de cor. Em vídeos microscópicos, o processamento inicial busca
+aumentar a separação entre as cabeças dos espermatozoides e o fundo. Conversão para
+tons de cinza, redução de ruído, normalização de contraste, limiarização e operações
+morfológicas são transformações comuns nessa etapa (SZELISKI, 2022).
+A segmentação por limiar divide os pixels de acordo com sua intensidade. O método
+de Otsu seleciona automaticamente um limiar que maximiza a separação estatística entre
+classes do histograma (OTSU, 1979). Após a binarização, erosão e dilatação podem re-
+mover componentes pequenos, preencher falhas ou separar estruturas segundo o elemento
+estruturante. Quando objetos próximos formam uma única região, a transformaçãowa-
+tershedoferece uma alternativa baseada em marcadores. Esses métodos são rápidos e
+interpretáveis, mas seus parâmetros são sensíveis a mudanças de contraste, iluminação,
+densidade celular e presença de detritos.
+Na detecção de objetos, a saída contém, para cada instância, uma classe, uma caixa
+delimitadora e uma confiança. A família YOLO consolidou detectores de um estágio que
+realizam localização e classificação em uma única rede neural (REDMON et al., 2016).
+O VISEM-Tracking utiliza coordenadas normalizadas em formato compatível com YOLO
+e oferece classes para espermatozoides, aglomerados e células pequenas ou com cabeça
+reduzida (THAMBAWITA et al., 2023).
+A detecção de espermatozoides é um caso de detecção de objetos pequenos: poucos
+pixels descrevem cada cabeça, a textura individual é limitada e o borramento de movi-
+mento reduz a nitidez. Por isso, abordagens recentes utilizam resoluções maiores, camadas
+dedicadas a objetos pequenos e mecanismos de atenção. Zhang et al. (ZHANG et al.,
+2024), por exemplo, adaptam o YOLOv8 e um rastreador para o domínio espermático.
+
+PÁGINA 16
+Capítulo 2. Fundamentação Teórica15
+A avaliação precisa considerar precisão, revocação, qualidade de localização e tempo de
+execução, pois os erros do detector são propagados para o rastreamento.
+2.3 Rastreamento multiobjeto
+O MOT consiste em estimar simultaneamente o estado de vários objetos e manter
+um identificador consistente para cada um ao longo do vídeo. Na estratégiatracking-by-
+detection, cada quadro é processado por um detector e as novas observações são associadas
+às trajetórias existentes. O estado pode incluir posição, tamanho da caixa e velocidade.
+Uma trajetória é iniciada quando uma detecção persiste, atualizada enquanto recebe
+observações compatíveis e encerrada após permanecer ausente por um número definido
+de quadros.
+Dois fundamentos desse processo são a estimação de estado e a associação de dados.
+O Filtro de Kalman representa a evolução do estado por um modelo linear com incerteza:
+primeiro prediz o estado no novo instante e depois corrige a previsão com a medição obser-
+vada, ponderando as covariâncias dos ruídos de processo e de medição (KALMAN, 1960).
+Para associar trajetórias e detecções, constrói-se uma matriz de custos com distâncias
+entre centroides, sobreposição entre caixas ou outra medida de similaridade. O algoritmo
+Húngaro fornece uma atribuição global de custo mínimo sob correspondências um a um.
+O SORT combina Filtro de Kalman, sobreposição entre caixas e associação Húngara
+em um rastreador simples e rápido (BEWLEY et al., 2016). O ByteTrack, por sua vez,
+realiza associações sucessivas com detecções de alta e baixa confiança, buscando recuperar
+objetos que seriam descartados por um limiar único (ZHANG et al., 2022). Esses métodos
+mostram a evolução de modelos baseados principalmente em movimento para estratégias
+que combinam localização, confiança e, em alguns casos, aparência.
+No domínio espermático, a associação é dificultada pela alta densidade, pelas traje-
+tórias rápidas e curvas e pela semelhança visual entre indivíduos. Descritores de reiden-
+tificação podem ser pouco discriminativos quando as cabeças ocupam poucos pixels; por
+outro lado, utilizar somente distância espacial falha em cruzamentos e mudanças brus-
+cas de direção. As identidades manuais do VISEM-Tracking permitem medir trocas de
+identidade, fragmentações e recuperação após ausências (THAMBAWITA et al., 2023).
+2.4 Fluxo óptico e movimento aparente
+Fluxo óptico é um campo vetorial que descreve o deslocamento aparente de padrões de
+intensidade entre quadros. Para cada posição(x,y), procura-se um vetorv(x,y) = (u,v)
+que relacione a imagem no instante atual à imagem seguinte. Sob a hipótese de constância
+de brilho,
+
+PÁGINA 17
+Capítulo 2. Fundamentação Teórica16
+I(x,y,t) =I(x+u∆t,y+v∆t,t+ ∆t),(3)
+uma aproximação de primeira ordem produz a equação de restrição
+Ixu+I yv+I t = 0.(4)
+Há uma equação para duas incógnitas, portanto são necessárias restrições adicionais.
+Métodos locais, como Lucas–Kanade, supõem movimento aproximadamente constante
+em uma vizinhança. Formulações globais, como Horn–Schunck, introduzem suavidade
+no campo. Farnebäck aproxima vizinhanças por polinômios e estima fluxo denso em
+múltiplas escalas, constituindo uma linha de base prática para vídeos (FARNEBÄCK,
+2003; SZELISKI, 2022).
+Abordagens aprendidas estimam correspondências a partir de bases com deslocamento
+conhecido. O RAFT constrói volumes de correlação entre características dos dois quadros
+e atualiza iterativamente o campo por uma unidade recorrente (TEED; DENG, 2020).
+Embora apresente bons resultados em conjuntos gerais de fluxo óptico, sua transferên-
+cia para microscopia precisa ser avaliada, pois escala, textura, contraste e formação da
+imagem diferem das cenas de treinamento.
+Neste trabalho, o fluxo possui dois usos potenciais: compensar movimento global da
+imagem e produzir características locais para a predição. É necessário distinguir esse
+campo da velocidade física do fluido. O fluxo óptico é medido em coordenadas de imagem
+e pode misturar deslocamento das células, do meio visível, de artefatos e da câmera. Como
+os conjuntos utilizados não fornecem uma medição física de referência do escoamento, o
+resultado será denominado campo de movimento aparente.
+2.5 Predição de trajetórias
+Predição de trajetória consiste em estimar posições futuras a partir de uma sequência
+observada. Sep t−p+1:t representa uma janela depposições, o objetivo é produzirˆpt+1:t+q
+para um horizonte deqquadros. A tarefa difere do rastreamento: o rastreador estima
+o estado atual com medições já disponíveis, enquanto o preditor é avaliado em posições
+ocultadas durante a inferência.
+Modelos cinemáticos simples são referências importantes. A extrapolação de veloci-
+dade constante usa o deslocamento recente para projetar a posição, e o Filtro de Kal-
+man acrescenta incertezas de processo e medição (KALMAN, 1960). Esses métodos são
+interpretáveis e exigem poucos dados, mas tendem a degradar quando a célula altera
+rapidamente sua direção ou velocidade.
+Redes recorrentes representam dependências em sequências. A Memória de Longo
+e Curto Prazo (LSTM) utiliza células de memória e portas de controle para preservar
+
+PÁGINA 18
+Capítulo 2. Fundamentação Teórica17
+informação por intervalos mais longos (HOCHREITER; SCHMIDHUBER, 1997). Em
+prediçãodetrajetórias, posiçõesoudeslocamentossucessivossãocodificadosemumestado
+oculto, a partir do qual são geradas coordenadas futuras. O Social LSTM mostrou como
+essa formulação pode ser aplicada a trajetórias de agentes (ALAHI et al., 2016); no
+domínio deste trabalho, Noy et al. (NOY et al., 2023) aplicaram LSTM à localização
+futura de espermatozoides.
+A hipótese computacional desta pesquisa considera que o histórico geométrico pode ser
+complementadopormovimentoaparente. Ummodelosemfluxopodereceber(x,y,∆x,∆y),
+enquanto o modelo com fluxo acrescenta(u,v,∥v∥,θ)amostrados na vizinhança da cé-
+lula. A comparação deve manter arquitetura, histórico, horizonte e divisão dos dados
+controlados, alterando somente as características de fluxo.
+2.6 Conjuntos de dados
+O VISEM contém 85 vídeos microscópicos associados a resultados de análise seminal
+e atributos biológicos, mas não fornece identificadores de rastreamento quadro a qua-
+dro (HAUGEN et al., 2019). O VISEM-Tracking seleciona 20 vídeos de 30 segundos,
+totalizando 29.196 quadros, e acrescenta caixas delimitadoras, classes e identificadores
+persistentes verificados por especialistas (THAMBAWITA et al., 2023). Por isso, o se-
+gundo conjunto é adequado ao treinamento e à avaliação de detecção, rastreamento e
+predição baseada em trajetórias anotadas.
+Os vídeos do cenário-alvo contêm a contracorrente gerada por um tubo e serão utili-
+zados para avaliar a transferência da pipeline ao domínio específico do TCC. As divisões
+de treinamento, validação e teste deverão ser feitas por vídeo, participante ou unidade
+de aquisição, nunca por quadros aleatórios. Essa precaução impede que imagens quase
+idênticas da mesma sequência apareçam simultaneamente no treinamento e no teste.
+2.7 Métricas de avaliação
+Na detecção, precisão e revocação são definidas a partir de verdadeiros positivos (VP),
+falsos positivos (FP) e falsos negativos (FN):
+Precisão= VP
+VP + FP,Revocação= VP
+VP + FN.(5)
+Uma detecção é considerada correspondente ao gabarito quando a Interseção sobre
+União (IoU) ultrapassa um limiar. A área sob a curva de precisão–revocação gera a preci-
+são média, e a média entre classes ou limiares gera a precisão média (mAP). Como poucos
+pixels de deslocamento afetam significativamente a IoU de objetos pequenos, também é
+útil analisar erro de centroide e resultados por classe.
+
+PÁGINA 19
+Capítulo 2. Fundamentação Teórica18
+No rastreamento, a Acurácia de Rastreamento Multiobjeto (MOTA) combina falsos
+positivos, falsos negativos e trocas de identidade. A medida F1 de identificação (IDF1)
+mede a preservação de identidade por meio da média harmônica entre precisão e revocação
+no espaço das associações. A Acurácia de Rastreamento de Ordem Superior (HOTA) foi
+proposta para equilibrar qualidade de detecção, associação e localização (LUITEN et al.,
+2021). Neste trabalho, HOTA será a métrica principal de rastreamento, acompanhada
+por MOTA, IDF1, trocas de identidade, fragmentações e tempo por quadro.
+Na predição, o Erro Médio de Deslocamento (ADE) resume o erro ao longo de todo
+o horizonte, enquanto o Erro de Deslocamento Final (FDE) considera a última posição
+prevista. ParaNtrajetórias e horizonte deqquadros:
+ADE = 1
+Nq
+N∑
+i=1
+q∑
+k=1
+∥ˆpi,t+k−pi,t+k∥2,(6)
+FDE = 1
+N
+N∑
+i=1
+∥ˆpi,t+q−pi,t+q∥2.(7)
+Essas medidas devem ser apresentadas no mesmo sistema de coordenadas e, quando
+houver calibração, também em unidade física (ALAHI et al., 2016). Médias serão acom-
+panhadas por dispersão, intervalos de confiança e análise estratificada por horizonte, den-
+sidade celular e duração da trajetória.
+
+PÁGINA 20
+19
+Capítulo 3
+Trabalhos Relacionados
+Este capítulo analisa quatro trabalhos diretamente relacionados às etapas da pipeline
+proposta. Os estudos foram selecionados por abordarem motilidade espermática, dispo-
+nibilização de trajetórias anotadas, predição de posições ou detecção e rastreamento no
+mesmo domínio. A comparação considera objetivo, dados, método, resultados e aspectos
+ainda não tratados em conjunto.
+Ottl et al. (OTTL et al., 2022) propõem omotilitAI, um arcabouço para estimar
+automaticamente as proporções de espermatozoides progressivos, não progressivos e imó-
+veis em vídeos microscópicos. O método realiza pré-processamento dos vídeos do VISEM,
+rastreia células por uma adaptação esparsa do fluxo óptico de Lucas–Kanade, extrai des-
+critores de movimento e aparência e utiliza modelos de regressão. A melhor configuração
+alcançou erro absoluto médio de 7,31 pontos percentuais, inferior aos 8,83 pontos do me-
+lhor resultado da competição de referência utilizada pelos autores. O estudo demonstra
+que movimento e trajetórias extraídos de vídeo fornecem informação sobre motilidade,
+porém sua saída é agregada para a amostra. O presente projeto, em contraste, pretende
+manter trajetórias individuais e prever posições futuras.
+Thambawita et al. (THAMBAWITA et al., 2023) apresentam o VISEM-Tracking,
+criado para reduzir a escassez de vídeos públicos com anotações temporais de esperma-
+tozoides humanos. O conjunto contém 20 vídeos de 30 segundos, totalizando 29.196
+quadros, com caixas delimitadoras, identificadores persistentes e classes para esperma-
+tozoides, aglomerados e células pequenas ou com cabeça reduzida. Os autores também
+disponibilizam características seminais e sequências sem rótulos. Como validação técnica,
+foram treinadas variantes do YOLOv5, demonstrando que as anotações sustentam mo-
+delos supervisionados. A relação com este projeto é direta, pois os dados podem apoiar
+os módulos de detecção, rastreamento e predição. O artigo, contudo, não propõe um
+preditor nem estima movimento do meio.
+Noy et al. (NOY et al., 2023) investigam a localização futura de espermatozoides
+para aplicações que exigem posicionamento rápido e não invasivo. Os autores combinam
+uma rede LSTM multicamadas, responsável por aprender a dinâmica não linear a partir
+
+PÁGINA 21
+Capítulo 3. Trabalhos Relacionados20
+do histórico de posições, com extrapolação linear e uma função de perda ajustada ao
+problema. Os experimentos utilizam 501 trajetórias, com 114.229 quadros obtidos de
+três doadores a 70 quadros por segundo, e avaliam horizontes de até 1,43 segundo. Para
+horizontes inferiores a 0,6 segundo, o erro médio de localização permanece entre 4 e 8µm;
+em várias configurações, o modelo reduz o erro da extrapolação linear. O estudo constitui
+uma referência direta para a etapa de predição, mas parte de trajetórias previamente
+obtidas e não incorpora detecção multiobjeto ou características de fluxo óptico.
+Zhang et al. (ZHANG et al., 2024) tratam conjuntamente a detecção e o rastreamento
+de espermatozoides com o método Sperm YOLOv8E-TrackEVD. O detector adapta o
+YOLOv8 com mecanismo de atenção, camada dedicada a objetos pequenos e módulos
+especializados. O rastreador modifica o DeepOCSORT para melhorar a associação tem-
+poral nesse domínio. No VISEM-Tracking, o sistema completo alcança HOTA de 74,303%
+e MOTA de 71,167%. O trabalho fornece uma referência para os módulos de detecção,
+associação e avaliação, mas não aborda a estimação de movimento aparente do meio nem
+a predição de posições futuras.
+3.1 Comparação entre os trabalhos
+A Tabela 1 sintetiza as diferenças entre os estudos. Em conjunto, eles fornecem dados,
+métodos e métricas para as partes centrais da proposta, mas nenhum avalia, em uma
+mesma pipeline, a influência de características locais de fluxo óptico sobre a predição
+individual após a detecção e o rastreamento.
+
+PÁGINA 22
+Capítulo 3. Trabalhos Relacionados21
+Tabela 1 – Comparação dos trabalhos relacionados
+T rabalho Objetivo e dados Método e resultado
+principal
+Relação com este
+projeto
+Ottl et al. (2022) Estimar proporções de
+classes de motilidade em
+vídeos do VISEM
+Fluxo óptico esparso,
+descritores e regressão;
+erro absoluto médio de
+7,31 pontos percentuais
+Utiliza movimento e
+rastreamento, mas produz
+apenas estimativas
+agregadas da amostra
+Thambawita et
+al. (2023)
+Disponibilizar vídeos,
+caixas e identidades de
+rastreamento
+Anotação especializada de
+20 vídeos e linhas de base
+com YOLOv5
+Fornece dados para
+detecção, rastreamento e
+avaliação de trajetórias
+Noy et al. (2023) Prever posições futuras
+em 501 trajetórias
+LSTM combinada à
+extrapolação linear; erro
+de 4 a 8µm em horizontes
+menores que 0,6 s
+É referência de predição,
+mas não inclui detecção,
+MOT ou características
+de fluxo
+Zhang et al.
+(2024)
+Detectar e rastrear no
+VISEM-Tracking
+YOLOv8 aprimorado e
+DeepOCSORT
+modificado; HOTA de
+74,303% e MOTA de
+71,167%
+É referência para detecção
+e associação, sem prever
+trajetórias futuras
+Fonte: Elaborada pelo autor (2026).
+3.2 Lacuna investigada
+Os estudos analisados evidenciam três lacunas complementares. Primeiro, trabalhos
+de análise de motilidade podem utilizar trajetórias e fluxo óptico sem preservar uma pre-
+visão individual de cada célula. Segundo, conjuntos e métodos de rastreamento fornecem
+identidades persistentes, mas encerram a análise no estado observado. Terceiro, modelos
+de predição partem de trajetórias prontas e não medem como erros da pipeline afetam o
+horizonte futuro.
+O presente trabalho procura conectar essas etapas por meio de uma arquitetura modu-
+lar. A contribuição não consiste apenas em encadear algoritmos, mas em comparar, sob os
+mesmos dados e critérios, preditores com e sem características de movimento aparente. A
+avaliação separada sobre trajetórias anotadas e trajetórias estimadas permitirá distinguir
+a capacidade do preditor da degradação introduzida por detecção e rastreamento.
+
+PÁGINA 23
+22
+Capítulo 4
+Método
+O trabalho será conduzido como uma pesquisa aplicada, quantitativa e experimental
+em Visão Computacional. O método consiste na implementação e na avaliação controlada
+de uma pipeline para detecção, rastreamento multiobjeto, estimação de movimento apa-
+rente e predição de trajetórias de espermatozoides em vídeos microscópicos. A hipótese
+será examinada por experimentos reproduzíveis que comparem modelos equivalentes com
+e sem características locais de fluxo óptico.
+4.1 Produtos e dados da pesquisa
+Os produtos derivados serão uma coleção de dados organizada com divisões experi-
+mentais documentadas; uma pipeline modular em Python; modelos treinados; arquivos
+contendo caixas, identificadores, trajetórias e campos vetoriais; e uma análise comparativa
+apresentada por métricas, tabelas e visualizações. O código e os modelos serão artefatos
+necessários à realização dos experimentos, enquanto o produto científico principal será a
+evidência sobre o efeito do fluxo óptico na predição de trajetórias.
+O VISEM-Tracking será empregado no treinamento e na avaliação inicial dos módulos
+supervisionados (THAMBAWITA et al., 2023). Os vídeos com contracorrente gerada
+por tubo serão utilizados para avaliar a pipeline no cenário específico do TCC. Caso
+não apresentem anotações completas, será selecionado um subconjunto representativo de
+trechos para anotação de caixas e identidades, com verificação de consistência temporal.
+4.2 Levantamento, geração e organização dos dados
+Para cada vídeo serão registrados resolução, taxa de quadros, duração, escala espacial
+quando disponível e condições de aquisição. Os quadros serão extraídos preservando a
+ordem temporal e vinculados a um identificador único. O pré-processamento será limitado
+a operações cuja influência possa ser controlada, como conversão de cor, normalização
+de intensidade, correção moderada de contraste e redução de ruído. As anotações serão
+
+PÁGINA 24
+Capítulo 4. Método 23
+convertidasparaumarepresentaçãocomum, eascoordenadasdastrajetóriasserãoobtidas
+a partir do centro das caixas.
+Será adotada uma separação fixa em conjuntos de treinamento, validação e teste. O
+treinamento servirá para estimar os parâmetros dos modelos; a validação, para escolher
+hiperparâmetros e critérios de parada; e o teste permanecerá isolado até a definição final.
+As divisões serão realizadas por vídeo ou unidade de aquisição, evitando que quadros
+ou trechos da mesma origem sejam distribuídos entre conjuntos diferentes. Arquivos de
+configuraçãoregistrarãodivisões, sementesaleatórias, versõesdasbibliotecaseparâmetros
+experimentais.
+4.3 Detecção e rastreamento multiobjeto
+A detecção será iniciada com uma linha de base clássica baseada em limiarização,
+operações morfológicas e componentes conexos. Em seguida, será treinado um detector
+da família YOLO com as anotações do VISEM-Tracking. A comparação permitirá medir a
+contribuição do aprendizado supervisionado em cenas de baixo contraste, alta densidade
+e objetos pequenos. Serão registradas precisão, revocação, mAP@0,5, mAP@0,5:0,95
+e tempo médio por quadro. O método de Zhang et al. (ZHANG et al., 2024) será
+utilizado como referência do domínio, considerando as diferenças de dados e ambiente
+computacional.
+As detecções serão associadas temporalmente por métodos de complexidade crescente.
+O primeiro será um rastreador por proximidade entre centroides; o segundo, o SORT, que
+combina Filtro de Kalman e associação Húngara (BEWLEY et al., 2016); e o terceiro, o
+ByteTrack, queaproveitadetecçõesdediferentesníveisdeconfiança(ZHANGetal., 2022).
+Limiares de associação e o número de quadros tolerados sem detecção serão escolhidos na
+validação. As saídas terão a forma(v,t,i,x,y), em quevidentifica o vídeo,to quadro,i
+a célula e(x,y)a posição de seu centro.
+4.4 Estimação do movimento aparente
+O fluxo óptico denso será estimado inicialmente por Farnebäck, escolhido como linha
+de base por seu custo moderado e disponibilidade no OpenCV (FARNEBÄCK, 2003). Se
+os recursos computacionais permitirem, o RAFT será incluído como alternativa baseada
+em aprendizado profundo (TEED; DENG, 2020). Movimentos globais da câmera serão
+estimados e compensados quando detectados. Regiões ocupadas pelas células e por arte-
+fatos evidentes serão mascaradas para reduzir sua influência; os vetores restantes serão
+agregados de forma robusta e suavizados no espaço e no tempo.
+Como os conjuntos considerados não fornecem uma medição física do campo de ve-
+locidade do fluido, o resultado será tratado como campo de movimento aparente. Sua
+
+PÁGINA 25
+Capítulo 4. Método 24
+consistência será analisada por erro fotométrico após a deformação de um quadro em
+direção ao seguinte, concordância entre fluxos direto e reverso, regularidade temporal
+e estabilidade nas regiões de fundo. Sequências sintéticas com deslocamentos conheci-
+dos poderão complementar a avaliação. A conversão para unidades físicas somente será
+realizada quando houver calibração espacial e temporal confiável.
+4.5 Predição das trajetórias
+Cada trajetória válida será dividida em uma janela observada depquadros e um
+horizonte futuro deqquadros. As entradas básicas serão posição, deslocamento e velo-
+cidade estimada. As configurações com fluxo acrescentarão o vetor aparente amostrado
+na posição da célula e estatísticas de uma vizinhança local. Serão comparados um mo-
+delo de velocidade constante baseado no Filtro de Kalman, uma rede LSTM e, se houver
+ganho justificável, uma Unidade Recorrente Fechada (GRU). A LSTM foi escolhida por
+representar dependências temporais e já ter sido aplicada à previsão da localização de
+espermatozoides (NOY et al., 2023).
+O experimento principal será uma ablação pareada. O mesmo preditor, com os mes-
+mos dados, janelas, hiperparâmetros e sementes, será treinado primeiro sem fluxo e depois
+com características de fluxo. A variável controlada será, portanto, a presença do movi-
+mento aparente, e não uma mudança simultânea de arquitetura. A avaliação ocorrerá em
+dois cenários: trajetórias anotadas, para isolar o preditor, e trajetórias produzidas pelo
+rastreador, para medir a degradação da pipeline completa.
+4.6 Critérios de validação e comparação
+Na detecção serão utilizadas precisão, revocação e mAP. No rastreamento, a métrica
+principal será HOTA, acompanhada por MOTA, IDF1, trocas de identidade e fragmen-
+tações (LUITEN et al., 2021). Na predição serão calculados ADE e FDE (ALAHI et
+al., 2016). Os erros serão expressos em pixels normalizados e, quando houver calibração,
+também em micrômetros.
+As comparações abrangerão linhas de base clássicas e métodos modernos, preditores
+sem e com fluxo e trajetórias anotadas e estimadas. Para evitar que vídeos longos domi-
+nem a média, os resultados serão agregados primeiro por trajetória e depois por vídeo.
+Serão informados média, mediana, desvio-padrão e intervalo de confiança de 95% obtido
+por reamostragem dos vídeos. Treinamentos estocásticos serão repetidos com sementes
+distintas.
+Os resultados de detecção e rastreamento no VISEM-Tracking serão confrontados com
+os protocolos publicados por Thambawita et al. (THAMBAWITA et al., 2023) e Zhang
+et al. (ZHANG et al., 2024). A predição será comparada à linha de base de velocidade
+
+PÁGINA 26
+Capítulo 4. Método 25
+constante e ao uso de LSTM descrito por Noy et al. (NOY et al., 2023). Diferenças
+de divisão dos dados, resolução, horizonte, hardware e implementação serão explicitadas
+para evitar comparações diretas entre condições incompatíveis.
+4.7 Etapas de desenvolvimento
+1.Auditoria e padronização dos dados.Os vídeos, metadados e anotações serão
+inventariados, convertidos para formatos comuns e verificados visualmente.
+2.Definição das divisões e linhas de base.Serão fixados os conjuntos de treina-
+mento, validação e teste, as sementes e as configurações clássicas de referência.
+3.Treinamento e avaliação da detecção.A abordagem clássica e o detector apren-
+dido serão ajustados e comparados sob os mesmos dados.
+4.Implementação do rastreamento.Os métodos por centroide, SORT e Byte-
+Track serão aplicados às mesmas detecções para separar falhas de localização e
+associação.
+5.Estimação e análise do fluxo.Farnebäck e, se viável, RAFT serão executados
+com compensação de movimento global e máscaras de primeiro plano.
+6.Construção dos conjuntos de predição.As trajetórias serão filtradas, norma-
+lizadas e convertidas em pares de janelas observadas e futuras.
+7.Treinamento e ablação dos preditores.As configurações com e sem fluxo serão
+avaliadas nos cenários controlados.
+8.Análise e documentação.Os resultados serão agregados, acompanhados por
+intervalos de confiança, visualizações e exemplos de falha, e relacionados à hipótese
+de pesquisa.
+4.8 Declaração sobre o uso de Inteligência Artificial
+Para a consolidação desta versão inicial, utilizei as ferramentas ChatGPT e Codex,
+da OpenAI, como apoio à organização dos conteúdos das entregas anteriores, à pesquisa
+bibliográfica, à revisão linguística, à conferência da coerência entre os capítulos e à for-
+matação em LaTeX. O tema, os objetivos, as decisões metodológicas e a revisão final do
+texto são de minha responsabilidade, e a submissão será realizada após a concordância
+do orientador.
+
+PÁGINA 27
+26
+Capítulo 5
+Conclusão
+Esta versão inicial consolidou as quatro entregas anteriores na estrutura do modelo
+de monografia da Faculdade de Computação. O conteúdo da E1 foi reorganizado na
+Introdução, com separação explícita entre motivação, problema, hipótese, objetivos e
+contribuições esperadas. Essa mudança eliminou a organização por parágrafos do enun-
+ciado e tornou mais clara a relação entre a relevância do tema, a questão investigada e os
+critérios necessários para verificar o objetivo.
+A fundamentação da E2 foi revisada para apresentar os conceitos na ordem em que
+são utilizados pela pipeline: análise seminal assistida por computador, detecção, rastrea-
+mento, fluxo óptico, predição, dados e métricas. Os textos de caráter didático solicitados
+exclusivamente nas entregas anteriores foram removidos. Os trabalhos analisados na E3
+passaram a compor um capítulo próprio, sem os resumos de capítulos do livro e sem
+informações conjunturais que não contribuem diretamente para a comparação científica.
+A tabela comparativa foi mantida e atualizada para evidenciar a lacuna relacionada à
+integração entre rastreamento, movimento aparente e predição individual.
+O método proveniente da E4 foi ajustado para manter correspondência direta com a
+hipótese. Foram detalhadas as divisões dos dados, as linhas de base, a ablação com e
+sem fluxo, os cenários com trajetórias anotadas e estimadas e os critérios de avaliação.
+Essa revisão busca reduzir ambiguidades, evitar vazamento de informação e distinguir o
+movimento aparente medido na imagem de uma velocidade física do fluido. A declaração
+sobre o uso de Inteligência Artificial foi mantida somente no capítulo de Método, conforme
+solicitado para esta entrega.
+5.1 Expectativas para a continuidade
+As próximas etapas consistem em auditar os vídeos e as anotações, definir as divisões
+experimentais e implementar as linhas de base de detecção e rastreamento. Em seguida,
+serão avaliados os métodos de fluxo óptico e construídas as janelas de predição. A com-
+paração pareada entre modelos com e sem características de fluxo deverá indicar se a
+
+PÁGINA 28
+Capítulo 5. Conclusão 27
+hipótese é sustentada e em quais condições o movimento aparente contribui para reduzir
+ADE e FDE.
+Espera-se que os resultados permitam identificar não apenas a melhor configuração
+média, mas também as situações em que cada módulo falha. A versão final deverá substi-
+tuir esta descrição de expectativas por resultados experimentais, discussão das limitações,
+verificação dos objetivos e síntese das contribuições efetivamente obtidas.
+
+PÁGINA 29
+28
+Referências
+ALAHI, A. et al. Social LSTM: Human trajectory prediction in crowded spaces. In:
+Proceedings of the IEEE Conference on Computer Vision and Pattern
+Recognition. [s.n.], 2016. p. 961–971. Disponível em: <https://doi.org/10.1109/CVPR.
+2016.110>. Citado 3 vezes nas páginas 17, 18 e 24.
+BEWLEY, A. et al. Simple online and realtime tracking. In:2016 IEEE International
+Conference on Image Processing. [s.n.], 2016. p. 3464–3468. Disponível em:
+<https://doi.org/10.1109/ICIP.2016.7533003>. Citado 2 vezes nas páginas 15 e 23.
+FARNEBÄCK, G. Two-frame motion estimation based on polynomial expansion.
+In:Scandinavian Conference on Image Analysis. Berlin: Springer, 2003.
+(Lecture Notes in Computer Science, v. 2749), p. 363–370. Disponível em:
+<https://doi.org/10.1007/3-540-45103-X_50>. Citado 2 vezes nas páginas 16 e 23.
+HAUGEN, T. B. et al. Visem: A multimodal video dataset of human spermatozoa.
+In:Proceedings of the 10th ACM Multimedia Systems Conference. New
+York: Association for Computing Machinery, 2019. p. 261–266. Disponível em:
+<https://doi.org/10.1145/3304109.3325814>. Citado 2 vezes nas páginas 10 e 17.
+HOCHREITER, S.; SCHMIDHUBER, J. Long short-term memory.Neural
+Computation, v. 9, n. 8, p. 1735–1780, 1997. Disponível em: <https://doi.org/10.
+1162/neco.1997.9.8.1735>. Citado na página 17.
+KALMAN, R. E. A new approach to linear filtering and prediction problems.
+Journal of Basic Engineering, v. 82, n. 1, p. 35–45, 1960. Disponível em:
+<https://doi.org/10.1115/1.3662552>. Citado 2 vezes nas páginas 15 e 16.
+LUITEN, J. et al. HOTA: A higher order metric for evaluating multi-object tracking.
+International Journal of Computer Vision, v. 129, n. 2, p. 548–578, 2021.
+Disponível em: <https://doi.org/10.1007/s11263-020-01375-2>. Citado 2 vezes nas
+páginas 18 e 24.
+NOY, L. et al. Location prediction of sperm cells using long short-term memory networks.
+Advanced Intelligent Systems, Wiley, v. 5, n. 9, p. 2300161, 2023. Disponível em:
+<https://doi.org/10.1002/aisy.202300161>. Citado 5 vezes nas páginas 10, 17, 19, 24
+e 25.
+
+PÁGINA 30
+Referências 29
+OTSU, N. A threshold selection method from gray-level histograms.IEEE Transactions
+on Systems, Man, and Cybernetics, v. 9, n. 1, p. 62–66, 1979. Disponível em:
+<https://doi.org/10.1109/TSMC.1979.4310076>. Citado na página 14.
+OTTL, S. et al. motilitai: A machine learning framework for automatic prediction of
+human sperm motility.iScience, Elsevier, v. 25, n. 8, p. 104644, 2022. Disponível em:
+<https://doi.org/10.1016/j.isci.2022.104644>. Citado 2 vezes nas páginas 10 e 19.
+REDMON, J. et al. You only look once: Unified, real-time object detection. In:
+Proceedings of the IEEE Conference on Computer Vision and Pattern
+Recognition. [s.n.], 2016. p. 779–788. Disponível em: <https://doi.org/10.1109/CVPR.
+2016.91>. Citado na página 14.
+SZELISKI, R.Computer Vision: Algorithms and Applications. 2. ed. Cham:
+Springer, 2022. Disponível em: <https://doi.org/10.1007/978-3-030-34372-9>. Citado
+2 vezes nas páginas 14 e 16.
+TEED, Z.; DENG, J. RAFT: Recurrent all-pairs field transforms for optical
+flow. In:Computer Vision – ECCV 2020. Cham: Springer, 2020. (Lecture
+Notes in Computer Science, v. 12347), p. 402–419. Disponível em: <https:
+//doi.org/10.1007/978-3-030-58536-5_24>. Citado 2 vezes nas páginas 16 e 23.
+THAMBAWITA, V. et al. VISEM-Tracking, a human spermatozoa tracking
+dataset.Scientific Data, v. 10, n. 1, p. 260, 2023. Disponível em: <https:
+//doi.org/10.1038/s41597-023-02173-4>. Citado 7 vezes nas páginas 10, 14, 15, 17, 19,
+22 e 24.
+World Health Organization.WHO Laboratory Manual for the Examination and
+Processing of Human Semen. 6. ed. Geneva: World Health Organization, 2021.
+ISBN 978-92-4-003078-7. Disponível em: <https://www.who.int/publications/i/item/
+9789240030787>. Acesso em: 27 jul. 2026. Citado 2 vezes nas páginas 13 e 14.
+.1 in 6 People Globally Affected by Infertility. 2023. Disponível em: <https:
+//www.who.int/news/item/04-04-2023-1-in-6-people-globally-affected-by-infertility>.
+Acesso em: 27 jul. 2026. Citado na página 9.
+ZHANG, C. et al. Sperm YOLOv8E-TrackEVD: A novel approach for sperm
+detection and tracking.Sensors, MDPI, v. 24, n. 11, p. 3493, 2024. Disponível em:
+<https://doi.org/10.3390/s24113493>. Citado 5 vezes nas páginas 10, 14, 20, 23 e 24.
+ZHANG, Y. et al. ByteTrack: Multi-object tracking by associating every detection
+box. In:Computer Vision – ECCV 2022. Cham: Springer, 2022. (Lecture Notes
+in Computer Science, v. 13682), p. 1–21. Disponível em: <https://doi.org/10.1007/
+978-3-031-20047-2_1>. Citado 2 vezes nas páginas 15 e 23.

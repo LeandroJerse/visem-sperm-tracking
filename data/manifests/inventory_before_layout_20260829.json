@@ -1,0 +1,41 @@
+{
+  "captured_at": "2026-08-29T19:54:05.648341+00:00",
+  "directories": {
+    "data": {
+      "files": 117614,
+      "bytes": 68913035532
+    },
+    "results": {
+      "files": 2592,
+      "bytes": 734127675
+    },
+    "output": {
+      "files": 1,
+      "bytes": 1695112
+    },
+    "tmp": {
+      "files": 143,
+      "bytes": 30165067
+    },
+    "src": {
+      "files": 203,
+      "bytes": 1497645
+    },
+    "tests": {
+      "files": 51,
+      "bytes": 799469
+    },
+    "configs": {
+      "files": 38,
+      "bytes": 21348
+    },
+    "docs": {
+      "files": 50,
+      "bytes": 9395804
+    },
+    "monografia": {
+      "files": 16,
+      "bytes": 1114383
+    }
+  }
+}

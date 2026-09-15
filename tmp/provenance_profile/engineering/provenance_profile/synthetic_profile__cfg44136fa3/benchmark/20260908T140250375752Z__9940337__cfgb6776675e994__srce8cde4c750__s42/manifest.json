@@ -1,0 +1,44 @@
+{
+  "run_id": "20260908T140250375752Z__9940337__cfgb6776675e994__srce8cde4c750__s42",
+  "status": "complete",
+  "module": "engineering",
+  "method": "provenance_profile",
+  "algorithm": "provenance_profile",
+  "stage": "benchmark",
+  "seed": 42,
+  "started_at": "2026-09-08T14:02:50.376680+00:00",
+  "git_sha": "9940337",
+  "git_dirty": false,
+  "source_hash": "e8cde4c7509be6b4375d718d22c45b0169163d098c1690426e0ba05d524fa671",
+  "configuration_id": "synthetic_profile__cfg44136fa3",
+  "configuration_hash": "44136fa355b3",
+  "storage_class": "custom",
+  "config_hash": "b6776675e994",
+  "config": {
+    "configuration_id": "synthetic_profile"
+  },
+  "environment": {
+    "python": "3.13.3",
+    "executable": "C:\\Users\\leand\\Documents\\ufu\\2026_01\\TCC\\my_tcc\\.venv\\Scripts\\python.exe",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "packages": {
+      "numpy": "2.5.2",
+      "opencv-python": null,
+      "opencv-python-headless": "5.0.0.93",
+      "scipy": "1.18.1",
+      "PyYAML": "6.0.3",
+      "psutil": "7.2.2",
+      "torch": null,
+      "torchvision": null,
+      "ultralytics": null,
+      "filterpy": "1.4.5"
+    },
+    "cuda_available": false
+  },
+  "summary": {
+    "synthetic": true
+  },
+  "finished_at": "2026-09-08T14:02:50.497445+00:00",
+  "elapsed_seconds": 0.120764
+}

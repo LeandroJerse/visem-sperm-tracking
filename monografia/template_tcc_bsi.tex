@@ -1,0 +1,252 @@
+% main_bsiMC_ufu.tex v1.1, Thiago Pirola Ribeiro
+% adaptado do modelo PPGCO - main_ppgco_ufu.tex v1.0, Lásaro Camargos e Denise Guliato
+% Criacao: 2019-03-08 - v1.0
+% ------------------------------------------------------------------------
+% Atualizações.
+% 2022-10-18 - v1.1 - Thiago Pirola Ribeiro
+% 2025-03-12 - V1.2 - Diego Nunes Molinos
+%          - Atualização do termo grau para Título de Bacharel;
+%          - Inclusão da seção de Abstract; 
+% ------------------------------------------------------------------------
+\documentclass{bcc}
+%Não altere o comando seguinte. O título de seu trabalho será especificado mais adiante.
+\title{Análise e Predição de Trajetórias de Espermatozoides em Vídeos Microscópicos}
+
+% ---
+% Pacotes fundamentais 
+% ---
+%\usepackage{cmap}				% Mapear caracteres especiais no PDF (já carregado pela classe)
+\usepackage{lmodern}				% Usa a fonte Latin Modern			
+\usepackage{makeidx}            	% Cria o indice
+\usepackage{hyperref}  			% Controla a formação do índice
+\usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}			% Indenta o primeiro parágrafo de cada seção.
+\usepackage{nomencl} 			% Lista de simbolos
+\usepackage{graphicx}			% Inclusão de gráficos
+% ---
+
+% ---
+% Pacotes adicionais, usados apenas no âmbito do Modelo eesc
+% ---
+\usepackage[printonlyused]{acronym}
+\usepackage[table]{xcolor}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{float}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+% ---
+
+% ---
+% Insira aqui os pacotes utilizados por você
+% ---
+
+
+% ---
+% Informações de dados para CAPA e FOLHA DE ROSTO
+% ---
+%
+% Título:
+%	1. Título em português
+%	2. Título em inglês
+\titulo
+{Análise e Predição de Trajetórias de Espermatozoides em Vídeos Microscópicos}
+{Analysis and Prediction of Spermatozoa Trajectories in Microscopy Videos}
+
+% Colocar aqui ate 5 palavras-chave do trabalho
+\keyword{visão computacional}
+\keyword{espermatozoides}
+\keyword{rastreamento multiobjeto}
+\keyword{fluxo óptico}
+\keyword{predição de trajetórias}
+
+%
+% Autor:
+%	1. Nome completo do autor
+%	2. Formato de nome para bibliografia
+\autor{Leandro Marques Gontijo Jersé}{Jersé, Leandro Marques Gontijo}
+% Cidade
+\local{Uberlândia - MG}
+%
+% Ano de defesa
+\date{2026}
+% Área de concentração da pesquisa
+\areaconcentracao{Ciência da Computação}
+% Nome do orientador
+\orientador{Prof. Dr. Bruno Augusto Nassif Travencolo}
+% Nome do coorientador, se houver
+%\coorientador{Nome completo do coorientador}
+% -
+
+
+% informações do PDF
+\hypersetup{
+	pdftitle={\imprimirtitulo},
+	pdfauthor={\imprimirautor},
+	pdfsubject={\imprimirpreambulo},
+%	pdfkeywords=\@resumokw,
+	pdfproducer={LaTeX with abnTeX2}, 	% producer of the document
+	colorlinks=true,       		% false: boxed links; true: colored links
+	linkcolor=black,          	% color of internal links
+	citecolor=black,        		% color of links to bibliography
+	filecolor=magenta,      		% color of file links
+	urlcolor=black,
+	bookmarksdepth=4
+}
+
+% ---
+% compila o indice
+% ---
+\makeindex
+% ---
+
+% ---
+% Compila a lista de abreviaturas e siglas
+% ---
+\makenomenclature
+% ---
+
+% ----
+% Início do documento
+% ----
+
+\begin{document}
+
+	\nomenclature{$\mathbf{p}_t$}{posição bidimensional de uma célula no quadro $t$}
+	\nomenclature{$\Delta t$}{intervalo de tempo entre dois quadros consecutivos}
+	\nomenclature{$T$}{quantidade de posições de uma trajetória}
+	\nomenclature{$u,v$}{componentes horizontal e vertical do fluxo óptico}
+	\nomenclature{$p$}{quantidade de quadros da janela observada}
+	\nomenclature{$q$}{quantidade de quadros do horizonte de predição}
+	
+	% ----------------------------------------------------------
+	% ELEMENTOS PRÉ-TEXTUAIS
+	% ----------------------------------------------------------
+	\pretextual
+	
+	% ---
+	% Insere Capa, Folha de rosto, Ficha catalográfica (se inserida)
+	% e folha de aprovação (se inserida).
+	% ---
+	\maketitle
+
+	% ---
+	% Dedicatória - obrigatório somente para TCC 2
+	% ---
+	%\imprimirdedicatoria{Texto da dedicatória}
+	% ---
+	
+	% ---
+	% Agradecimentos - obrigatório somente para TCC 2
+	% ---
+	%\imprimiragradecimentos{Texto dos agradecimentos}
+	% ---
+	
+	% ---
+	% Epígrafe - obrigatório somente para TCC 2
+	% ---
+	%\imprimirepigrafe{Texto da epígrafe}
+	% ---
+	
+	% ---
+	% RESUMO - obrigatório somente para TCC 2
+	% ---
+	
+	% Resumo em português
+	\begin{resumo}{}
+		Este trabalho investiga a análise e a predição de trajetórias de espermatozoides em vídeos microscópicos por meio de técnicas de Visão Computacional. O problema envolve objetos pequenos, visualmente semelhantes e de baixo contraste, cujos movimentos rápidos, irregulares e sujeitos a sobreposições dificultam a detecção e a preservação de identidades ao longo do tempo. O objetivo é implementar e avaliar uma pipeline composta por detecção, rastreamento multiobjeto, estimação de movimento aparente por fluxo óptico e predição de posições futuras. A pesquisa será aplicada, quantitativa e experimental. Serão utilizados exclusivamente vídeos microscópicos do conjunto público VISEM, com as anotações do VISEM-Tracking disponíveis para trechos de 20 desses vídeos. As divisões experimentais serão independentes por vídeo de origem, mantendo todos os trechos de um mesmo participante na mesma divisão. Métodos clássicos, como limiarização, Filtro de Kalman, SORT e Farnebäck, serão comparados a abordagens aprendidas, como YOLO, ByteTrack, RAFT e redes recorrentes. A hipótese principal é que características locais de fluxo óptico, combinadas ao histórico de posições, podem reduzir os erros ADE e FDE em relação a preditores equivalentes que utilizem somente posição e velocidade. A avaliação também utilizará métricas de detecção e rastreamento, com atenção à reprodutibilidade e à distinção entre movimento aparente na imagem e velocidade física do fluido.
+	\end{resumo}	
+
+    % Abstract
+	\begin{abstract}{Computer vision. Spermatozoa. Multi-object tracking. Optical flow. Trajectory prediction}
+		This work investigates the analysis and prediction of spermatozoa trajectories in microscopy videos using Computer Vision techniques. The problem involves small, visually similar, low-contrast objects whose fast and irregular motion, overlaps, and temporary occlusions make detection and identity preservation difficult. The objective is to implement and evaluate a pipeline composed of detection, multi-object tracking, apparent-motion estimation through optical flow, and future-position prediction. The study will follow an applied, quantitative, and experimental design. Microscopy videos will come exclusively from the public VISEM dataset, with VISEM-Tracking annotations available for segments of 20 of these videos. Experimental splits will be independent by source video, keeping all segments from the same participant in the same split. Classical methods, including thresholding, Kalman filtering, SORT, and Farnebäck optical flow, will be compared with learned approaches such as YOLO, ByteTrack, RAFT, and recurrent neural networks. The main hypothesis is that local optical-flow features combined with position histories can reduce ADE and FDE relative to equivalent predictors that use only position and velocity. Detection and tracking metrics will also be reported, with emphasis on reproducibility and on the distinction between image-based apparent motion and the physical velocity of the fluid.
+	\end{abstract}
+		
+	% ---
+	% inserir lista de ilustrações
+	% ---
+	%\listailustracoes
+	% ---
+	
+	% ---
+	% inserir lista de tabelas
+	% ---
+	\listatabelas
+	% ---
+	
+	% ---
+	% inserir lista de abreviaturas e siglas
+	% ---
+	\listasiglas{abrev/Abreviaturas}
+	% ---
+
+	% ---
+	% inserir lista de símbolos
+	% ---
+	\listasimbolos
+	% ---
+	
+	% ---
+	% inserir o sumario
+	% ---
+	\sumario
+	% ---
+	
+	% ----------------------------------------------------------
+	% ELEMENTOS TEXTUAIS
+	% ----------------------------------------------------------
+	\mainmatter
+	
+	
+	% ----------------------------------------------------------
+	% Introdução
+	% ----------------------------------------------------------
+	\include{cap_introducao/introducao}
+	
+	
+	% ----------------------------------------------------------
+	% Fundamentação / Revisão Bibliográfica
+	% ----------------------------------------------------------
+	\include{cap_fundamentacao/fundamentacao}
+
+	% ----------------------------------------------------------
+	% Trabalhos relacionados
+	% ----------------------------------------------------------
+	\include{cap_trabalhos_relacionados/trabalhos_relacionados}
+		
+	% ----------------------------------------------------------
+	% Método
+	% ----------------------------------------------------------
+	\include{cap_metodo/metodo}
+	
+	% ---
+	% Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
+	% ---
+	\bookmarksetup{startatroot} 
+	% ---
+	
+	% ---
+	% Conclusão da Entrega 5
+	% ---
+	\include{cap_conclusao/conclusao}	
+	% ----------------------------------------------------------
+	% ELEMENTOS PÓS-TEXTUAIS
+	% ----------------------------------------------------------
+	\postextual
+	
+	% ----------------------------------------------------------
+	% Referências bibliográficas
+	% ----------------------------------------------------------
+	\bibliography{bib/modelo-referencias}
+	
+	% ----------------------------------------------------------
+	% Glossário - opcional
+	% ----------------------------------------------------------
+	%
+	%\glossary
+	
+	% Apêndices e anexos não são utilizados nesta versão inicial.
+	
+	
+\end{document}

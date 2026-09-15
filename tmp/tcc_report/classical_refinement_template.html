@@ -1,0 +1,32 @@
+<article id="refinamento-classicos-20260911" class="card">
+<div class="eyebrow">Etapa seguinte da comparação · 11/09/2026</div>
+<h3>Refinamento dos outros detectores: o que mudou depois da primeira busca?</h3>
+<p>A busca anterior experimentou pontos relativamente espaçados dos parâmetros. Agora exploramos a vizinhança das duas melhores configurações de cada família pesquisada. A pergunta desta etapa é: <strong>pequenas mudanças locais melhoram a detecção nos mesmos quadros de treino?</strong> A resposta ajuda a escolher as candidatas que merecem a avaliação nos vídeos completos de validação.</p>
+<p>O plano foi registrado antes das novas inferências. Cada proposta altera apenas um parâmetro de um dos dez pais; os demais permanecem iguais. As configurações pais entram como controles de reprodução. As 54 propostas produziram 51 combinações dentro dos limites e <strong>45 configurações únicas</strong>, mantendo todas as origens das seis duplicatas. Não houve ajuste dos limites depois de observar os novos resultados.</p>
+<table><thead><tr><th>Família</th><th>Parâmetros explorados localmente</th><th>Configurações únicas</th></tr></thead><tbody>
+<tr><td>Otsu</td><td>Iterações de abertura e fechamento</td><td>8</td></tr>
+<tr><td>Adaptativo</td><td>Tamanho da vizinhança, constante local e abertura</td><td>13</td></tr>
+<tr><td>Híbrido CLAHE</td><td>Limite de contraste, fundo e abertura</td><td>11</td></tr>
+<tr><td>Blob</td><td>Limiar mínimo da sequência interna</td><td>6</td></tr>
+<tr><td>Watershed</td><td>Suavização e fração da transformada de distância</td><td>7</td></tr>
+</tbody></table>
+<p>São os mesmos 576 quadros físicos, distribuídos igualmente entre os 12 vídeos de treino. Assim, 45 × 576 = <strong>25.920 avaliações</strong> não significa 25.920 vídeos ou exemplos independentes. O smoke anterior usa somente um quadro de cada vídeo: 45 × 12 = 540 avaliações para verificar funcionamento, exportação e conferência.</p>
+{{REFINEMENT_RESULTS}}
+{{FIG_REFINEMENT}}
+<h4>Como ler os números sem concluir além da evidência</h4>
+<p>A tabela mostra a configuração com maior F1 da grade de cada família. A escolha ocorre nos dados de treino, e as famílias receberam quantidades diferentes de configurações. Portanto, a tabela não demonstra superioridade geral de um método. Precisamos levar as finalistas aos quatro vídeos completos de validação e incluir a comparação aprendida.</p>
+<p>O threshold T218 foi autenticado como referência histórica e não foi reexecutado nem incluído na nova classificação. Quando seu F1 aparece na figura, ele vem da comparação anterior nos mesmos quadros. O tempo anterior do T218 não deve ser tratado como medição simultânea à desta bateria.</p>
+<p>O F1 principal soma TP, FP e FN dentro de cada vídeo, calcula o F1 do vídeo e dá peso igual aos 12 vídeos. A precisão e o recall apresentados também são médias por vídeo; o F1 não é recalculado a partir dessas duas médias. A regra de indivíduos e clusters, o raio de 10 px e as sensibilidades de 15/20 px foram preservados.</p>
+{{REFINEMENT_EVIDENCE}}
+<details><summary>O que foi conferido, e o que essa conferência não demonstra?</summary>
+<p>O verificador reconstrói a grade e as origens das configurações, confere hashes e cobertura, refaz as associações com SciPy e recalcula as métricas e a ordenação. Os dez pais precisam reproduzir suas saídas anteriores nos mesmos quadros, exceto tempo e identificação da nova execução. Isso verifica reprodutibilidade e consistência dos artefatos.</p>
+<p>A conferência não refaz a inferência nem decodifica novamente os vídeos originais. Um QA aprovado não transforma seleção no treino em confirmação independente, não mede qualidade dos IDs e não testa a hipótese do fluxo. HOTA da cadeia e ADE/FDE com trajetórias estimadas ou com fluxo continuam pendentes; os baselines ADE/FDE sobre GT já concluídos permanecem documentados neste relatório.</p></details>
+<h4>Dados preparados para o YOLO</h4>
+{{YOLO_DATASET_RESULTS}}
+<p>Preservamos as três classes originais: indivíduos, clusters e indivíduos pequenos. O YOLO poderá aprender as três classes, enquanto a avaliação principal continua centrada nos indivíduos 0/2 com tratamento explícito dos clusters. Os IDs manuais servem à conferência das anotações e às tarefas posteriores; não entram como rótulo de identidade no treinamento do detector.</p>
+<p>Preparar o dataset não treina uma rede. Ainda será necessário registrar a receita de treinamento, os pesos iniciais, as sementes, a escolha dos checkpoints e os parâmetros de inferência. A biblioteca de treinamento receberá uma cópia independente em sua própria execução, para que caches e eventuais reparos não alterem o dataset autenticado.</p>
+<p>A paridade das caixas não certifica igualdade de pixels entre os JPEGs recebidos e os quadros decodificados dos MP4. Os JPEGs são as entradas do treinamento preparado. A comparação final do YOLO com os clássicos deverá usar os mesmos quadros do vídeo ou cache de avaliação, registrando o pré-processamento de cada método.</p>
+<h4>De onde seguimos</h4>
+<ol><li>Validar as dez finalistas clássicas nos quatro vídeos completos, preservando a referência T218 anterior.</li><li>Treinar e avaliar YOLO sob o mesmo contrato de detecção; incluir o protocolo próprio dos métodos temporais.</li><li>Comparar os rastreadores com detecções comuns, medindo HOTA, IDF1, MOTA, trocas de ID e cobertura.</li><li>Comparar preditores sobre trajetórias estimadas e a contribuição causal do fluxo, com ADE/FDE e cobertura.</li></ol>
+<p>O detector escolhido será a entrada da comparação de rastreamento. O maior F1 isolado não garante os melhores IDs: o efeito na cadeia completa deverá ser medido. A escolha final considera qualidade e custo, sem soma arbitrária de métricas diferentes.</p>
+</article>

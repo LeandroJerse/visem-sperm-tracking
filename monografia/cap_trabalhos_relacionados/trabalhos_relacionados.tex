@@ -1,0 +1,55 @@
+\chapter[Trabalhos Relacionados]{Trabalhos Relacionados}
+
+Este capítulo analisa quatro trabalhos diretamente relacionados às etapas da pipeline proposta. Os estudos foram selecionados por abordarem motilidade espermática, disponibilização de trajetórias anotadas, predição de posições ou detecção e rastreamento no mesmo domínio. A comparação considera objetivo, dados, método, resultados e aspectos ainda não tratados em conjunto.
+
+Ottl et al. \cite{ottl2022motilitai} propõem o \textit{motilitAI}, um arcabouço para estimar automaticamente as proporções de espermatozoides progressivos, não progressivos e imóveis em vídeos microscópicos. O método realiza pré-processamento dos vídeos do VISEM, rastreia células por uma adaptação esparsa do fluxo óptico de Lucas--Kanade, extrai descritores de movimento e aparência e utiliza modelos de regressão. A melhor configuração alcançou erro absoluto médio de 7,31 pontos percentuais, inferior aos 8,83 pontos do melhor resultado da competição de referência utilizada pelos autores. O estudo demonstra que movimento e trajetórias extraídos de vídeo fornecem informação sobre motilidade, porém sua saída é agregada para a amostra. O presente projeto, em contraste, pretende manter trajetórias individuais e prever posições futuras.
+
+Thambawita et al. \cite{thambawita2023visemtracking} apresentam o VISEM-Tracking, criado para reduzir a escassez de vídeos públicos com anotações temporais de espermatozoides humanos. O conjunto contém 20 vídeos de 30 segundos, totalizando 29.196 quadros, com caixas delimitadoras, identificadores persistentes e classes para espermatozoides, aglomerados e células pequenas ou com cabeça reduzida. Os autores também disponibilizam características seminais e sequências sem rótulos. Como validação técnica, foram treinadas variantes do YOLOv5, demonstrando que as anotações sustentam modelos supervisionados. A relação com este projeto é direta, pois os dados podem apoiar os módulos de detecção, rastreamento e predição. O artigo, contudo, não propõe um preditor nem estima movimento do meio.
+
+Noy et al. \cite{noy2023location} investigam a localização futura de espermatozoides para aplicações que exigem posicionamento rápido e não invasivo. Os autores combinam uma rede LSTM multicamadas, responsável por aprender a dinâmica não linear a partir do histórico de posições, com extrapolação linear e uma função de perda ajustada ao problema. Os experimentos utilizam 501 trajetórias, com 114.229 quadros obtidos de três doadores a 70 quadros por segundo, e avaliam horizontes de até 1,43 segundo. Para horizontes inferiores a 0,6 segundo, o erro médio de localização permanece entre 4 e 8~$\mu$m; em várias configurações, o modelo reduz o erro da extrapolação linear. O estudo constitui uma referência direta para a etapa de predição, mas parte de trajetórias previamente obtidas e não incorpora detecção multiobjeto ou características de fluxo óptico.
+
+Zhang et al. \cite{zhang2024spermyolo} tratam conjuntamente a detecção e o rastreamento de espermatozoides com o método Sperm YOLOv8E-TrackEVD. O detector adapta o YOLOv8 com mecanismo de atenção, camada dedicada a objetos pequenos e módulos especializados. O rastreador modifica o DeepOCSORT para melhorar a associação temporal nesse domínio. No VISEM-Tracking, o sistema completo alcança HOTA de 74,303\% e MOTA de 71,167\%. O trabalho fornece uma referência para os módulos de detecção, associação e avaliação, mas não aborda a estimação de movimento aparente do meio nem a predição de posições futuras.
+
+\section{Comparação entre os trabalhos}
+
+A Tabela \ref{tab:comparacao-trabalhos} sintetiza as diferenças entre os estudos. Em conjunto, eles fornecem dados, métodos e métricas para as partes centrais da proposta, mas nenhum avalia, em uma mesma pipeline, a influência de características locais de fluxo óptico sobre a predição individual após a detecção e o rastreamento.
+
+\begin{table}[H]
+\centering
+\caption{Comparação dos trabalhos relacionados}
+\label{tab:comparacao-trabalhos}
+\footnotesize
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{@{}p{2.6cm}YYY@{}}
+\toprule
+\textbf{Trabalho} & \textbf{Objetivo e dados} & \textbf{Método e resultado principal} & \textbf{Relação com este projeto} \\
+\midrule
+Ottl et al. (2022) &
+Estimar proporções de classes de motilidade em vídeos do VISEM &
+Fluxo óptico esparso, descritores e regressão; erro absoluto médio de 7,31 pontos percentuais &
+Utiliza movimento e rastreamento, mas produz apenas estimativas agregadas da amostra \\
+\addlinespace
+Thambawita et al. (2023) &
+Disponibilizar vídeos, caixas e identidades de rastreamento &
+Anotação especializada de 20 vídeos e linhas de base com YOLOv5 &
+Fornece dados para detecção, rastreamento e avaliação de trajetórias \\
+\addlinespace
+Noy et al. (2023) &
+Prever posições futuras em 501 trajetórias &
+LSTM combinada à extrapolação linear; erro de 4 a 8~$\mu$m em horizontes menores que 0,6 s &
+É referência de predição, mas não inclui detecção, MOT ou características de fluxo \\
+\addlinespace
+Zhang et al. (2024) &
+Detectar e rastrear no VISEM-Tracking &
+YOLOv8 aprimorado e DeepOCSORT modificado; HOTA de 74,303\% e MOTA de 71,167\% &
+É referência para detecção e associação, sem prever trajetórias futuras \\
+\bottomrule
+\end{tabularx}
+\fonte{Elaborada pelo autor (2026).}
+\end{table}
+
+\section{Lacuna investigada}
+
+Os estudos analisados evidenciam três lacunas complementares. Primeiro, trabalhos de análise de motilidade podem utilizar trajetórias e fluxo óptico sem preservar uma previsão individual de cada célula. Segundo, conjuntos e métodos de rastreamento fornecem identidades persistentes, mas encerram a análise no estado observado. Terceiro, modelos de predição partem de trajetórias prontas e não medem como erros da pipeline afetam o horizonte futuro.
+
+O presente trabalho procura conectar essas etapas por meio de uma arquitetura modular. A contribuição não consiste apenas em encadear algoritmos, mas em comparar, sob os mesmos dados e critérios, preditores com e sem características de movimento aparente. A avaliação separada sobre trajetórias anotadas e trajetórias estimadas permitirá distinguir a capacidade do preditor da degradação introduzida por detecção e rastreamento.

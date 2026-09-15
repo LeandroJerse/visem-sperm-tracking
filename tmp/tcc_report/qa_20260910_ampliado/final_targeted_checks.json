@@ -1,0 +1,58 @@
+{
+  "status": "passed",
+  "browser": "152.0.4191.66",
+  "hashes": [
+    {
+      "path": "docs/projeto/RELATORIO_COMPLETO_TCC.html",
+      "sha256": "5f6a98cb7779aa1b8dbb409a9a8e9842ee48f91e3231aa6550c89b4c03059491"
+    },
+    {
+      "path": "docs/projeto/mapa-tcc-didatico.html",
+      "sha256": "302eda77bea9d4692a0a6485cc26e722d634396360f8438393eb7c044fde4fce"
+    }
+  ],
+  "svgBounds": [
+    {
+      "x": 20,
+      "y": 1.7102192640304565,
+      "right": 333.00128173828125,
+      "bottom": 41.45148742198944
+    },
+    {
+      "x": 487.9999694824219,
+      "y": 1.7102192640304565,
+      "right": 698.1163940429688,
+      "bottom": 41.45148742198944
+    },
+    {
+      "x": 20,
+      "y": 85.71021270751953,
+      "right": 53.54776382446289,
+      "bottom": 125.45148086547852
+    },
+    {
+      "x": 387.5562744140625,
+      "y": 85.71021270751953,
+      "right": 468.19628143310547,
+      "bottom": 125.45148086547852
+    },
+    {
+      "x": 675.6714477539062,
+      "y": 85.71021270751953,
+      "right": 709.2192115783691,
+      "bottom": 125.45148086547852
+    }
+  ],
+  "console_errors": [],
+  "checks": [
+    "final chapter title and revised scientific wording",
+    "19 chapters and five figures",
+    "mobile SVG readable labels within viewBox",
+    "print hides checkbox control",
+    "both root shortcuts preserve new anchors",
+    "atlas expanded-report section on desktop and mobile without document overflow",
+    "atlas theme and chapter link",
+    "new laboratory fallback readable without JavaScript"
+  ],
+  "visual_review": "pending_model_inspection"
+}
