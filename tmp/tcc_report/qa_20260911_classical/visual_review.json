@@ -1,5 +1,0 @@
-{
-  "status": "superseded_for_visual_scope",
-  "reason": "Automated checks passed, but atlas viewport screenshots did not capture the intended comparison section. The final check captures the actual section and verifies horizontal table scrolling. Added explanatory mobile-table hint in the report.",
-  "follow_up": "tmp/tcc_report/qa_20260911_classical_final"
-}

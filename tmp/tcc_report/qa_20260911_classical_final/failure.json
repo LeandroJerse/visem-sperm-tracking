@@ -1,7 +1,0 @@
-{
-  "status": "failed",
-  "error": "AssertionError: mobile table horizontal scroll",
-  "cause": "QA inspected the table element; horizontal scrolling belongs to its .table-scroll wrapper. Report structure and static checks passed.",
-  "report_changed_for_retry": false,
-  "follow_up": "tmp/tcc_report/qa_20260911_classical_final_retry1"
-}

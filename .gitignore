@@ -1,60 +1,14 @@
-__pycache__/
-*.pyc
-*.pyo
-.env
+# Bases pesadas preservadas localmente.
+/bases_de_dados/visem/
+/bases_de_dados/visem_tracking/
+
+# Ambientes, caches e configurações privadas locais.
 .venv/
 .venv-ml/
 venv/
-*.egg-info/
-dist/
-build/
+__pycache__/
+*.pyc
+*.pyo
 .pytest_cache/
-.wandb/
-wandb/
-*.pt
-*.pth
-*.onnx
-# Dados-fonte e artefatos pesados locais
-data/sources/**
-!data/sources/**/
-!data/sources/**/README.md
-data/datasets/**
-!data/datasets/**/
-!data/datasets/**/README.md
-data/derived/**
-!data/derived/**/
-!data/derived/**/README.md
-# Snapshots documentais de auditoria permanecem locais, inclusive seus READMEs.
-data/derived/project_audits/**/before/
-data/derived/project_audits/**/documentation_before/
-data/tests/**
-!data/tests/**/
-!data/tests/**/README.md
-data/results/**
-!data/results/**/
-!data/results/**/README.md
-!data/results/**/selection/*.json
-!data/results/**/selection/*.csv
-data/models/**
-!data/models/**/
-!data/models/**/README.md
-data/catalog/*.db
-data/catalog/**/*.db
-data/quarantine/
-
-# Compatibilidade: nenhum executor novo deve recriar estas raízes.
-/results/
-/output/
-/runs/
-.DS_Store
-/tmp/
-
-# Local experiment environments/caches
-.venv/
-*.npy
-
-# Documentos e apresentações mantidos localmente
-*.html
-*.pdf
-*.docx
-*.zip
+.env
+.env.*
