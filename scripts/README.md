@@ -2,8 +2,9 @@
 
 `testar_limiarizacao_imagem.py` recebe uma imagem, sua anotação e uma configuração.
 Executa a variante manual ou Otsu e grava uma comparação visual e tabelas.
-As execuções serão feitas pelo pesquisador. O script foi revisado estaticamente;
-a execução prática ainda está pendente.
+As execuções serão feitas pelo pesquisador. O script foi revisado estaticamente
+e o pesquisador realizou uma primeira inspeção individual do quadro 0 do vídeo 11.
+O resultado dessa inspeção não valida o detector experimentalmente.
 
 As primeiras inspeções devem usar imagens do conjunto de desenvolvimento.
 O script registra `inspecao_individual`, não atribui automaticamente a entrada
@@ -12,6 +13,11 @@ a um conjunto do protocolo e não bloqueia arquivos de outros conjuntos.
 Não calcula IoU, precisão, recall ou F1, não escolhe parâmetros e não executa
 lotes, vídeos ou seleção das melhores configurações. As contagens exportadas
 descrevem as saídas; não representam acertos.
+
+Para calcular as métricas de uma execução já salva, use o script separado
+`avaliar_deteccao_imagem.py`, descrito em [`analise/README.md`](../analise/README.md).
+Não é necessário repetir a detecção. O avaliador foi escrito e revisado
+estaticamente; sua execução e a dos testes sintéticos cabem ao pesquisador.
 
 ## Preparação
 
@@ -24,9 +30,10 @@ python -m pip install -r algoritmos/classicos/requirements.txt
 
 Copie `scripts/configuracoes/limiarizacao.modelo.json` para
 `scripts/configuracoes/minha_configuracao.json` e preencha os campos. O modelo
-está intencionalmente incompleto: nenhum limite experimental foi escolhido.
-O script informa os campos pendentes e interrompe a execução se receber o modelo
-sem preenchimento. JSON não aceita comentários; textos precisam de aspas duplas.
+foi originalmente entregue incompleto e pode ter sido preenchido localmente
+para a primeira inspeção. Os valores usados nessa inspeção são provisórios.
+O script informa campos obrigatórios ainda nulos e interrompe a execução.
+JSON não aceita comentários; textos precisam de aspas duplas.
 
 | Campo | Preenchimento |
 |---|---|

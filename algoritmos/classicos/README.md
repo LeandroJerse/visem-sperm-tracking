@@ -4,14 +4,16 @@
 
 | Método | Estado |
 |---|---|
-| Limiarização manual/Otsu + morfologia + componentes conectados | Código escrito; execução e validação experimental pendentes |
+| Limiarização manual/Otsu + morfologia + componentes conectados | Primeira inspeção individual executada pelo pesquisador; validação experimental pendente |
 | Blobs | Planejado |
 | Watershed | Planejado; representação dos aglomerados a definir |
 
 Os módulos desta pasta não leem nem gravam arquivos. A inspeção de uma imagem
 anotada pode ser feita com o primeiro script descrito em
 [`scripts/README.md`](../../scripts/README.md), que grava mídia, tabelas e configuração.
-Não há cálculo de métricas, execução de lotes ou processamento de vídeos implementados.
+O cálculo das métricas está no avaliador separado descrito em
+[`analise/README.md`](../../analise/README.md). Lotes e processamento de vídeos
+ainda não estão implementados.
 Todas as execuções dos algoritmos e experimentos serão feitas pelo pesquisador.
 
 ## Arquivos
@@ -132,8 +134,9 @@ resultados/
 Os nomes de algoritmo serão `limiarizacao`, `blobs` e `watershed`.
 As variantes manual e Otsu pertencem à família `limiarizacao`.
 O script individual registra a etapa como `inspecao_individual` e também exporta
-`anotacoes.csv` e `predicoes.txt`. Não cria `avaliacao.json`, pois ainda não calcula
-métricas. Os detalhes do nome e dos arquivos estão na documentação do script.
+`anotacoes.csv` e `predicoes.txt`. O avaliador separado cria `avaliacao.json` e
+as tabelas de diagnóstico em `avaliacoes/<data-hora-UTC>/` dentro da execução,
+sem sobrescrever resultados anteriores. Os detalhes estão nas documentações dos scripts.
 
 O nome de configuração terá um resumo legível e um identificador derivado de
 todos os parâmetros; o identificador da execução incluirá data e hora UTC.
@@ -152,8 +155,9 @@ Cada pasta de execução reunirá:
   das dependências, dados utilizados, horários e situação da execução.
 - `deteccoes.csv`: caixas, classes e medidas, com identificação da imagem,
   vídeo e número original do quadro quando aplicável.
-- `avaliacao.json`: contagens e métricas, globais e por classe, após implementação
-  do avaliador; o tempo de processamento será registrado separadamente.
+- `avaliacoes/<data-hora-UTC>/avaliacao.json`: contagens e métricas por classe e
+  análise auxiliar de localização; o tempo de processamento do detector não é
+  medido pelo avaliador.
 - `por_quadro.csv`: resumo de cada quadro processado, inclusive sem detecções.
 - `midia/`: imagens ou vídeos com caixas e classes, conservando a identificação
   do vídeo/quadro de origem no nome do arquivo.
@@ -194,6 +198,9 @@ IoU maior ou igual a 0,50. Previsões sem correspondência contam como falsos
 positivos; anotações sem correspondência contam como falsos negativos.
 Uma previsão da classe errada não é acerto de classificação: contribui como
 falso positivo na classe prevista e falso negativo na classe real.
+Entre as correspondências admissíveis, o avaliador maximiza primeiro o número
+de pares e depois a soma das IoUs. Uma segunda correspondência independente,
+ignorando a classe, serve somente ao diagnóstico de localização.
 
 A seleção utilizará a média dos F1 das três classes (macro-F1), calculando
 primeiro as contagens de cada classe no conjunto de seleção. Acompanharemos
@@ -208,9 +215,13 @@ Critérios em ordem:
 
 Os empates serão avaliados antes do arredondamento. Diferenças próximas não
 equivalem a empate ou a superioridade estatística demonstrada. A medição do
-tempo e o tratamento de classes ausentes deverão ser especificados antes da
-implementação do avaliador. A classificação por área não implica que as três
-classes estarão presentes nas previsões de uma imagem.
+tempo ainda precisa ser definida antes de implementar o desempate por desempenho.
+Precisão e recall com denominador zero são indefinidos. F1 é indefinido somente
+quando não há anotações nem previsões da classe; se houver FP ou FN e nenhum TP,
+vale zero. O macro-F1 das três classes fica indefinido se qualquer F1 for
+indefinido, sem excluir classes da média. Nos futuros lotes, as contagens serão
+somadas antes de recalcular as métricas. O avaliador atual processa uma imagem
+e não implementa ranking ou seleção das cinco melhores.
 
 ## Pendências e limites
 
@@ -226,8 +237,9 @@ classes estarão presentes nas previsões de uma imagem.
 - Rastreamento, SORT, Lucas–Kanade, Horn–Schunck e predição estão fora desta etapa.
 - A reserva de vídeos vale para esta organização experimental. O uso dos dados
   na versão anterior permanece parte do histórico e não torna esses dados inéditos.
-- Até esta entrega, a conferência do código foi estática. Não houve execução
-  de detectores, medição de desempenho ou validação das hipóteses nos dados.
+- O pesquisador executou a primeira inspeção do detector no quadro 0 do vídeo 11.
+  O avaliador e seus testes sintéticos foram conferidos estaticamente, sem execução.
+  Não houve medição de desempenho ou validação das hipóteses nos dados.
 
 ## Referências
 

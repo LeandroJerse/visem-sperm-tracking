@@ -8,7 +8,8 @@ anotações. Os arquivos pesados permanecem locais; não estão armazenados no G
 
 O primeiro método está escrito em `algoritmos/classicos/limiarizacao.py`:
 limiarização manual ou Otsu, abertura, fechamento e componentes conectados.
-Ele ainda não foi executado nem validado experimentalmente nesta versão.
+O pesquisador realizou uma primeira inspeção individual do quadro 0 do vídeo 11.
+Essa execução não constitui validação experimental do método.
 Blobs e Watershed serão implementados em etapas posteriores.
 
 O contrato dos resultados, o protocolo acordado e as pendências estão em
@@ -18,7 +19,12 @@ O primeiro script de inspeção individual está em
 Ele salva a comparação visual, as tabelas e a configuração de uma imagem.
 Consulte [`scripts/README.md`](scripts/README.md) para preencher a configuração
 e executar. Não há métricas, lotes ou processamento de vídeos nesse script.
-As execuções dos algoritmos e experimentos serão feitas pelo pesquisador.
+O avaliador dos resultados salvos está em
+[`scripts/avaliar_deteccao_imagem.py`](scripts/avaliar_deteccao_imagem.py).
+Ele compara localização e classe e produz uma análise auxiliar somente de
+localização. As regras, a convenção de classes sem casos e os comandos estão em
+[`analise/README.md`](analise/README.md).
+As execuções dos algoritmos, avaliações, testes e experimentos serão feitas pelo pesquisador.
 
 ## Versão anterior
 
