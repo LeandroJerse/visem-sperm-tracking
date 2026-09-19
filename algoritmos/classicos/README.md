@@ -12,8 +12,9 @@ Os módulos desta pasta não leem nem gravam arquivos. A inspeção de uma image
 anotada pode ser feita com o primeiro script descrito em
 [`scripts/README.md`](../../scripts/README.md), que grava mídia, tabelas e configuração.
 O cálculo das métricas está no avaliador separado descrito em
-[`analise/README.md`](../../analise/README.md). Lotes e processamento de vídeos
-ainda não estão implementados.
+[`analise/README.md`](../../analise/README.md). A primeira rodada em batch está
+preparada em `scripts/testar_limiarizacao_batch.py`; sua execução cabe ao
+pesquisador. Processamento de vídeos ainda não está implementado.
 Todas as execuções dos algoritmos e experimentos serão feitas pelo pesquisador.
 
 ## Arquivos
@@ -65,7 +66,7 @@ ou trajetória nesta etapa.
 
 Uma imagem sem componentes aceitos devolve uma coleção vazia. O script individual
 registra também imagens sem detecções no resumo por quadro e mantém os cabeçalhos
-das tabelas vazias. Os futuros lotes deverão preservar essa mesma convenção.
+das tabelas vazias. O executor de batch preserva essa mesma convenção.
 
 ## Primeiro método
 
@@ -122,7 +123,7 @@ script implementa o caminho em imagens abaixo; vídeos permanecem planejados:
 resultados/
 ├── frame-to-frame/
 │   └── <algoritmo>/
-│       └── <configuracao>__<execucao>/
+│       └── round<N>/<configuracao>__<execucao>/
 └── videos/
     └── <algoritmo>/
         ├── selecao/
@@ -133,6 +134,8 @@ resultados/
 
 Os nomes de algoritmo serão `limiarizacao`, `blobs` e `watershed`.
 As variantes manual e Otsu pertencem à família `limiarizacao`.
+`round0` reúne inspeções iniciais; a primeira rodada em batch usa `round1`.
+Cada batch mantém uma cópia do plano e um resumo em `round<N>/batch__<execucao>/`.
 O script individual registra a etapa como `inspecao_individual` e também exporta
 `anotacoes.csv` e `predicoes.txt`. O avaliador separado cria `avaliacao.json` e
 as tabelas de diagnóstico em `avaliacoes/<data-hora-UTC>/` dentro da execução,
@@ -185,7 +188,8 @@ com as cinco configurações da avaliação final, após o congelamento das esco
 | Avaliação final | 14, 24, 38, 82 |
 
 Para a fase em imagens: 15 quadros por vídeo, numerados 0, 100, 200, …, 1400.
-A lista definitiva do vídeo 23 depende da conferência descrita adiante.
+No desenvolvimento, foram acordadas as exclusões dos quadros 900 e 1100 do
+vídeo 23 por ausência de anotação: o conjunto fixo contém 178 quadros.
 As mesmas imagens e anotações serão utilizadas para todas as configurações.
 
 As cinco configurações escolhidas nas imagens de seleção serão avaliadas nos
@@ -219,17 +223,19 @@ tempo ainda precisa ser definida antes de implementar o desempate por desempenho
 Precisão e recall com denominador zero são indefinidos. F1 é indefinido somente
 quando não há anotações nem previsões da classe; se houver FP ou FN e nenhum TP,
 vale zero. O macro-F1 das três classes fica indefinido se qualquer F1 for
-indefinido, sem excluir classes da média. Nos futuros lotes, as contagens serão
-somadas antes de recalcular as métricas. O avaliador atual processa uma imagem
-e não implementa ranking ou seleção das cinco melhores.
+indefinido, sem excluir classes da média. No batch, as contagens são somadas
+antes de recalcular as métricas. O script de avaliação individual continua
+processando uma imagem; a agregação é feita pelo executor de batch. Nenhum
+deles seleciona automaticamente as cinco melhores configurações.
 
 ## Pendências e limites
 
 - As 174 lacunas do vídeo 23 constam dos registros locais como arquivos de
   anotação ausentes. O artigo da base descreve 174 quadros sem espermatozoides.
-  É necessário esclarecer essa diferença antes de substituir quadros. As
-  substituições propostas de 900 por 973 e de 1100 por 1108 não foram aplicadas.
-  Arquivo ausente não será automaticamente interpretado como anotação vazia.
+  Foram acordadas as exclusões dos quadros 900 e 1100 no desenvolvimento,
+  sem substituição. As alternativas 973 e 1108 não foram aplicadas.
+  Arquivo ausente não é interpretado automaticamente como anotação vazia.
+  Essa ausência continua como limitação documentada da amostragem.
 - Antes do Watershed, definir como representar caixas de aglomerados e de
   indivíduos quando houver sobreposição nas anotações.
 - Antes de blobs, definir a extração das regiões e das caixas, mantendo

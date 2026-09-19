@@ -57,6 +57,9 @@ def argumentos() -> argparse.Namespace:
     parser.add_argument(
         "--config", type=Path, required=True, help="JSON com todos os parâmetros preenchidos.",
     )
+    parser.add_argument(
+        "--rodada", default="round0", help="Pasta da rodada, como round0 ou round1 (padrão: round0).",
+    )
     return parser.parse_args()
 
 
@@ -242,6 +245,12 @@ def desenhar_painel(cv2, np, imagem, registros: list[dict], titulo: str):
 
 
 def executar(args: argparse.Namespace) -> Path:
+    rodada = getattr(args, "rodada", "round0")
+    if not isinstance(rodada, str) or re.fullmatch(r"round(?:0|[1-9][0-9]*)", rodada) is None:
+        raise ValueError("A rodada deve ter o formato round0, round1, round2, ...")
+    saida_rodada = (SAIDA / rodada).resolve()
+    if not saida_rodada.is_relative_to(SAIDA.resolve()):
+        raise ValueError("A pasta da rodada precisa permanecer dentro de limiarizacao/.")
     imagem_path, anotacao_path, config_path = (
         caminho.expanduser().resolve(strict=True) for caminho in (args.imagem, args.anotacao, args.config)
     )
@@ -289,10 +298,11 @@ def executar(args: argparse.Namespace) -> Path:
         })
     inicio = agora()
     nome = nome_configuracao(config_completa, config_id)
-    pasta = SAIDA / f"{nome}__{inicio.strftime('%Y%m%dT%H%M%S%fZ')}"
+    pasta = saida_rodada / f"{nome}__{inicio.strftime('%Y%m%dT%H%M%S%fZ')}"
     origem = identificar_origem(imagem_path, anotacao_path)
     manifesto = {
         "situacao": "em_andamento", "etapa": "inspecao_individual", "algoritmo": "limiarizacao",
+        "rodada": rodada,
         "inicio_utc": inicio.isoformat(), "fim_utc": None, "configuracao_sha256": config_id,
         "origem": origem, "configuracao_origem": str(config_path),
         "sha256_entradas": {"imagem": sha256(imagem_bytes), "anotacao": sha256(anotacao_bytes),

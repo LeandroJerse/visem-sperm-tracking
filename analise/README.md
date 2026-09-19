@@ -1,4 +1,4 @@
-# Avaliação de detecções em uma imagem
+# Avaliação de detecções
 
 O avaliador compara caixas detectadas com as anotações já exportadas por uma
 execução individual. Ele não executa novamente o detector, não abre os arquivos
@@ -7,9 +7,11 @@ originais da base e não gera novas imagens. As três classes permanecem:
 
 `avaliacao_deteccao.py` contém a representação `Objeto` e a função
 `avaliar(anotacoes, deteccoes)`. O comando de entrada está em
-`scripts/avaliar_deteccao_imagem.py`. Esta etapa avalia somente uma imagem;
-lotes, agregação entre imagens e classificação das melhores configurações
-serão implementados posteriormente.
+`scripts/avaliar_deteccao_imagem.py`, que avalia somente uma imagem.
+`agregacao_deteccao.py` reúne as contagens de vários quadros antes de recalcular
+as métricas. O executor `scripts/testar_limiarizacao_batch.py` usa essas duas
+funções na rodada de desenvolvimento descrita em [`scripts/README.md`](../scripts/README.md).
+A seleção das melhores configurações permanece uma decisão conjunta.
 
 ## Preparação e execução
 
@@ -24,7 +26,7 @@ do OpenCV nem do scikit-learn.
 Para avaliar a execução já existente do quadro 0 do vídeo 11:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\avaliar_deteccao_imagem.py" --execucao ".\resultados\frame-to-frame\limiarizacao\otsu-claro-abe3x0-fee3x0-area__cfg-c6339379e654__20260919T182437178768Z"
+& "C:\Python313\python.exe" ".\scripts\avaliar_deteccao_imagem.py" --execucao ".\resultados\frame-to-frame\limiarizacao\round0\otsu-claro-abe3x0-fee3x0-area__cfg-c6339379e654__20260919T182437178768Z"
 ```
 
 `--execucao` recebe a pasta completa de uma execução de detecção concluída.
@@ -162,6 +164,19 @@ representam identidade entre quadros. Não são produzidos valores de confiança
 AP ou mAP: as saídas atuais não possuem pontuações de confiança por detecção.
 
 ## Verificação
+
+O batch produz suas próprias tabelas por quadro, vídeo e configuração. Não
+use o avaliador individual sobre uma pasta agregada de batch: ele espera
+uma única imagem. O macro-F1 do batch é calculado a partir das contagens
+totais por classe, nunca pela média dos macro-F1 de imagens ou vídeos.
+
+`test_agregacao_deteccao.py` verifica essa agregação, classes sem casos e a
+independência do diagnóstico de localização. Os novos testes foram apenas
+conferidos estaticamente. Para executá-los junto com os testes do avaliador:
+
+```powershell
+& "C:\Python313\python.exe" -m unittest analise.test_avaliacao_deteccao analise.test_agregacao_deteccao
+```
 
 `test_avaliacao_deteccao.py` reúne testes sintéticos, sem usar imagens da base.
 Eles foram escritos para conferir as regras de associação e métricas, mas não

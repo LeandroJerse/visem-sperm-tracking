@@ -1,4 +1,135 @@
-# Execução individual em imagem
+# Execuções de limiarização
+
+## Primeira rodada em batch
+
+O plano `scripts/rodadas/limiarizacao_round1.json` contém as 48 configurações
+completas da primeira rodada, geradas com seed **42**. São 24 manuais e 24 Otsu,
+com 12 configurações por combinação de método e polaridade. A configuração
+`c01` repete os parâmetros do teste inicial como referência.
+
+Todas usam os mesmos **178 quadros anotados** dos 12 vídeos de desenvolvimento.
+Os quadros 900 e 1100 do vídeo 23 foram explicitamente excluídos por ausência
+de anotação, conforme acordado; não são tratados como imagens sem objetos.
+As demais imagens seguem os quadros 0, 100, ..., 1400. São 8.544 avaliações de
+imagem, com uma comparação PNG por avaliação. Reserve espaço para essas mídias.
+
+Para executar, abra o terminal na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\testar_limiarizacao_batch.py"
+```
+
+O script não exige argumentos para a primeira rodada. Caso falte alguma
+dependência, instale no mesmo Python e repita o comando:
+
+```powershell
+& "C:\Python313\python.exe" -m pip install -r ".\algoritmos\classicos\requirements.txt" -r ".\analise\requirements.txt"
+```
+
+O executor confere o plano e os hashes das entradas antes de detectar. Durante
+o processamento, verifica novamente o conteúdo de cada entrada. Um arquivo
+alterado, ausente ou inválido interrompe a execução; não há exclusão automática.
+Os vídeos de seleção e avaliação final não são aceitos neste executor.
+
+Cada configuração produz detecções e calcula as métricas já acordadas: IoU
+>= 0,50, associação única por classe, precisão, recall, F1, macro-F1 e análise
+auxiliar de localização. Os resultados são agregados somando TP/FP/FN antes
+de calcular F1. Não se calcula a média dos F1 dos quadros.
+
+```text
+resultados/frame-to-frame/limiarizacao/round1/
+├── batch__<data-hora-UTC>/
+│   ├── rodada.json
+│   ├── execucao.json
+│   ├── codigo.zip
+│   ├── resumo_configuracoes.csv
+│   └── resumo_por_video.csv
+└── <configuracao>__<data-hora-UTC>/
+    ├── configuracao.json
+    ├── execucao.json
+    ├── deteccoes.csv
+    ├── anotacoes.csv
+    ├── por_quadro.csv
+    ├── metricas_por_quadro.csv
+    ├── metricas_por_video.csv
+    ├── metricas.csv
+    ├── avaliacao.json
+    ├── pares.csv
+    ├── pendentes.csv
+    ├── predicoes/<video>_frame_<quadro>.txt
+    └── midia/<video>_frame_<quadro>__comparacao.png
+```
+
+`resumo_configuracoes.csv` reúne os resultados das configurações concluídas,
+na ordem do plano. `resumo_por_video.csv` permite verificar a variação entre
+vídeos. O script não escolhe automaticamente configurações para a próxima
+rodada nem as cinco finalistas. As decisões serão tomadas com o pesquisador.
+
+`pares.csv` e `pendentes.csv` distinguem as avaliações principal e auxiliar
+pela coluna `avaliacao`. Índices de objetos valem somente para o respectivo
+vídeo/quadro. F1 sem casos fica vazio nos CSV, com situação `sem_casos`; no
+JSON, fica `null`. As coordenadas e áreas continuam em pixels.
+
+O tempo registrado mede uma chamada ao detector por imagem, sem cache de
+detecções; exclui leitura, avaliação e gravação. OpenCV usa uma thread e
+OpenCL desativado. Essa medição é diagnóstica, varia entre execuções e não
+implementa ainda o desempate por desempenho.
+
+### Repetição e seed
+
+Para repetir a primeira rodada, execute o mesmo comando. O programa lê as
+configurações já salvas; não faz novo sorteio nem preenche parâmetros com base
+nos resultados anteriores. A pasta `round1` é preservada e recebe novas
+execuções com data/hora distinta. Uma falha preserva os arquivos parciais e
+marca a execução como `falhou`; repetir começa uma execução completa, sem
+retomar ou misturar dados parciais.
+
+Também é possível repetir a cópia do plano guardada em um batch:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\testar_limiarizacao_batch.py" --plano ".\resultados\frame-to-frame\limiarizacao\round1\batch__<data-hora-UTC>\rodada.json"
+```
+
+A seed controla a geração das combinações; manual e Otsu não sorteiam novos
+parâmetros durante a detecção. O plano guarda configurações, ordem dos quadros
+e hashes de imagens/anotações. A execução guarda versões, hashes do código e
+uma cópia dos fontes em `codigo.zip`. Reproduzir resultados requer conservar
+as entradas, o código e o ambiente, não apenas a seed; horários e tempos de
+processamento naturalmente diferem.
+
+`gerar_rodada_limiarizacao.py` permite reconstruir o sorteio sem executar
+detectores, mas **não é necessário para executar a rodada já preparada**:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\gerar_rodada_limiarizacao.py" --seed 42 --rodada round1 --saida "scripts/rodadas/limiarizacao_round1_reproduzida.json"
+```
+
+O gerador exige um arquivo novo, não sobrescreve planos e registra sua versão
+e a versão do Python. Seu espaço é o da exploração inicial. As rodadas 2 e 3
+dependem da análise conjunta dos resultados; não estão pré-selecionadas.
+
+| Parâmetro explorado | Valores da primeira rodada |
+|---|---|
+| Limiar manual | 60, 90, 120, 150, 180, 210; cada um duas vezes por polaridade |
+| Polaridade | Claro e escuro |
+| Abertura e fechamento | Desativados, elipse 3 × 3 ou 5 × 5 com uma iteração |
+| Área mínima | 1, 3, 6, 12, 24 pixels |
+| Máximo da classe pequena | 20, 40, 80, 120 pixels |
+| Mínimo da classe aglomerado | 150, 250, 400, 600, 1000 pixels |
+| Fixos | Conectividade 8; sem área máxima |
+
+Os valores são hipóteses exploratórias. Não foram escolhidos por desempenho.
+A amostragem é sem configurações duplicadas e preserva uma faixa possível
+para a classe pequena (`area_minima <= area_maxima_pequeno`).
+
+O código foi conferido estaticamente. A execução do batch e dos testes cabe
+ao pesquisador. Testes sintéticos de agregação e integridade do plano:
+
+```powershell
+& "C:\Python313\python.exe" -m unittest analise.test_avaliacao_deteccao analise.test_agregacao_deteccao scripts.test_batch_limiarizacao
+```
+
+## Execução individual em imagem
 
 `testar_limiarizacao_imagem.py` recebe uma imagem, sua anotação e uma configuração.
 Executa a variante manual ou Otsu e grava uma comparação visual e tabelas.
@@ -101,7 +232,7 @@ Arquivos de `labels_ftid/`, com seis campos, são rejeitados neste script.
 
 ```text
 resultados/frame-to-frame/limiarizacao/
-└── <resumo>__cfg-<hash>__<data-hora-UTC>/
+└── round0/<resumo>__cfg-<hash>__<data-hora-UTC>/
     ├── configuracao.json
     ├── execucao.json
     ├── deteccoes.csv
@@ -132,6 +263,9 @@ As tabelas têm cabeçalho mesmo quando não há objetos. O resumo mantém uma l
 para a imagem, inclusive com zero detecções. Os CSV usam vírgula como separador,
 ponto decimal e UTF-8 com BOM. No Excel, se necessário, use a importação
 **Dados → De Texto/CSV** e selecione vírgula como delimitador.
+
+O script individual usa `round0` por padrão. Para atribuir a inspeção a outra
+rodada, informe `--rodada round1`, por exemplo. Ele não move resultados antigos.
 
 O padrão `<video>_frame_<quadro>` do nome da imagem permite registrar a origem
 do quadro. Para outros nomes, vídeo e quadro ficam vazios. Tempo em segundos
