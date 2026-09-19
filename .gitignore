@@ -2,6 +2,9 @@
 /bases_de_dados/visem/
 /bases_de_dados/visem_tracking/
 
+# Resultados locais de execuções; código e configurações permanecem versionáveis.
+/resultados/
+
 # Ambientes, caches e configurações privadas locais.
 .venv/
 .venv-ml/

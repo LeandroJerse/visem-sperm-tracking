@@ -8,8 +8,10 @@
 | Blobs | Planejado |
 | Watershed | Planejado; representação dos aglomerados a definir |
 
-Esta etapa contém somente os módulos do primeiro método. Não contém scripts
-de execução, leitura de datasets, gravação de resultados ou cálculo de métricas.
+Os módulos desta pasta não leem nem gravam arquivos. A inspeção de uma imagem
+anotada pode ser feita com o primeiro script descrito em
+[`scripts/README.md`](../../scripts/README.md), que grava mídia, tabelas e configuração.
+Não há cálculo de métricas, execução de lotes ou processamento de vídeos implementados.
 Todas as execuções dos algoritmos e experimentos serão feitas pelo pesquisador.
 
 ## Arquivos
@@ -59,9 +61,9 @@ O limite direito/inferior da caixa em pixels é exclusivo. Para uma caixa
 persistente entre quadros. Não há score de confiança artificial, velocidade
 ou trajetória nesta etapa.
 
-Uma imagem sem componentes aceitos devolve uma coleção vazia. Futuramente,
-o registro de execução deverá guardar também a lista de todas as imagens
-processadas, inclusive aquelas sem detecções.
+Uma imagem sem componentes aceitos devolve uma coleção vazia. O script individual
+registra também imagens sem detecções no resumo por quadro e mantém os cabeçalhos
+das tabelas vazias. Os futuros lotes deverão preservar essa mesma convenção.
 
 ## Primeiro método
 
@@ -109,10 +111,10 @@ A comparação com uma regra que use área, forma e intensidade está prevista.
 Essa segunda regra ainda não está implementada; as medidas já são retornadas
 para permitir sua definição e análise posteriores.
 
-## Organização das futuras execuções
+## Organização das execuções
 
-Os módulos de detecção não escolhem pastas nem escrevem arquivos. Os futuros
-scripts serão responsáveis pela organização abaixo:
+Os módulos de detecção não escolhem pastas nem escrevem arquivos. O primeiro
+script implementa o caminho em imagens abaixo; vídeos permanecem planejados:
 
 ```text
 resultados/
@@ -129,6 +131,9 @@ resultados/
 
 Os nomes de algoritmo serão `limiarizacao`, `blobs` e `watershed`.
 As variantes manual e Otsu pertencem à família `limiarizacao`.
+O script individual registra a etapa como `inspecao_individual` e também exporta
+`anotacoes.csv` e `predicoes.txt`. Não cria `avaliacao.json`, pois ainda não calcula
+métricas. Os detalhes do nome e dos arquivos estão na documentação do script.
 
 O nome de configuração terá um resumo legível e um identificador derivado de
 todos os parâmetros; o identificador da execução incluirá data e hora UTC.
@@ -137,7 +142,7 @@ ser detectadas sem sobrescrever resultados. Exemplo apenas de nomenclatura,
 sem representar uma configuração escolhida:
 
 ```text
-otsu-ab3-fe5-area__cfg-a1b2c3d4e5f6__20260919T180000Z
+otsu-escuro-abe3x1-fee5x1-area__cfg-a1b2c3d4e5f6__20260919T180000123456Z
 ```
 
 Cada pasta de execução reunirá:

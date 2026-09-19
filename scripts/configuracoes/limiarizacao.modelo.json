@@ -1,0 +1,22 @@
+{
+  "metodo": null,
+  "polaridade": null,
+  "limiar_manual": null,
+  "abertura": {
+    "forma": null,
+    "tamanho": null,
+    "iteracoes": null
+  },
+  "fechamento": {
+    "forma": null,
+    "tamanho": null,
+    "iteracoes": null
+  },
+  "conectividade": null,
+  "area_minima": null,
+  "area_maxima": null,
+  "classificacao": {
+    "area_maxima_pequeno": null,
+    "area_minima_aglomerado": null
+  }
+}

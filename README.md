@@ -13,8 +13,12 @@ Blobs e Watershed serão implementados em etapas posteriores.
 
 O contrato dos resultados, o protocolo acordado e as pendências estão em
 [`algoritmos/classicos/README.md`](algoritmos/classicos/README.md).
-Os scripts de execução ainda não foram criados. As execuções dos algoritmos
-e experimentos serão feitas pelo pesquisador.
+O primeiro script de inspeção individual está em
+[`scripts/testar_limiarizacao_imagem.py`](scripts/testar_limiarizacao_imagem.py).
+Ele salva a comparação visual, as tabelas e a configuração de uma imagem.
+Consulte [`scripts/README.md`](scripts/README.md) para preencher a configuração
+e executar. Não há métricas, lotes ou processamento de vídeos nesse script.
+As execuções dos algoritmos e experimentos serão feitas pelo pesquisador.
 
 ## Versão anterior
 
