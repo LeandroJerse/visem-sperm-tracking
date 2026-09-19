@@ -6,9 +6,16 @@
 & "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round1
 ```
 
-Esse comando executa e avalia as 48 configurações nos 178 quadros aprovados.
+Esse comando executa e avalia as 48 configurações nos 178 quadros aprovados
+e gera um PDF ao concluir. Antes da primeira execução com relatório, instale
+as dependências indicadas no [guia de limiarização](limiarizacao/README.md).
 Os resultados ficam em `resultados/frame-to-frame/limiarizacao/round1/`.
 Repetir o comando usa o mesmo plano e cria novas saídas, sem sobrescrever.
+
+**Onde ver o F1:** abra `batch__<execucao>/resumo_configuracoes.csv` dentro
+do respectivo `round`. `macro_f1` é a métrica principal; `f1_classe_0`,
+`f1_classe_1` e `f1_classe_2` mostram cada classe. O PDF fica em
+`batch__<execucao>/relatorios/<data-hora-UTC>/relatorio.pdf`.
 
 ## Qual script usar?
 
@@ -17,6 +24,7 @@ Repetir o comando usa o mesmo plano e cria novas saídas, sem sobrescrever.
 | Executar e avaliar uma rodada completa | [limiarizacao/executar_rodada.py](limiarizacao/executar_rodada.py) | Comando principal dos batches; a avaliação já está incluída |
 | Inspecionar uma única imagem | [limiarizacao/inspecionar_imagem.py](limiarizacao/inspecionar_imagem.py) | Comparação visual e tabelas, com imagem, anotação e configuração informadas |
 | Avaliar uma inspeção individual já salva | [avaliacao/avaliar_imagem.py](avaliacao/avaliar_imagem.py) | Calcula as métricas de uma imagem; não é necessário depois do batch |
+| Gerar o PDF de uma rodada já concluída | [avaliacao/gerar_relatorio_rodada.py](avaliacao/gerar_relatorio_rodada.py) | Usa os resultados salvos, sem repetir as detecções |
 | Preparar um plano de configurações | [limiarizacao/preparar_rodada.py](limiarizacao/preparar_rodada.py) | Somente ao preparar um plano; não é necessário para executar `round1` |
 
 **A rodada é identificada pelo plano JSON, não por uma cópia do script.**
@@ -32,7 +40,9 @@ scripts/
 │   ├── preparar_rodada.py
 │   ├── rodadas/round1.json
 │   └── README.md                 detalhes e demais comandos
-├── avaliacao/avaliar_imagem.py
+├── avaliacao/
+│   ├── avaliar_imagem.py
+│   └── gerar_relatorio_rodada.py
 ├── configuracoes/limiarizacao.modelo.json
 └── testes/test_plano_limiarizacao.py
 ```

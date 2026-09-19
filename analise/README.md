@@ -16,6 +16,59 @@ as métricas. O executor `scripts/limiarizacao/executar_rodada.py` usa essas dua
 funções na rodada de desenvolvimento descrita em [`scripts/README.md`](../scripts/README.md).
 A seleção das melhores configurações permanece uma decisão conjunta.
 
+## Onde consultar o F1 de uma rodada
+
+Dentro de `resultados/frame-to-frame/limiarizacao/round<N>/batch__<execucao>/`,
+abra `resumo_configuracoes.csv`. Cada linha representa uma configuração:
+
+| Coluna | Significado |
+|---|---|
+| `configuracao_id` | Identificador da configuração no plano |
+| `macro_f1` | Métrica principal: média dos três F1 de classe, após agregar as contagens |
+| `f1_classe_0`, `f1_classe_1`, `f1_classe_2` | F1 de normal, aglomerado e pequeno, respectivamente |
+| `f1_localizacao` | Diagnóstico auxiliar, ignorando a classe |
+| `pasta` | Local das imagens, parâmetros e tabelas detalhadas dessa configuração |
+
+`resumo_por_video.csv` apresenta essas métricas para cada vídeo separadamente.
+Um campo de F1 vazio, acompanhado de `sem_casos`, não equivale a zero.
+
+## Relatório da rodada
+
+O batch gera automaticamente um PDF ao concluir. Também é possível criá-lo
+a partir de um batch já concluído, usando
+[`gerar_relatorio_rodada.py`](../scripts/avaliacao/gerar_relatorio_rodada.py),
+sem executar novamente a detecção ou alterar as métricas salvas. O módulo
+`relatorio_rodada.py` lê os resultados e usa Matplotlib e ReportLab; as
+dependências estão em `requirements-relatorio.txt`.
+
+Para gerar o PDF da primeira rodada já executada, na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" -m pip install -r ".\analise\requirements-relatorio.txt"
+& "C:\Python313\python.exe" ".\scripts\avaliacao\gerar_relatorio_rodada.py" --batch ".\resultados\frame-to-frame\limiarizacao\round1\batch__20260919T192640642218Z"
+```
+
+A saída fica em `batch__<execucao>/relatorios/<data-hora-UTC>/`: `relatorio.pdf`,
+`relatorio.json` e `execucao_origem.json`. Cada geração é preservada. Uma falha
+na geração do PDF não desfaz as detecções e métricas já concluídas.
+
+Para até 48 configurações e 12 vídeos, o relatório contém três páginas: gráfico do
+macro-F1 de todas as configurações, mapa dos F1 por classe e mapa do macro-F1
+por vídeo. A ordenação dos gráficos é descritiva e não seleciona finalistas.
+Os estados sem casos são mantidos, inclusive quando uma classe está ausente
+em determinado vídeo e torna seu macro-F1 indefinido.
+
+Média, mediana, desvio padrão amostral, mínimo, máximo e quantidade de valores
+definidos descrevem a distribuição das métricas **entre configurações**.
+Somente valores definidos participam dessas estatísticas, com quantidade
+informada; isso não muda a regra do macro-F1 de cada configuração. Desvio
+padrão amostral exige pelo menos dois valores. Essas estatísticas não são
+intervalos de confiança ou testes de significância. O tempo permanece
+diagnóstico. O relatório não cria novas regras de seleção ou agregação.
+
+A implementação foi conferida estaticamente. O pesquisador executa o gerador;
+a apresentação visual do primeiro PDF ainda precisa ser conferida.
+
 ## Preparação e execução
 
 Abra o terminal na raiz do projeto. Instale as dependências no mesmo Python que

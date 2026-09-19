@@ -23,6 +23,10 @@ com seus próprios planos, após a revisão conjunta.
 Para uma única imagem, há comandos separados de inspeção visual e avaliação.
 Os detalhes estão no [guia de limiarização](scripts/limiarizacao/README.md) e
 as regras das métricas, no [guia de avaliação](analise/README.md).
+O macro-F1 de cada configuração está em `resumo_configuracoes.csv`, na pasta
+do batch. O executor também gera um PDF com gráficos e estatísticas; o
+[guia de avaliação](analise/README.md) explica como gerar o relatório de uma
+rodada já concluída.
 As execuções dos algoritmos, avaliações, testes e experimentos serão feitas pelo pesquisador.
 
 ## Versão anterior

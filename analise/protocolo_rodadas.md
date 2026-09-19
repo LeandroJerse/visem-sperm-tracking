@@ -19,7 +19,7 @@ flowchart TD
     D["Executar todas as configurações<br/>Nos mesmos quadros de desenvolvimento"]
     A["Comparar detecções com anotações<br/>Mesma classe, IoU ≥ 0,50 e um par por objeto"]
     M["Somar TP, FP e FN por classe<br/>Calcular precisão, recall, F1 e macro-F1"]
-    S["Salvar no respectivo round N<br/>Imagens, tabelas e registro da execução"]
+    S["Salvar no respectivo round N<br/>Imagens, tabelas, registro e relatório PDF"]
     R["Revisar juntos os resultados<br/>Erros, classes e variação entre vídeos"]
     Q{"Fazer outra rodada?"}
     N["Definir novos testes<br/>Refinar faixas promissoras e manter exploração"]
@@ -33,7 +33,8 @@ flowchart TD
 O fluxo resume uma rodada completa. Na implementação, a detecção, a avaliação
 e a gravação acontecem por quadro/configuração; a consolidação reúne as
 contagens ao final de cada configuração. Os resumos são atualizados conforme
-as configurações terminam.
+as configurações terminam. Após a conclusão do batch, o relatório PDF reúne
+os resultados salvos em gráficos e estatísticas descritivas.
 
 ## Preparação e comparação justa
 
@@ -97,6 +98,10 @@ da definição da medição apropriada. Pequenas diferenças de F1 não comprova
 por si, superioridade estatística.
 
 O executor entrega os resumos na ordem do plano, sem selecionar vencedores.
+O PDF ordena as configurações para visualização, sem escolher finalistas.
+Suas estatísticas descrevem a distribuição entre configurações; não são
+intervalos de confiança nem testes de significância. Elas não substituem
+o cálculo de cada F1 a partir das contagens agregadas.
 Na revisão conjunta, examinamos as métricas e os erros antes de definir
 novas combinações. A rodada seguinte pode refinar faixas promissoras e
 explorar alternativas; sua lista completa deve ser registrada antes da
@@ -119,7 +124,11 @@ resultados/frame-to-frame/<algoritmo>/round<N>/
 │   ├── execucao.json
 │   ├── codigo.zip
 │   ├── resumo_configuracoes.csv
-│   └── resumo_por_video.csv
+│   ├── resumo_por_video.csv
+│   └── relatorios/<data-hora-UTC>/
+│       ├── relatorio.pdf
+│       ├── relatorio.json
+│       └── execucao_origem.json
 └── <configuracao>__<execucao>/
     ├── configuracao.json
     ├── execucao.json
@@ -135,6 +144,11 @@ preservar dados, código e versões das bibliotecas; horários e tempos de
 processamento podem variar. Falhas preservam saídas parciais, mas não
 constituem uma rodada concluída. O executor atual inicia uma execução nova
 ao repetir o comando, sem retomar ou misturar arquivos parciais.
+
+O PDF pode ser gerado novamente a partir de um batch concluído, sem repetir
+as detecções. Cada geração recebe uma pasta própria. Seu estado é separado
+da conclusão das métricas: uma falha no relatório preserva os resultados
+do batch e permite gerar somente o PDF posteriormente.
 
 ## Etapas posteriores
 

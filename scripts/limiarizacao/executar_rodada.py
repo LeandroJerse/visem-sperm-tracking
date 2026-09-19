@@ -330,8 +330,11 @@ def executar(args: argparse.Namespace) -> Path:
         from algoritmos.classicos.classificacao import ConfiguracaoArea
         from algoritmos.classicos.limiarizacao import ConfiguracaoLimiarizacao, ConfiguracaoMorfologia
         from analise.agregacao_deteccao import agregar  # Valida a disponibilidade antes da execução.
+        from analise.relatorio_rodada import gerar_relatorio, verificar_dependencias
     except ModuleNotFoundError as erro:
         raise ValueError("Instale as dependências com: python -m pip install -r algoritmos/classicos/requirements.txt -r analise/requirements.txt") from erro
+    # Confere o gerador de PDF antes de iniciar uma rodada longa.
+    dependencias_relatorio = verificar_dependencias()
     configuracoes = []
     for item in plano["configuracoes"]:
         dados = item["parametros"]
@@ -351,7 +354,7 @@ def executar(args: argparse.Namespace) -> Path:
               RAIZ / "scripts" / "limiarizacao" / "preparar_rodada.py",
               *sorted((RAIZ / "algoritmos").rglob("*.py")),
               RAIZ / "analise" / "__init__.py", RAIZ / "analise" / "avaliacao_deteccao.py",
-              RAIZ / "analise" / "agregacao_deteccao.py"]
+              RAIZ / "analise" / "agregacao_deteccao.py", RAIZ / "analise" / "relatorio_rodada.py"]
     fontes_bytes = {arquivo.relative_to(RAIZ).as_posix(): arquivo.read_bytes() for arquivo in fontes}
     codigo["sha256_arquivos"] = {nome: sha256(conteudo) for nome, conteudo in fontes_bytes.items()}
     inicio = agora()
@@ -366,7 +369,8 @@ def executar(args: argparse.Namespace) -> Path:
         "plano_salvo": (pasta_batch / "rodada.json").relative_to(RAIZ).as_posix(),
         "exclusoes": plano["exclusoes"],
         "codigo": codigo, "dependencias": {**versoes_dependencias(), "scipy": scipy.__version__,
-            "numpy_importado": np.__version__, "opencv_importado": cv2.__version__},
+            "numpy_importado": np.__version__, "opencv_importado": cv2.__version__,
+            **dependencias_relatorio},
         "ambiente": {"sistema": platform.platform(), "arquitetura": platform.machine(),
                      "opencv_threads": cv2.getNumThreads(), "opencv_opencl": cv2.ocl.useOpenCL()},
         "medicao_tempo": "Uma chamada de detectar por imagem, sem cache de detecções; exclui leitura, avaliação e gravação. Diagnóstico, sem desempate automático.",
@@ -375,6 +379,7 @@ def executar(args: argparse.Namespace) -> Path:
         **metadados, "situacao": "em_andamento", "inicio_utc": inicio.isoformat(), "fim_utc": None,
         "configuracoes_previstas": len(configuracoes), "configuracoes_concluidas": 0,
         "quadros_por_configuracao": len(plano["quadros"]), "execucoes": [],
+        "relatorio_pdf": {"situacao": "pendente"},
     }
     pasta_batch.mkdir(parents=True, exist_ok=False)
     resumos, resumos_video = [], []
@@ -397,11 +402,28 @@ def executar(args: argparse.Namespace) -> Path:
             registro["configuracoes_concluidas"] = numero
             registro["execucoes"].append({"configuracao_id": item["id"], "pasta": pasta.relative_to(RAIZ).as_posix()})
             gravar_json(pasta_batch / "execucao.json", registro)
-        registro.update({"situacao": "concluida", "fim_utc": agora().isoformat()})
+        registro.update({"situacao": "concluida", "fim_utc": agora().isoformat(),
+                         "relatorio_pdf": {"situacao": "em_andamento"}})
         gravar_json(pasta_batch / "execucao.json", registro)
     except BaseException as erro:
         registrar_falha(pasta_batch / "execucao.json", registro, erro)
         raise
+    # O relatório é uma etapa separada: uma falha nele não invalida a detecção concluída.
+    print("Detecção e avaliação concluídas. Gerando o relatório PDF...", flush=True)
+    try:
+        pdf = gerar_relatorio(pasta_batch)
+        registro["relatorio_pdf"] = {"situacao": "concluido", "arquivo": pdf.relative_to(RAIZ).as_posix()}
+        gravar_json(pasta_batch / "execucao.json", registro)
+    except BaseException as erro:
+        registro["relatorio_pdf"] = {"situacao": "falhou", "erro": f"{type(erro).__name__}: {erro}"}
+        try:
+            gravar_json(pasta_batch / "execucao.json", registro)
+        except OSError:
+            pass
+        print("Detecção e métricas estão concluídas. Para gerar somente o PDF, use:", file=sys.stderr)
+        print(f'python scripts/avaliacao/gerar_relatorio_rodada.py --batch "{pasta_batch}"', file=sys.stderr)
+        raise
+    print(f"PDF salvo em: {pdf}")
     return pasta_batch
 
 
@@ -410,7 +432,7 @@ def main() -> int:
     try:
         pasta = executar(args)
     except KeyboardInterrupt:
-        print("Rodada interrompida. Repetir o comando inicia uma nova execução.", file=sys.stderr)
+        print("Execução interrompida. Consulte execucao.json; os arquivos existentes foram preservados.", file=sys.stderr)
         return 130
     except Exception as erro:
         print(f"Erro: {erro}", file=sys.stderr)

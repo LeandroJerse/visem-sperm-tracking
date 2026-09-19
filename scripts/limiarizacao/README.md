@@ -32,8 +32,12 @@ local, informe `--plano` em vez de `--rodada`. Caso falte alguma dependência,
 instale no mesmo Python e repita o comando:
 
 ```powershell
-& "C:\Python313\python.exe" -m pip install -r ".\algoritmos\classicos\requirements.txt" -r ".\analise\requirements.txt"
+& "C:\Python313\python.exe" -m pip install -r ".\algoritmos\classicos\requirements.txt" -r ".\analise\requirements.txt" -r ".\analise\requirements-relatorio.txt"
 ```
+
+O PDF utiliza Matplotlib e ReportLab. O executor verifica essas dependências
+antes de iniciar as detecções. A instalação e as execuções são realizadas
+pelo pesquisador no mesmo ambiente Python.
 
 O executor confere o plano e os hashes das entradas antes de detectar. Durante
 o processamento, verifica novamente o conteúdo de cada entrada. Um arquivo
@@ -52,7 +56,11 @@ resultados/frame-to-frame/limiarizacao/round1/
 │   ├── execucao.json
 │   ├── codigo.zip
 │   ├── resumo_configuracoes.csv
-│   └── resumo_por_video.csv
+│   ├── resumo_por_video.csv
+│   └── relatorios/<data-hora-UTC>/
+│       ├── relatorio.pdf
+│       ├── relatorio.json
+│       └── execucao_origem.json
 └── <configuracao>__<data-hora-UTC>/
     ├── configuracao.json
     ├── execucao.json
@@ -74,6 +82,12 @@ na ordem do plano. `resumo_por_video.csv` permite verificar a variação entre
 vídeos. O script não escolhe automaticamente configurações para a próxima
 rodada nem as cinco finalistas. As decisões serão tomadas com o pesquisador.
 
+Para consultar o resultado principal, abra `resumo_configuracoes.csv` e
+localize a coluna `macro_f1`. Os F1 por classe estão em `f1_classe_0`,
+`f1_classe_1` e `f1_classe_2`. `f1_localizacao` é o diagnóstico que ignora a
+classe, não a métrica principal. `configuracao_id` identifica o teste e
+`pasta` indica onde estão seus parâmetros, tabelas detalhadas e imagens.
+
 `pares.csv` e `pendentes.csv` distinguem as avaliações principal e auxiliar
 pela coluna `avaliacao`. Índices de objetos valem somente para o respectivo
 vídeo/quadro. F1 sem casos fica vazio nos CSV, com situação `sem_casos`; no
@@ -83,6 +97,39 @@ O tempo registrado mede uma chamada ao detector por imagem, sem cache de
 detecções; exclui leitura, avaliação e gravação. OpenCV usa uma thread e
 OpenCL desativado. Essa medição é diagnóstica, varia entre execuções e não
 implementa ainda o desempate por desempenho.
+
+### Relatório PDF automático
+
+Ao concluir o batch, o executor gera o relatório a partir das tabelas salvas.
+Para até 48 configurações e 12 vídeos, o PDF apresenta três páginas: macro-F1 de todas as
+configurações, F1 das três classes e macro-F1 por vídeo. A ordenação visual
+facilita a leitura e não seleciona as cinco finalistas.
+
+As estatísticas descritivas mostram média, mediana, desvio padrão amostral,
+mínimo, máximo e quantidade de valores definidos entre as configurações.
+Não representam intervalo de confiança nem prova de superioridade. Não se
+calcula a média dos F1 dos quadros para obter o F1 de uma configuração.
+Valores `sem_casos` continuam distintos de zero.
+
+Cada geração cria `relatorios/<data-hora-UTC>/`, sem sobrescrever PDFs
+anteriores. `relatorio.json` registra a geração e `execucao_origem.json`
+preserva o registro da execução utilizada. O estado do relatório fica
+separado do estado da detecção: uma falha no PDF preserva as métricas já
+concluídas. É possível gerar o relatório depois, sem repetir o batch.
+
+Para a primeira rodada já executada, instale as dependências do relatório e
+gere somente o PDF, na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" -m pip install -r ".\analise\requirements-relatorio.txt"
+& "C:\Python313\python.exe" ".\scripts\avaliacao\gerar_relatorio_rodada.py" --batch ".\resultados\frame-to-frame\limiarizacao\round1\batch__20260919T192640642218Z"
+```
+
+Para outra execução, substitua o caminho de `--batch` pela pasta que contém
+`resumo_configuracoes.csv` e `resumo_por_video.csv` daquela execução. Não
+informe a pasta inteira do `round` nem a pasta de uma configuração isolada.
+O gerador do relatório foi conferido estaticamente. O pesquisador o executa;
+a apresentação visual do primeiro PDF ainda precisa ser conferida.
 
 ### Repetição e seed
 
