@@ -1,6 +1,6 @@
 # TCC — reinício acompanhado
 
-Branch: `codex/reinicio-bases`.
+Branch: `codex/avaliacao-deteccao`.
 
 Esta versão começa apenas com as bases existentes, em `bases_de_dados/`.
 Consulte `bases_de_dados/LEIA_PRIMEIRO.md` para localizar vídeos, imagens e
