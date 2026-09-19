@@ -10,9 +10,9 @@ originais da base e não gera novas imagens. As três classes permanecem:
 
 `avaliacao_deteccao.py` contém a representação `Objeto` e a função
 `avaliar(anotacoes, deteccoes)`. O comando de entrada está em
-`scripts/avaliar_deteccao_imagem.py`, que avalia somente uma imagem.
+`scripts/avaliacao/avaliar_imagem.py`, que avalia somente uma imagem.
 `agregacao_deteccao.py` reúne as contagens de vários quadros antes de recalcular
-as métricas. O executor `scripts/testar_limiarizacao_batch.py` usa essas duas
+as métricas. O executor `scripts/limiarizacao/executar_rodada.py` usa essas duas
 funções na rodada de desenvolvimento descrita em [`scripts/README.md`](../scripts/README.md).
 A seleção das melhores configurações permanece uma decisão conjunta.
 
@@ -29,7 +29,7 @@ do OpenCV nem do scikit-learn.
 Para avaliar a execução já existente do quadro 0 do vídeo 11:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\avaliar_deteccao_imagem.py" --execucao ".\resultados\frame-to-frame\limiarizacao\round0\otsu-claro-abe3x0-fee3x0-area__cfg-c6339379e654__20260919T182437178768Z"
+& "C:\Python313\python.exe" ".\scripts\avaliacao\avaliar_imagem.py" --execucao ".\resultados\frame-to-frame\limiarizacao\round0\otsu-claro-abe3x0-fee3x0-area__cfg-c6339379e654__20260919T182437178768Z"
 ```
 
 `--execucao` recebe a pasta completa de uma execução de detecção concluída.
@@ -118,8 +118,8 @@ Casos sem denominador seguem a convenção acordada:
 substitui o macro-F1 das três classes pela média das duas restantes. No CSV,
 métricas indefinidas ficam vazias; no resumo, sua ausência fica explícita.
 
-Na futura avaliação de várias imagens, somaremos TP, FP e FN de cada classe
-antes de recalcular as métricas. Não faremos média dos F1 de cada quadro.
+Na avaliação de várias imagens pelo batch, somam-se TP, FP e FN de cada classe
+antes de recalcular as métricas. Não se calcula a média dos F1 de cada quadro.
 Esta avaliação individual não estabelece uma classificação das configurações.
 
 ## Análise auxiliar de localização

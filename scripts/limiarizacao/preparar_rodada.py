@@ -14,8 +14,8 @@ import random
 import re
 
 
-RAIZ = Path(__file__).resolve().parents[1]
-VERSAO_GERADOR = "1.0"
+RAIZ = Path(__file__).resolve().parents[2]
+VERSAO_GERADOR = "1.1"
 VIDEOS = (11, 12, 15, 19, 21, 22, 23, 30, 35, 36, 47, 60)
 QUADROS = tuple(range(0, 1401, 100))
 AUSENCIAS_CONHECIDAS = {(23, 900), (23, 1100)}
@@ -154,7 +154,7 @@ def gerar_plano(seed: int, rodada: str) -> dict:
         "politica_anotacoes_ausentes": "exclusao_explicita",
         "geracao": {
             "versao_gerador": VERSAO_GERADOR,
-            "arquivo_gerador": "scripts/gerar_rodada_limiarizacao.py",
+            "arquivo_gerador": Path(__file__).resolve().relative_to(RAIZ).as_posix(),
             "sha256_gerador": sha256(Path(__file__)),
             "python": platform.python_version(),
             "estrategia": "amostragem_aleatoria_estratificada",
@@ -190,7 +190,7 @@ def gerar_plano(seed: int, rodada: str) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--saida", required=True, type=Path, help="Novo JSON dentro de scripts/rodadas; nunca sobrescreve.")
+    parser.add_argument("--saida", required=True, type=Path, help="Novo JSON dentro de scripts/limiarizacao/rodadas; nunca sobrescreve.")
     parser.add_argument("--seed", type=int, default=42, help="Seed do sorteio (padrão: 42).")
     parser.add_argument("--rodada", default="round1", help="Pasta de destino dos resultados, como round1.")
     args = parser.parse_args()
@@ -200,8 +200,8 @@ def main() -> None:
         parser.error("--rodada deve seguir o formato round1, round2, etc.")
     saida = args.saida if args.saida.is_absolute() else RAIZ / args.saida
     saida = saida.resolve()
-    if not saida.is_relative_to((RAIZ / "scripts/rodadas").resolve()) or saida.suffix.lower() != ".json":
-        parser.error("--saida deve apontar para um arquivo .json dentro de scripts/rodadas.")
+    if not saida.is_relative_to((RAIZ / "scripts/limiarizacao/rodadas").resolve()) or saida.suffix.lower() != ".json":
+        parser.error("--saida deve apontar para um arquivo .json dentro de scripts/limiarizacao/rodadas.")
     if saida.exists():
         parser.error(f"O arquivo já existe e será preservado: {saida}")
     try:

@@ -8,10 +8,10 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from scripts import testar_limiarizacao_batch as batch
+from scripts.limiarizacao import executar_rodada as batch
 
 
-PLANO = Path(__file__).resolve().parent / "rodadas" / "limiarizacao_round1.json"
+PLANO = Path(__file__).resolve().parents[1] / "limiarizacao" / "rodadas" / "round1.json"
 
 
 class TestePlanoEEntradas(unittest.TestCase):

@@ -16,10 +16,10 @@ from time import perf_counter_ns
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
-RAIZ = Path(__file__).resolve().parents[1]
+RAIZ = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ))
 
-from scripts.testar_limiarizacao_imagem import (
+from scripts.limiarizacao.inspecionar_imagem import (
     CAMPOS_ANOTACAO, CAMPOS_DETECCAO, CAMPOS_ORIGEM, CORES, SAIDA,
     agora, desenhar_painel, gravar_csv, gravar_json, ler_anotacoes,
     ler_configuracao, nome_configuracao, objeto_sem_duplicatas,
@@ -27,7 +27,7 @@ from scripts.testar_limiarizacao_imagem import (
 )
 
 
-PLANO_PADRAO = RAIZ / "scripts" / "rodadas" / "limiarizacao_round1.json"
+PASTA_RODADAS = Path(__file__).resolve().parent / "rodadas"
 VIDEOS_DESENVOLVIMENTO = {"11", "12", "15", "19", "21", "22", "23", "30", "35", "36", "47", "60"}
 EXCLUSOES_APROVADAS = {("23", 900), ("23", 1100)}
 CAMPOS_CAIXA = ["caixa_x_px", "caixa_y_px", "caixa_largura_px", "caixa_altura_px"]
@@ -44,10 +44,28 @@ CAMPOS_QUADRO = [
 def argumentos() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Executa e avalia todas as configurações de uma rodada de desenvolvimento.",
-        epilog="Sem --plano, usa scripts/rodadas/limiarizacao_round1.json. Repetir cria novas saídas.",
+        epilog="Sem argumentos, executa round1. Repetir uma rodada cria novas saídas no mesmo round.",
     )
-    parser.add_argument("--plano", type=Path, default=PLANO_PADRAO, help="JSON congelado da rodada.")
+    origem = parser.add_mutually_exclusive_group()
+    origem.add_argument("--rodada", help="Nome do plano preparado, como round1. Padrão: round1.")
+    origem.add_argument("--plano", type=Path, help="Caminho explícito de um JSON, inclusive a cópia salva em um batch.")
     return parser.parse_args()
+
+
+def localizar_plano(args: argparse.Namespace) -> tuple[Path, str | None]:
+    if args.plano is not None:
+        return args.plano.expanduser().resolve(strict=True), None
+    rodada = args.rodada if args.rodada is not None else "round1"
+    if re.fullmatch(r"round[1-9][0-9]*", rodada) is None:
+        raise ValueError("Informe --rodada round1, round2, ...; round0 é a inspeção individual.")
+    caminho = PASTA_RODADAS / f"{rodada}.json"
+    if not caminho.is_file():
+        disponiveis = ", ".join(sorted(
+            arquivo.stem for arquivo in PASTA_RODADAS.glob("round*.json")
+            if re.fullmatch(r"round[1-9][0-9]*", arquivo.stem)
+        ))
+        raise ValueError(f"A rodada {rodada} ainda não tem plano preparado. Disponíveis: {disponiveis or 'nenhuma'}.")
+    return caminho.resolve(strict=True), rodada
 
 
 def carregar_plano(conteudo: bytes) -> dict:
@@ -300,9 +318,11 @@ def registrar_falha(caminho: Path, registro: dict, erro: BaseException) -> None:
 
 
 def executar(args: argparse.Namespace) -> Path:
-    caminho_plano = args.plano.expanduser().resolve(strict=True)
+    caminho_plano, rodada_solicitada = localizar_plano(args)
     plano_bytes = caminho_plano.read_bytes()
     plano = carregar_plano(plano_bytes)
+    if rodada_solicitada is not None and plano["rodada"] != rodada_solicitada:
+        raise ValueError(f"O plano solicitado para {rodada_solicitada} declara {plano['rodada']}. Corrija a identificação antes de executar.")
     try:
         import cv2
         import numpy as np
@@ -327,8 +347,8 @@ def executar(args: argparse.Namespace) -> Path:
     cv2.setNumThreads(1)
     cv2.ocl.setUseOpenCL(False)
     codigo = versao_codigo()
-    fontes = [Path(__file__).resolve(), RAIZ / "scripts" / "testar_limiarizacao_imagem.py",
-              RAIZ / "scripts" / "gerar_rodada_limiarizacao.py",
+    fontes = [Path(__file__).resolve(), RAIZ / "scripts" / "limiarizacao" / "inspecionar_imagem.py",
+              RAIZ / "scripts" / "limiarizacao" / "preparar_rodada.py",
               *sorted((RAIZ / "algoritmos").rglob("*.py")),
               RAIZ / "analise" / "__init__.py", RAIZ / "analise" / "avaliacao_deteccao.py",
               RAIZ / "analise" / "agregacao_deteccao.py"]

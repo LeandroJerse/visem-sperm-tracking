@@ -16,7 +16,7 @@ anotada pode ser feita com o primeiro script descrito em
 [`scripts/README.md`](../../scripts/README.md), que grava mídia, tabelas e configuração.
 O cálculo das métricas está no avaliador separado descrito em
 [`analise/README.md`](../../analise/README.md). A primeira rodada em batch está
-preparada em `scripts/testar_limiarizacao_batch.py`; sua execução cabe ao
+preparada em `scripts/limiarizacao/executar_rodada.py`; sua execução cabe ao
 pesquisador. Processamento de vídeos ainda não está implementado.
 Todas as execuções dos algoritmos e experimentos serão feitas pelo pesquisador.
 

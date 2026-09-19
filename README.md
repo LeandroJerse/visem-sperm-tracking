@@ -14,16 +14,15 @@ Blobs e Watershed serão implementados em etapas posteriores.
 
 O contrato dos resultados, o protocolo acordado e as pendências estão em
 [`algoritmos/classicos/README.md`](algoritmos/classicos/README.md).
-O primeiro script de inspeção individual está em
-[`scripts/testar_limiarizacao_imagem.py`](scripts/testar_limiarizacao_imagem.py).
-Ele salva a comparação visual, as tabelas e a configuração de uma imagem.
-Consulte [`scripts/README.md`](scripts/README.md) para preencher a configuração
-e executar. Não há métricas, lotes ou processamento de vídeos nesse script.
-O avaliador dos resultados salvos está em
-[`scripts/avaliar_deteccao_imagem.py`](scripts/avaliar_deteccao_imagem.py).
-Ele compara localização e classe e produz uma análise auxiliar somente de
-localização. As regras, a convenção de classes sem casos e os comandos estão em
-[`analise/README.md`](analise/README.md).
+O [guia dos scripts](scripts/README.md) apresenta o comando principal e a
+finalidade de cada entrada. A primeira rodada está preparada no plano
+[`round1.json`](scripts/limiarizacao/rodadas/round1.json): o executor
+[`executar_rodada.py`](scripts/limiarizacao/executar_rodada.py) detecta e avalia
+as configurações desse plano. As próximas rodadas usarão o mesmo executor,
+com seus próprios planos, após a revisão conjunta.
+Para uma única imagem, há comandos separados de inspeção visual e avaliação.
+Os detalhes estão no [guia de limiarização](scripts/limiarizacao/README.md) e
+as regras das métricas, no [guia de avaliação](analise/README.md).
 As execuções dos algoritmos, avaliações, testes e experimentos serão feitas pelo pesquisador.
 
 ## Versão anterior

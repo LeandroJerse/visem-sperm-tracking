@@ -17,7 +17,7 @@ import subprocess
 import sys
 
 
-RAIZ = Path(__file__).resolve().parents[1]
+RAIZ = Path(__file__).resolve().parents[2]
 SAIDA = RAIZ / "resultados" / "frame-to-frame" / "limiarizacao"
 CORES = {0: (0, 220, 255), 1: (255, 70, 200), 2: (255, 220, 0)}  # BGR
 CAMPOS_ORIGEM = ["imagem", "anotacao", "video_id", "quadro", "tempo_segundos"]

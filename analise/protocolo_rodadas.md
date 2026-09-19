@@ -43,6 +43,12 @@ as configurações terminam.
 | `round1` | Explorar configurações variadas de limiarização | 48 configurações salvas; seed 42 |
 | `round2`, `round3` | Refinar hipóteses com base nas rodadas anteriores | Configurações e orçamento de testes dependem da revisão conjunta |
 
+O mesmo `scripts/limiarizacao/executar_rodada.py` executa todas as rodadas.
+`--rodada round1` identifica o plano `scripts/limiarizacao/rodadas/round1.json`;
+`--plano` permite informar uma cópia salva em outro local. Somente o plano da
+primeira rodada está preparado. A criação de pastas `round2` e `round3` em
+resultados não prepara automaticamente essas rodadas.
+
 Na primeira rodada são 24 configurações manuais e 24 Otsu, com equilíbrio
 entre polaridades clara e escura. A configuração `c01` repete os parâmetros
 do teste inicial como referência. Esses parâmetros são hipóteses de teste;
@@ -141,4 +147,4 @@ nesta versão não elimina o histórico de exposição anterior aos dados.
 
 Comandos e detalhes das saídas: [scripts/README.md](../scripts/README.md).
 Regras das métricas: [analise/README.md](README.md).
-Plano preparado: [limiarizacao_round1.json](../scripts/rodadas/limiarizacao_round1.json).
+Plano preparado: [round1.json](../scripts/limiarizacao/rodadas/round1.json).

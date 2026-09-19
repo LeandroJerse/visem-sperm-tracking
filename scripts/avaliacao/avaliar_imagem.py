@@ -15,7 +15,7 @@ import subprocess
 import sys
 
 
-RAIZ = Path(__file__).resolve().parents[1]
+RAIZ = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ))
 
 from analise.avaliacao_deteccao import Objeto, avaliar
