@@ -1,5 +1,8 @@
 # Avaliação de detecções
 
+O fluxo de execução, avaliação e revisão conjunta de cada rodada está no
+[protocolo de desenvolvimento por rodadas](protocolo_rodadas.md), com fluxograma.
+
 O avaliador compara caixas detectadas com as anotações já exportadas por uma
 execução individual. Ele não executa novamente o detector, não abre os arquivos
 originais da base e não gera novas imagens. As três classes permanecem:

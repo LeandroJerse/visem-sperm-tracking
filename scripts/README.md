@@ -1,5 +1,8 @@
 # Execuções de limiarização
 
+O [protocolo de desenvolvimento por rodadas](../analise/protocolo_rodadas.md)
+registra o fluxo de preparação, execução, avaliação e revisão conjunta.
+
 ## Primeira rodada em batch
 
 O plano `scripts/rodadas/limiarizacao_round1.json` contém as 48 configurações

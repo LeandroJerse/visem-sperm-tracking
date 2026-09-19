@@ -1,5 +1,8 @@
 # Detecção clássica
 
+O [protocolo de desenvolvimento por rodadas](../../analise/protocolo_rodadas.md)
+reúne o fluxograma e as regras de execução, avaliação e revisão dos batches.
+
 ## Estado da implementação
 
 | Método | Estado |
@@ -243,9 +246,10 @@ deles seleciona automaticamente as cinco melhores configurações.
 - Rastreamento, SORT, Lucas–Kanade, Horn–Schunck e predição estão fora desta etapa.
 - A reserva de vídeos vale para esta organização experimental. O uso dos dados
   na versão anterior permanece parte do histórico e não torna esses dados inéditos.
-- O pesquisador executou a primeira inspeção do detector no quadro 0 do vídeo 11.
-  O avaliador e seus testes sintéticos foram conferidos estaticamente, sem execução.
-  Não houve medição de desempenho ou validação das hipóteses nos dados.
+- O pesquisador executou a primeira inspeção do detector e sua avaliação no
+  quadro 0 do vídeo 11. Esse resultado isolado não valida o algoritmo no conjunto.
+  A entrega do batch incluiu conferência estática; sua execução e a dos testes
+  ficam a cargo do pesquisador.
 
 ## Referências
 
