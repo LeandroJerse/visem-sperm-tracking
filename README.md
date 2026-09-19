@@ -2,13 +2,19 @@
 
 Branch: `codex/avaliacao-deteccao`.
 
-Esta versão começa apenas com as bases existentes, em `bases_de_dados/`.
+Esta versão foi reiniciada com as bases existentes, em `bases_de_dados/`.
 Consulte `bases_de_dados/LEIA_PRIMEIRO.md` para localizar vídeos, imagens e
 anotações. Os arquivos pesados permanecem locais; não estão armazenados no Git.
 
-As pastas `data/`, `algoritmos/`, `scripts/` e `analise/` serão organizadas pelo
-pesquisador. Nenhum algoritmo, busca de configuração ou experimento novo foi
-iniciado neste reinício.
+O primeiro método está escrito em `algoritmos/classicos/limiarizacao.py`:
+limiarização manual ou Otsu, abertura, fechamento e componentes conectados.
+Ele ainda não foi executado nem validado experimentalmente nesta versão.
+Blobs e Watershed serão implementados em etapas posteriores.
+
+O contrato dos resultados, o protocolo acordado e as pendências estão em
+[`algoritmos/classicos/README.md`](algoritmos/classicos/README.md).
+Os scripts de execução ainda não foram criados. As execuções dos algoritmos
+e experimentos serão feitas pelo pesquisador.
 
 ## Versão anterior
 
@@ -20,5 +26,7 @@ iniciado neste reinício.
 ## Forma de trabalho
 
 Cada próxima etapa será explicada e dependerá de autorização explícita do
-pesquisador. O foco inicial é detecção de objetos; rastreamento, fluxo e
-predição serão discutidos posteriormente.
+pesquisador. O foco inicial é detecção de objetos em imagens e depois em
+vídeos, quadro a quadro. Rastreamento, fluxo e predição serão discutidos
+posteriormente. Os resultados serão organizados em `resultados/frame-to-frame/`
+e `resultados/videos/`, por algoritmo, configuração e execução.
