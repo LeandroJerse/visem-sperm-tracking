@@ -48,21 +48,22 @@ os resultados salvos em gráficos e estatísticas descritivas.
 | `round0` | Inspeção inicial e identificação de problemas; fora das cinco rodadas | Primeiro teste e avaliação realizados pelo pesquisador |
 | `round1` | Explorar configurações variadas de limiarização | 48 configurações executadas e analisadas; sorteio com seed 42 |
 | `round2` | Testar ajustes de área, classificação, morfologia e limiar manual | 32 configurações executadas; lista determinística baseada no round1; revisão dos resultados |
-| `round3` | Refinar as hipóteses a partir dos resultados do round2 | 24 configurações salvas; lista determinística; execução pelo pesquisador |
-| `round4` | Verificar interações entre parâmetros e valores próximos às faixas promissoras | Depende dos resultados do round3; plano ainda não definido |
-| `round5` | Fazer a última revisão no desenvolvimento e congelar as candidatas para seleção | Depende das rodadas anteriores; não é a avaliação final |
+| `round3` | Refinar as hipóteses a partir dos resultados do round2 | 24 configurações executadas e analisadas; lista determinística |
+| `round4` | Refinar limites de classificação e limiares manuais nas segmentações comparadas | 18 configurações salvas; lista determinística baseada no round3; execução pelo pesquisador |
+| `round5` | Fazer a última revisão no desenvolvimento e congelar as candidatas para seleção | Depende dos resultados do round4; plano ainda não definido; não é a avaliação final |
 
 O mesmo `scripts/limiarizacao/executar_rodada.py` executa todas as rodadas.
 `--rodada round1` identifica o plano `scripts/limiarizacao/rodadas/round1.json`;
-`--rodada round2` e `--rodada round3` identificam os planos seguintes;
-`--plano` permite informar uma cópia salva em outro local. Os três primeiros
+`--rodada round2`, `--rodada round3` e `--rodada round4` identificam os
+planos seguintes;
+`--plano` permite informar uma cópia salva em outro local. Os quatro primeiros
 planos estão preparados. Sem argumentos, o executor continua em `round1`. A
 criação de uma pasta de resultados não prepara automaticamente uma rodada.
 
-Para executar a terceira rodada, na raiz do projeto:
+Para executar a quarta rodada, na raiz do projeto:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round3
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round4
 ```
 
 O round2 mantém os 178 quadros do round1: 32 configurações totalizam 5.696
@@ -70,14 +71,17 @@ avaliações de imagem. A [revisão do round1](rodadas/round1_revisao.md) docume
 o diagnóstico e os motivos das novas configurações. Sua lista é determinística,
 sem novo sorteio; a seed 42 permanece apenas como registro. O script
 `preparar_rodada.py` continua limitado à exploração inicial e não reconstrói
-round2 ou round3. Para repeti-los, use os planos salvos.
+round2, round3 ou round4. Para repeti-los, use os planos salvos.
 
 A [revisão do round2](rodadas/round2_revisao.md) registra os resultados dessa
 execução e orientou o plano do [round3](../scripts/limiarizacao/rodadas/round3.json):
-24 configurações nos mesmos 178 quadros, totalizando 4.272 avaliações e PDF
-automático ao concluir. Os planos anteriores permanecem preservados. Os
-planos do round4 e do round5 serão definidos após examinar os resultados
-anteriores, sem presumir ganhos.
+24 configurações executadas nos mesmos 178 quadros, totalizando 4.272 avaliações,
+com PDF concluído. A [revisão do round3](rodadas/round3_revisao.md) orientou o
+plano de [18 configurações do round4](../scripts/limiarizacao/rodadas/round4.json):
+3.204 avaliações nos mesmos quadros, com PDF automático ao concluir. Quatro
+configurações são controles; as demais refinam limites de classificação e
+limiares manuais. Os planos anteriores permanecem preservados. O plano do
+round5 será definido após examinar os resultados do round4, sem presumir ganhos.
 
 Na primeira rodada são 24 configurações manuais e 24 Otsu, com equilíbrio
 entre polaridades clara e escura. A configuração `c01` repete os parâmetros
@@ -169,8 +173,8 @@ resultados/frame-to-frame/<algoritmo>/round<N>/
 ```
 
 A seed reproduz um sorteio com o mesmo gerador e ambiente, quando houver
-sorteio; ela não gera as listas determinísticas de round2 e round3. Para repetir a
-rodada, a referência principal é o plano salvo. A reprodução exige também
+sorteio; ela não gera as listas determinísticas de round2, round3 e round4.
+Para repetir a rodada, a referência principal é o plano salvo. A reprodução exige também
 preservar dados, código e versões das bibliotecas; horários e tempos de
 processamento podem variar. Falhas preservam saídas parciais, mas não
 constituem uma rodada concluída. O executor atual inicia uma execução nova
@@ -194,5 +198,6 @@ nesta versão não elimina o histórico de exposição anterior aos dados.
 Comandos e detalhes das saídas: [scripts/README.md](../scripts/README.md).
 Regras das métricas: [analise/README.md](README.md).
 Planos preparados: [round1.json](../scripts/limiarizacao/rodadas/round1.json),
-[round2.json](../scripts/limiarizacao/rodadas/round2.json) e
-[round3.json](../scripts/limiarizacao/rodadas/round3.json).
+[round2.json](../scripts/limiarizacao/rodadas/round2.json),
+[round3.json](../scripts/limiarizacao/rodadas/round3.json) e
+[round4.json](../scripts/limiarizacao/rodadas/round4.json).
