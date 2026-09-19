@@ -1,16 +1,19 @@
 # Guia dos scripts
 
-**Para executar a primeira rodada**, abra o PowerShell na raiz do projeto:
+**Para executar a segunda rodada**, abra o PowerShell na raiz do projeto:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round1
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round2
 ```
 
-Esse comando executa e avalia as 48 configurações nos 178 quadros aprovados
-e gera um PDF ao concluir. Antes da primeira execução com relatório, instale
-as dependências indicadas no [guia de limiarização](limiarizacao/README.md).
-Os resultados ficam em `resultados/frame-to-frame/limiarizacao/round1/`.
+Esse comando executa e avalia as 32 configurações nos mesmos 178 quadros
+aprovados (5.696 avaliações) e gera um PDF ao concluir. Antes da primeira
+execução com relatório, instale as dependências indicadas no
+[guia de limiarização](limiarizacao/README.md).
+Os resultados ficam em `resultados/frame-to-frame/limiarizacao/round2/`.
 Repetir o comando usa o mesmo plano e cria novas saídas, sem sobrescrever.
+O motivo dos novos parâmetros está na [revisão do round1](../analise/rodadas/round1_revisao.md).
+Para repetir a primeira rodada, use o mesmo comando com `--rodada round1`.
 
 **Onde ver o F1:** abra `batch__<execucao>/resumo_configuracoes.csv` dentro
 do respectivo `round`. `macro_f1` é a métrica principal; `f1_classe_0`,
@@ -25,12 +28,13 @@ do respectivo `round`. `macro_f1` é a métrica principal; `f1_classe_0`,
 | Inspecionar uma única imagem | [limiarizacao/inspecionar_imagem.py](limiarizacao/inspecionar_imagem.py) | Comparação visual e tabelas, com imagem, anotação e configuração informadas |
 | Avaliar uma inspeção individual já salva | [avaliacao/avaliar_imagem.py](avaliacao/avaliar_imagem.py) | Calcula as métricas de uma imagem; não é necessário depois do batch |
 | Gerar o PDF de uma rodada já concluída | [avaliacao/gerar_relatorio_rodada.py](avaliacao/gerar_relatorio_rodada.py) | Usa os resultados salvos, sem repetir as detecções |
-| Preparar um plano de configurações | [limiarizacao/preparar_rodada.py](limiarizacao/preparar_rodada.py) | Somente ao preparar um plano; não é necessário para executar `round1` |
+| Preparar a exploração inicial | [limiarizacao/preparar_rodada.py](limiarizacao/preparar_rodada.py) | Sorteia o espaço inicial; não reconstrói `round2` e não é necessário para executar planos salvos |
 
 **A rodada é identificada pelo plano JSON, não por uma cópia do script.**
-`round1.json` já está pronto. Os planos de `round2` e `round3` serão definidos
-após a análise conjunta; suas pastas de resultados não significam que os
-planos já existam. `round0` reúne as inspeções individuais iniciais.
+`round1.json` e `round2.json` estão prontos. O segundo é uma lista determinística
+definida pela análise dos resultados, sem novo sorteio; a seed 42 permanece
+apenas como registro. `round3` depende da próxima revisão. `round0` reúne as
+inspeções individuais iniciais.
 
 ```text
 scripts/
@@ -39,6 +43,7 @@ scripts/
 │   ├── inspecionar_imagem.py
 │   ├── preparar_rodada.py
 │   ├── rodadas/round1.json
+│   ├── rodadas/round2.json
 │   └── README.md                 detalhes e demais comandos
 ├── avaliacao/
 │   ├── avaliar_imagem.py

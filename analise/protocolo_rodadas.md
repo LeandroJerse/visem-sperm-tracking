@@ -41,14 +41,28 @@ os resultados salvos em gráficos e estatísticas descritivas.
 | Rodada | Finalidade | Situação do plano |
 |---|---|---|
 | `round0` | Inspeção inicial e identificação de problemas | Primeiro teste e avaliação realizados pelo pesquisador |
-| `round1` | Explorar configurações variadas de limiarização | 48 configurações salvas; seed 42 |
-| `round2`, `round3` | Refinar hipóteses com base nas rodadas anteriores | Configurações e orçamento de testes dependem da revisão conjunta |
+| `round1` | Explorar configurações variadas de limiarização | 48 configurações executadas e analisadas; sorteio com seed 42 |
+| `round2` | Testar ajustes de área, classificação, morfologia e limiar manual | 32 configurações salvas; lista determinística baseada no round1; execução pelo pesquisador |
+| `round3` | Refinar hipóteses com base nas rodadas anteriores | Configurações e orçamento de testes dependem da próxima revisão conjunta |
 
 O mesmo `scripts/limiarizacao/executar_rodada.py` executa todas as rodadas.
 `--rodada round1` identifica o plano `scripts/limiarizacao/rodadas/round1.json`;
-`--plano` permite informar uma cópia salva em outro local. Somente o plano da
-primeira rodada está preparado. A criação de pastas `round2` e `round3` em
-resultados não prepara automaticamente essas rodadas.
+`--rodada round2` identifica o segundo plano; `--plano` permite informar uma
+cópia salva em outro local. Os dois primeiros planos estão preparados. A
+criação de uma pasta de resultados não prepara automaticamente uma rodada.
+
+Para executar a segunda rodada, na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round2
+```
+
+O round2 mantém os 178 quadros do round1: 32 configurações totalizam 5.696
+avaliações de imagem. A [revisão do round1](rodadas/round1_revisao.md) documenta
+o diagnóstico e os motivos das novas configurações. Sua lista é determinística,
+sem novo sorteio; a seed 42 permanece apenas como registro. O script
+`preparar_rodada.py` continua limitado à exploração inicial e não reconstrói
+o round2. Para repeti-lo, use o plano salvo.
 
 Na primeira rodada são 24 configurações manuais e 24 Otsu, com equilíbrio
 entre polaridades clara e escura. A configuração `c01` repete os parâmetros
@@ -138,7 +152,8 @@ resultados/frame-to-frame/<algoritmo>/round<N>/
     └── midia/
 ```
 
-A seed reproduz o sorteio com o mesmo gerador e ambiente. Para repetir a
+A seed reproduz um sorteio com o mesmo gerador e ambiente, quando houver
+sorteio; ela não gera a lista determinística do round2. Para repetir a
 rodada, a referência principal é o plano salvo. A reprodução exige também
 preservar dados, código e versões das bibliotecas; horários e tempos de
 processamento podem variar. Falhas preservam saídas parciais, mas não
@@ -161,4 +176,5 @@ nesta versão não elimina o histórico de exposição anterior aos dados.
 
 Comandos e detalhes das saídas: [scripts/README.md](../scripts/README.md).
 Regras das métricas: [analise/README.md](README.md).
-Plano preparado: [round1.json](../scripts/limiarizacao/rodadas/round1.json).
+Planos preparados: [round1.json](../scripts/limiarizacao/rodadas/round1.json) e
+[round2.json](../scripts/limiarizacao/rodadas/round2.json).

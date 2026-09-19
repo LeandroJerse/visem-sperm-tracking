@@ -1,0 +1,3 @@
+# Preserva os bytes dos planos e registros usados em hashes de reprodução.
+scripts/limiarizacao/rodadas/*.json text eol=lf
+analise/rodadas/*.json text eol=lf
