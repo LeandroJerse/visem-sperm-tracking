@@ -6,7 +6,33 @@ Todos os comandos abaixo são executados na raiz do projeto.
 O [protocolo de desenvolvimento por rodadas](../../analise/protocolo_rodadas.md)
 registra o fluxo de preparação, execução, avaliação e revisão conjunta.
 
-## Segunda rodada em batch
+## Terceira rodada em batch
+
+O plano [round3.json](rodadas/round3.json) contém **24 configurações** definidas
+após a [revisão do round2](../../analise/rodadas/round2_revisao.md). Compara
+referências anteriores e ajustes de filtros, morfologia e limiar manual,
+mantendo os limites de classe das respectivas referências. Os parâmetros
+completos e os objetivos estão no plano.
+
+Todas usam os mesmos **178 quadros**, ordem, hashes e exclusões das rodadas
+anteriores: **4.272 avaliações de imagem**. O pesquisador executa:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round3
+```
+
+As saídas ficam em `resultados/frame-to-frame/limiarizacao/round3/`, com
+relatório PDF automático ao concluir. A lista é determinística, sem sorteio;
+a seed 42 permanece como registro. Para repetir, use o mesmo plano salvo.
+`preparar_rodada.py` não reconstrói essa lista. **Sem argumentos, o executor
+continua usando round1**, por isso informe `--rodada round3`.
+
+Estão previstas cinco rodadas de desenvolvimento. Round4 e round5 serão
+definidos após a revisão dos resultados anteriores, sem garantia de melhoria.
+Round0 fica fora dessa contagem. As etapas de seleção e avaliação final
+permanecem posteriores, conforme o protocolo.
+
+## Segunda rodada em batch — anterior
 
 O plano [round2.json](rodadas/round2.json) contém **32 configurações** definidas
 após a [revisão do round1](../../analise/rodadas/round1_revisao.md). Duas repetem
@@ -15,7 +41,7 @@ morfologia e limiares manuais. Os parâmetros completos e a finalidade de cada
 configuração estão no plano.
 
 São os mesmos **178 quadros**, na mesma ordem e com os mesmos hashes e
-exclusões: **5.696 avaliações de imagem**. O pesquisador executa:
+exclusões: **5.696 avaliações de imagem**. Para repetir a rodada já executada:
 
 ```powershell
 & "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round2
@@ -25,9 +51,9 @@ As saídas seguem a estrutura descrita abaixo, em
 `resultados/frame-to-frame/limiarizacao/round2/`, com PDF ao concluir.
 O plano é uma lista determinística, sem sorteio; a seed 42 permanece apenas
 como registro. Repita pelo JSON salvo: `preparar_rodada.py` não reconstrói
-essa rodada. `round3` ainda depende da revisão dos próximos resultados.
+essa rodada. Seus resultados orientaram o round3.
 
-## Primeira rodada em batch
+## Primeira rodada em batch — anterior
 
 O plano `scripts/limiarizacao/rodadas/round1.json` contém as 48 configurações
 completas da primeira rodada, geradas com seed **42**. São 24 manuais e 24 Otsu,
@@ -40,7 +66,7 @@ de anotação, conforme acordado; não são tratados como imagens sem objetos.
 As demais imagens seguem os quadros 0, 100, ..., 1400. São 8.544 avaliações de
 imagem, com uma comparação PNG por avaliação. Reserve espaço para essas mídias.
 
-Para executar, abra o terminal na raiz do projeto:
+Para repetir a rodada já executada, abra o terminal na raiz do projeto:
 
 ```powershell
 & "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round1
@@ -48,7 +74,7 @@ Para executar, abra o terminal na raiz do projeto:
 
 Um único executor atende às rodadas: `--rodada round1` carrega
 `scripts/limiarizacao/rodadas/round1.json`. Sem argumentos, também usa `round1`.
-`--rodada round2` carrega o segundo plano; `round3` ainda não está preparado.
+`--rodada round2` e `--rodada round3` carregam os respectivos planos salvos.
 Para usar um plano em outro local, informe `--plano` em vez de `--rodada`.
 Caso falte alguma dependência,
 instale no mesmo Python e repita o comando:
@@ -177,7 +203,7 @@ processamento naturalmente diferem.
 
 `preparar_rodada.py` permite reconstruir o sorteio inicial sem executar
 detectores, mas **não é necessário para executar planos já preparados** e
-**não reconstrói o round2**, definido a partir da análise:
+**não reconstrói round2 ou round3**, definidos a partir das análises:
 
 ```powershell
 & "C:\Python313\python.exe" ".\scripts\limiarizacao\preparar_rodada.py" --seed 42 --rodada round1 --saida "scripts/limiarizacao/rodadas/round1_reproduzida.json"
@@ -190,8 +216,9 @@ registro histórico da preparação original. O gerador atual está em
 rodada existente, use `executar_rodada.py` com o plano salvo.
 
 O gerador exige um arquivo novo, não sobrescreve planos e registra sua versão
-e a versão do Python. Seu espaço é o da exploração inicial. O round2 usa a
-lista determinística já salva; o round3 depende da próxima análise conjunta.
+e a versão do Python. Seu espaço é o da exploração inicial. Round2 e round3
+usam listas determinísticas já salvas; round4 e round5 dependem das próximas
+análises conjuntas.
 
 | Parâmetro explorado | Valores da primeira rodada |
 |---|---|

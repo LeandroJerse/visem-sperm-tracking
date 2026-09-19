@@ -8,6 +8,11 @@ métodos seguem a mesma organização após definir seus parâmetros e entradas.
 Todas as execuções são realizadas pelo pesquisador. A análise dos resultados
 e a definição da rodada seguinte são feitas em conjunto.
 
+Para a limiarização, foram previstas **cinco rodadas de desenvolvimento:
+round1 a round5**. O `round0` é a inspeção inicial e fica fora dessa contagem.
+Esse planejamento não garante melhoria a cada rodada. Novos métodos terão
+seu planejamento definido separadamente.
+
 ## Fluxograma
 
 ```mermaid
@@ -21,13 +26,13 @@ flowchart TD
     M["Somar TP, FP e FN por classe<br/>Calcular precisão, recall, F1 e macro-F1"]
     S["Salvar no respectivo round N<br/>Imagens, tabelas, registro e relatório PDF"]
     R["Revisar juntos os resultados<br/>Erros, classes e variação entre vídeos"]
-    Q{"Fazer outra rodada?"}
+    Q{"Concluímos o round5?"}
     N["Definir novos testes<br/>Refinar faixas promissoras e manter exploração"]
     C["Encerrar o desenvolvimento<br/>Fixar as candidatas para a seleção posterior"]
 
     I --> P --> F --> E --> D --> A --> M --> S --> R --> Q
-    Q -->|Sim| N --> P
-    Q -->|Não| C
+    Q -->|Não| N --> P
+    Q -->|Sim| C
 ```
 
 O fluxo resume uma rodada completa. Na implementação, a detecção, a avaliação
@@ -40,21 +45,24 @@ os resultados salvos em gráficos e estatísticas descritivas.
 
 | Rodada | Finalidade | Situação do plano |
 |---|---|---|
-| `round0` | Inspeção inicial e identificação de problemas | Primeiro teste e avaliação realizados pelo pesquisador |
+| `round0` | Inspeção inicial e identificação de problemas; fora das cinco rodadas | Primeiro teste e avaliação realizados pelo pesquisador |
 | `round1` | Explorar configurações variadas de limiarização | 48 configurações executadas e analisadas; sorteio com seed 42 |
-| `round2` | Testar ajustes de área, classificação, morfologia e limiar manual | 32 configurações salvas; lista determinística baseada no round1; execução pelo pesquisador |
-| `round3` | Refinar hipóteses com base nas rodadas anteriores | Configurações e orçamento de testes dependem da próxima revisão conjunta |
+| `round2` | Testar ajustes de área, classificação, morfologia e limiar manual | 32 configurações executadas; lista determinística baseada no round1; revisão dos resultados |
+| `round3` | Refinar as hipóteses a partir dos resultados do round2 | 24 configurações salvas; lista determinística; execução pelo pesquisador |
+| `round4` | Verificar interações entre parâmetros e valores próximos às faixas promissoras | Depende dos resultados do round3; plano ainda não definido |
+| `round5` | Fazer a última revisão no desenvolvimento e congelar as candidatas para seleção | Depende das rodadas anteriores; não é a avaliação final |
 
 O mesmo `scripts/limiarizacao/executar_rodada.py` executa todas as rodadas.
 `--rodada round1` identifica o plano `scripts/limiarizacao/rodadas/round1.json`;
-`--rodada round2` identifica o segundo plano; `--plano` permite informar uma
-cópia salva em outro local. Os dois primeiros planos estão preparados. A
+`--rodada round2` e `--rodada round3` identificam os planos seguintes;
+`--plano` permite informar uma cópia salva em outro local. Os três primeiros
+planos estão preparados. Sem argumentos, o executor continua em `round1`. A
 criação de uma pasta de resultados não prepara automaticamente uma rodada.
 
-Para executar a segunda rodada, na raiz do projeto:
+Para executar a terceira rodada, na raiz do projeto:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round2
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round3
 ```
 
 O round2 mantém os 178 quadros do round1: 32 configurações totalizam 5.696
@@ -62,7 +70,14 @@ avaliações de imagem. A [revisão do round1](rodadas/round1_revisao.md) docume
 o diagnóstico e os motivos das novas configurações. Sua lista é determinística,
 sem novo sorteio; a seed 42 permanece apenas como registro. O script
 `preparar_rodada.py` continua limitado à exploração inicial e não reconstrói
-o round2. Para repeti-lo, use o plano salvo.
+round2 ou round3. Para repeti-los, use os planos salvos.
+
+A [revisão do round2](rodadas/round2_revisao.md) registra os resultados dessa
+execução e orientou o plano do [round3](../scripts/limiarizacao/rodadas/round3.json):
+24 configurações nos mesmos 178 quadros, totalizando 4.272 avaliações e PDF
+automático ao concluir. Os planos anteriores permanecem preservados. Os
+planos do round4 e do round5 serão definidos após examinar os resultados
+anteriores, sem presumir ganhos.
 
 Na primeira rodada são 24 configurações manuais e 24 Otsu, com equilíbrio
 entre polaridades clara e escura. A configuração `c01` repete os parâmetros
@@ -121,9 +136,10 @@ novas combinações. A rodada seguinte pode refinar faixas promissoras e
 explorar alternativas; sua lista completa deve ser registrada antes da
 execução. Os planos e resultados anteriores são preservados para comparação.
 
-Ao decidir encerrar o desenvolvimento, fixamos as candidatas a levar à
-seleção. Os vídeos reservados para seleção e avaliação final não orientam
-o refinamento dessas rodadas.
+Ao concluir a revisão do round5 da limiarização, fixamos as candidatas a levar
+à seleção. Isso encerra as cinco rodadas previstas de desenvolvimento, sem
+comprovar superioridade ou substituir a avaliação nos conjuntos reservados.
+Os vídeos de seleção e avaliação final não orientam o refinamento dessas rodadas.
 
 ## Repetição e armazenamento
 
@@ -153,7 +169,7 @@ resultados/frame-to-frame/<algoritmo>/round<N>/
 ```
 
 A seed reproduz um sorteio com o mesmo gerador e ambiente, quando houver
-sorteio; ela não gera a lista determinística do round2. Para repetir a
+sorteio; ela não gera as listas determinísticas de round2 e round3. Para repetir a
 rodada, a referência principal é o plano salvo. A reprodução exige também
 preservar dados, código e versões das bibliotecas; horários e tempos de
 processamento podem variar. Falhas preservam saídas parciais, mas não
@@ -167,7 +183,8 @@ do batch e permite gerar somente o PDF posteriormente.
 
 ## Etapas posteriores
 
-Depois do desenvolvimento, o protocolo acordado prevê comparar candidatas
+Depois das cinco rodadas de desenvolvimento da limiarização, o protocolo
+acordado prevê comparar candidatas
 nas imagens dos vídeos de seleção (13, 29, 52 e 54), escolher cinco e avaliá-las
 nos vídeos completos desse conjunto. Após congelar as escolhas, a avaliação
 final usará os vídeos completos 14, 24, 38 e 82 e as anotações disponíveis.
@@ -176,5 +193,6 @@ nesta versão não elimina o histórico de exposição anterior aos dados.
 
 Comandos e detalhes das saídas: [scripts/README.md](../scripts/README.md).
 Regras das métricas: [analise/README.md](README.md).
-Planos preparados: [round1.json](../scripts/limiarizacao/rodadas/round1.json) e
-[round2.json](../scripts/limiarizacao/rodadas/round2.json).
+Planos preparados: [round1.json](../scripts/limiarizacao/rodadas/round1.json),
+[round2.json](../scripts/limiarizacao/rodadas/round2.json) e
+[round3.json](../scripts/limiarizacao/rodadas/round3.json).

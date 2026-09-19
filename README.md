@@ -15,12 +15,16 @@ Blobs e Watershed serão implementados em etapas posteriores.
 O contrato dos resultados, o protocolo acordado e as pendências estão em
 [`algoritmos/classicos/README.md`](algoritmos/classicos/README.md).
 O [guia dos scripts](scripts/README.md) apresenta o comando principal e a
-finalidade de cada entrada. A primeira rodada foi executada pelo pesquisador
-e sua [revisão](analise/rodadas/round1_revisao.md) orientou o plano de
-[32 configurações do round2](scripts/limiarizacao/rodadas/round2.json).
-O mesmo [executor](scripts/limiarizacao/executar_rodada.py) atende aos planos
-de ambas as rodadas. Use `--rodada round2` para o próximo batch; o
-[round1](scripts/limiarizacao/rodadas/round1.json) continua disponível para repetição.
+finalidade de cada entrada. As duas primeiras rodadas foram executadas pelo
+pesquisador. A [revisão do round2](analise/rodadas/round2_revisao.md) orientou o
+plano de [24 configurações do round3](scripts/limiarizacao/rodadas/round3.json),
+nos mesmos 178 quadros: 4.272 avaliações, com PDF automático ao concluir.
+O mesmo [executor](scripts/limiarizacao/executar_rodada.py) atende a todas as
+rodadas. Use `--rodada round3` para o próximo batch; sem argumentos, o padrão
+continua sendo `round1`. Os planos de [round1](scripts/limiarizacao/rodadas/round1.json)
+e [round2](scripts/limiarizacao/rodadas/round2.json) permanecem disponíveis para repetição.
+Estão previstas cinco rodadas de desenvolvimento; round4 e round5 dependem
+dos resultados anteriores, conforme o [protocolo](analise/protocolo_rodadas.md).
 Para uma única imagem, há comandos separados de inspeção visual e avaliação.
 Os detalhes estão no [guia de limiarização](scripts/limiarizacao/README.md) e
 as regras das métricas, no [guia de avaliação](analise/README.md).
