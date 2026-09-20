@@ -1,18 +1,17 @@
 # Guia dos scripts
 
-**Próxima execução: inspeção inicial de blobs (`round0`).** O detector e o
-plano fixo estão preparados; a execução com a base ainda está pendente.
-Instale as dependências indicadas no [guia de blobs](blobs/README.md) e execute
-na raiz do projeto:
+**Próxima execução: diagnóstico do round0 de blobs já concluído.** Siga os
+testes sintéticos do [guia de blobs](blobs/README.md) e depois execute na raiz:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\blobs\executar_inspecao.py"
+& "C:\Python313\python.exe" ".\scripts\blobs\diagnosticar_round0.py" --origem ".\resultados\frame-to-frame\blobs\round0\inspecao__20260920T041252237886Z"
 ```
 
-São seis imagens de desenvolvimento e duas configurações de sondagem,
-gerando comparações visuais, tabelas, avaliação e PDF. O objetivo é verificar
-caixas e medidas antes de definir o `round1`; ainda não há ranking de seleção.
-O [plano de blobs](../analise/plano_blobs.md) explica os ajustes no ciclo.
+Esse comando analisa candidatos e caixas já salvos e cria uma nova pasta
+de diagnóstico; não executa o detector nem modifica as métricas. As 12
+avaliações, comparações e PDF originais permanecem preservados.
+O [plano dos próximos testes](../analise/plano_diagnostico_blobs.md) separa
+geração de candidatos, delimitação e classificação antes do round1.
 
 **Limiarização concluída, incluindo a avaliação final.** Consulte a
 [análise consolidada](../analise/conclusao_limiarizacao.md). Os comandos abaixo
@@ -70,8 +69,10 @@ macro-F1 das três classes.
 
 ## Qual script usar?
 
-Para blobs, use [executar_inspecao.py](blobs/executar_inspecao.py), conforme o
-[guia de round0](blobs/README.md). Os scripts abaixo pertencem à limiarização.
+Para blobs, use [diagnosticar_round0.py](blobs/diagnosticar_round0.py) para
+analisar a origem concluída e [executar_inspecao.py](blobs/executar_inspecao.py)
+para repetir a detecção original. Consulte o [guia](blobs/README.md).
+Os scripts abaixo pertencem à limiarização.
 
 | O que você quer fazer | Script | Quando usar |
 |---|---|---|

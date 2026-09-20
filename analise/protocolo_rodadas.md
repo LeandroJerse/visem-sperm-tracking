@@ -22,9 +22,9 @@ estão concluídos, assim como o teste das cinco nos vídeos completos de seleç
 As mesmas cinco configurações foram congeladas e executadas na avaliação final.
 A [conclusão da limiarização](conclusao_limiarizacao.md) reúne os resultados
 e as limitações. O [plano de blobs](plano_blobs.md) descreve a adaptação
-para o próximo detector. O detector e a [inspeção inicial (round0)](../scripts/blobs/README.md)
-estão preparados; a execução e revisão dessa inspeção precedem a definição
-dos batches de desenvolvimento.
+para o próximo detector. A [inspeção inicial (round0)](../scripts/blobs/README.md)
+foi executada. O [plano de diagnóstico e próximos testes](plano_diagnostico_blobs.md)
+orienta a revisão de candidatos, caixas e classificação antes dos batches.
 
 ```mermaid
 flowchart TD

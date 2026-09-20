@@ -119,12 +119,14 @@ as 2.936 ocorrências anotadas de pequenos. O ranking final é descritivo.
 Resultados, parâmetros e limitações estão na
 [conclusão da limiarização](conclusao_limiarizacao.md).
 O [plano de blobs](plano_blobs.md) mantém o ciclo com adaptações nas medidas.
-Seu detector e o executor de `round0` estão preparados, com avaliação pelo
-critério atual de indivíduos e classificação separada. O relatório inicial
-(`relatorio_inspecao_blobs.py`) mostra métricas e resultados por quadro, sem
-ranking; sua geração depende da execução pelo pesquisador. Consulte o
-[guia de blobs](../scripts/blobs/README.md). Os testes preparados para essa
-implementação ainda não foram executados.
+O round0 foi executado, com 12 avaliações e PDF concluídos, usando o critério
+atual de indivíduos e classificação separada. O resultado exige diagnóstico
+antes das rodadas. `diagnostico_blobs.py` examina relações geométricas entre
+centros e caixas salvos, sem novo matching ou ranking. O
+[plano dos próximos testes](plano_diagnostico_blobs.md) explica limites,
+hipóteses e sequência. Os comandos estão no
+[guia de blobs](../scripts/blobs/README.md); o novo diagnóstico e os testes
+preparados ainda não foram executados.
 Comandos, dependências e saídas estão no
 [guia de limiarização](../scripts/limiarizacao/README.md).
 

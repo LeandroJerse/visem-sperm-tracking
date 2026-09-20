@@ -1,6 +1,6 @@
 # Plano de avaliação do detector de blobs
 
-20/09/2026 — detector e inspeção inicial preparados; execução do round0 pendente.
+20/09/2026 — round0 executado; diagnóstico preparado para revisão posterior.
 
 O próximo experimento compara uma nova forma de detectar objetos com a
 [limiarização concluída](conclusao_limiarizacao.md). Este documento propõe
@@ -8,6 +8,10 @@ o método, a representação das saídas e o ciclo experimental. A primeira
 entrega implementa o detector e a inspeção descrita no
 [guia de blobs](../scripts/blobs/README.md). Ainda não há um batch do round1
 nem valores de parâmetros calibrados pelo novo detector.
+
+O resultado do round0 indicou caixas insuficientes e candidatos excedentes.
+O [plano de diagnóstico e próximos testes](plano_diagnostico_blobs.md)
+registra os resultados, a revisão dessa hipótese e a sequência de trabalho.
 
 ## 1. Método proposto e objetivo
 
@@ -53,9 +57,11 @@ inválidos devem produzir erro explícito, não uma detecção artificial.
 Antes do recorte na borda, a caixa envolve um círculo estimado, sem garantia
 de conter a região real do objeto; pode cobrir mal objetos alongados ou irregulares. O IoU continuará
 medindo a adequação dessa caixa às anotações.
-Não haverá aumento artificial das caixas para melhorar o resultado nem
-consulta às anotações dentro do detector. A revisão inicial deve verificar
-se essa representação é adequada antes de comprometer todas as rodadas.
+Esta é a conversão original, preservada como referência. Eventuais adaptações
+de escala, margem ou segmentação local serão variantes explícitas,
+avaliadas conforme o plano de diagnóstico; não haverá alteração manual das
+previsões nem consulta às anotações dentro do detector. A representação deve
+ser revista antes de comprometer todas as rodadas.
 
 ### Medidas disponíveis e indisponíveis
 
@@ -289,9 +295,10 @@ antigos. Os experimentos com a base permanecem a cargo do pesquisador.
 4. Mesmo ciclo e dados, F1 de indivíduos desde o início e diagnóstico por classe.
 5. Até cinco rodadas, teto proposto de tentativas e seed 42 quando houver sorteio.
 
-O plano numérico do round1 será uma entrega posterior à inspeção inicial,
-antes de qualquer execução em batch. Ainda não houve execução do detector
-de blobs sobre a base. A preparação do código não demonstra sua eficácia.
+O plano numérico do round1 será uma entrega posterior ao diagnóstico da
+inspeção inicial. O pesquisador executou o round0, com 12 avaliações
+concluídas; os resultados não demonstraram eficácia satisfatória. Nenhuma
+rodada ampla de blobs foi executada.
 
 ## 8. Viabilidade estrutural e round0 preparado
 
@@ -330,8 +337,7 @@ de forma desligados. A classificação usa diâmetros hipotéticos de 8 e 24
 pixels, convertidos em área estimada. São valores de sondagem, sem calibração
 ou alegação biológica. Motivos e comandos estão no guia de blobs.
 
-Após a execução, revisar as imagens e os pares/pendências. Se a representação
-for adequada, definir o round1 nos 178 quadros; caso contrário, rever as caixas
-no desenvolvimento antes dos batches. O ciclo de seleção e vídeos permanece
-viável como estrutura, condicionado a essa inspeção e às adaptações futuras
-dos executores das etapas seguintes.
+O round0 foi executado e a revisão identificou a necessidade de investigar
+candidatos e delimitação antes de definir o round1 nos 178 quadros. O ciclo
+de seleção e vídeos permanece viável como estrutura, condicionado ao
+diagnóstico, à revisão das hipóteses e à adaptação dos executores seguintes.

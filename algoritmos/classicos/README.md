@@ -8,7 +8,7 @@ reúne o fluxograma e as regras de execução, avaliação e revisão dos batche
 | Método | Estado |
 |---|---|
 | Limiarização manual/Otsu + morfologia + componentes conectados | Desenvolvimento, seleção e avaliação final concluídos; [análise consolidada](../../analise/conclusao_limiarizacao.md) |
-| Blobs | Detector e [inspeção inicial (round0)](../../scripts/blobs/README.md) preparados; execução com a base pendente |
+| Blobs | Round0 executado; [diagnóstico e próximos testes](../../analise/plano_diagnostico_blobs.md) preparados para revisão |
 | Watershed | Planejado; representação dos aglomerados a definir |
 
 Os módulos desta pasta não leem nem gravam arquivos. A inspeção de uma imagem
@@ -278,8 +278,8 @@ por vídeo complementam o F1 de indivíduos. Detalhes no [guia de avaliação](.
   Essa ausência continua como limitação documentada da amostragem.
 - Antes do Watershed, definir como representar caixas de aglomerados e de
   indivíduos quando houver sobreposição nas anotações.
-- Antes das rodadas de blobs, executar e revisar a
-  [inspeção inicial de caixas e medidas estimadas](../../scripts/blobs/README.md).
+- Antes das rodadas de blobs, diagnosticar os registros da
+  [inspeção inicial já executada](../../scripts/blobs/README.md).
   O detector está implementado; sua eficácia e os limites de classificação
   dependem dos resultados dessa inspeção e das rodadas de desenvolvimento.
 - Rastreamento, SORT, Lucas–Kanade, Horn–Schunck e predição estão fora desta etapa.

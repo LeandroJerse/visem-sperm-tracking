@@ -1,10 +1,40 @@
-# Inspeção inicial de blobs
+# Inspeção e diagnóstico de blobs
 
-O detector e o round0 estão preparados. O round0 verifica a representação das
-caixas e as saídas antes da busca de parâmetros; não escolhe finalistas nem
-substitui as cinco rodadas de desenvolvimento.
+O round0 foi executado em `inspecao__20260920T041252237886Z`: 12 avaliações
+concluídas, com arquivos íntegros, mas localização insuficiente. O próximo
+passo é diagnosticar candidatos, delimitação e classificação antes do round1.
+O [plano completo dos próximos testes](../../analise/plano_diagnostico_blobs.md)
+explica a ordem, as hipóteses e as decisões condicionadas aos resultados.
 
-## Executar
+## Próxima execução, quando retomarmos
+
+Primeiro executar os testes sintéticos preparados, ainda não executados:
+
+```powershell
+& "C:\Python313\python.exe" -m unittest scripts.testes.test_medidas_blobs scripts.testes.test_blobs scripts.testes.test_inspecao_blobs scripts.testes.test_diagnostico_blobs scripts.testes.test_diagnosticar_round0
+```
+
+Depois, com os testes aprovados, analisar os registros já existentes:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\blobs\diagnosticar_round0.py" --origem ".\resultados\frame-to-frame\blobs\round0\inspecao__20260920T041252237886Z"
+```
+
+O comando não executa o detector. Confere a origem e gera uma nova pasta
+`diagnostico__<execucao>/` dentro de `resultados/frame-to-frame/blobs/round0/`.
+Abra `guia_revisao.md`, confira as tabelas e copie `modelo_revisao_humana.csv`
+para `revisao_humana_preenchida.csv` antes de preencher; preserve o modelo
+incluído nos hashes. Consulte as comparações originais. Centros dentro de
+caixas são relações geométricas,
+não novos acertos, correspondências exclusivas ou critérios de ranking.
+O diagnóstico não gera novas imagens ou PDF; reutiliza as comparações e
+mantém o PDF original. Ele não dispara testes de filtros nem adaptações de caixa.
+
+O código de diagnóstico e seus testes estão preparados para execução posterior.
+Valores das próximas configurações serão fixados após essa análise. As
+instruções seguintes servem para reproduzir a inspeção original.
+
+## Reproduzir a inspeção original
 
 No PowerShell, na raiz do projeto, instale as dependências no Python que
 executará a inspeção:
@@ -117,10 +147,9 @@ concluídas em uma nova execução; o aviso informa o problema.
 5. Os valores estimados, os recortes nas bordas e os arquivos estão coerentes?
 
 Um F1 baixo aqui é um diagnóstico, não prova isolada de inviabilidade.
-Se a aproximação das caixas for inadequada, revisar sua representação ainda
-no desenvolvimento. Se for utilizável, definir o espaço de parâmetros do
-round1 e preparar a execução nos mesmos 178 quadros. As configurações das
-rodadas, a seleção e os vídeos não estão preparados nesta entrega.
+O resultado atual exige investigar também os candidatos excedentes, além
+das caixas pequenas. O roteiro está no plano dos próximos testes. As
+configurações das rodadas, a seleção e os vídeos ainda não estão preparados.
 
 ## Testes de código
 

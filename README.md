@@ -7,7 +7,8 @@ classificação.
 
 A **limiarização manual ou Otsu, com morfologia e componentes conectados**,
 concluiu o ciclo de desenvolvimento, seleção e avaliação final. O detector de
-**blobs** e sua inspeção inicial (`round0`) estão preparados para execução.
+**blobs** concluiu a inspeção inicial (`round0`); candidatos e caixas estão
+em diagnóstico antes das rodadas de desenvolvimento.
 Os experimentos começam em imagens fixas, com diferentes configurações, e
 avançam para vídeos completos. Watershed e métodos híbridos com k-NN estão
 previstos para etapas posteriores.
@@ -25,7 +26,7 @@ nem calcula trajetórias ou velocidades.
 | Pasta | Conteúdo |
 |---|---|
 | `algoritmos/classicos/` | Detectores, estruturas de dados e classificação por área |
-| `scripts/blobs/` | Inspeção inicial de blobs, com plano fixo e relatório |
+| `scripts/blobs/` | Inspeção inicial e diagnóstico dos registros salvos de blobs |
 | `scripts/limiarizacao/` | Execução individual, rodadas, seleção e vídeos |
 | `scripts/limiarizacao/rodadas/` | Planos de parâmetros de `round1` a `round5` |
 | `scripts/limiarizacao/selecao/` | Plano de comparação das configurações em imagens |
@@ -35,18 +36,17 @@ nem calcula trajetórias ou velocidades.
 | `bases_de_dados/` | Vídeos, imagens e anotações originais, mantidos localmente |
 | `resultados/` | Mídias, tabelas, configurações e registros das execuções |
 
-## Próxima etapa: inspeção de blobs
+## Próxima etapa: diagnóstico de blobs
 
-O [guia de blobs](scripts/blobs/README.md) reúne dependências e o comando
-`scripts/blobs/executar_inspecao.py`. Ele executa seis imagens de desenvolvimento
-com duas configurações de sondagem e gera imagens comparativas, tabelas e PDF
-em `resultados/frame-to-frame/blobs/round0/`.
+O [guia de blobs](scripts/blobs/README.md) reúne os comandos de testes e de
+`scripts/blobs/diagnosticar_round0.py`. O diagnóstico reutiliza a inspeção
+concluída, sem executar novamente o detector, e cria tabelas e um roteiro de
+revisão numa nova pasta de resultados.
 
-Essa inspeção deve confirmar a utilidade das caixas aproximadas antes de
-definir o round1. Os testes sintéticos estão preparados, mas ainda não foram
-executados. O [plano](analise/plano_blobs.md) descreve a viabilidade e as etapas
-seguintes. As seções numeradas abaixo reproduzem o ciclo já concluído da
-limiarização.
+O [plano completo dos próximos testes](analise/plano_diagnostico_blobs.md)
+separa candidatos, delimitação e classificação antes do round1. Os testes
+sintéticos e o diagnóstico estão preparados para execução posterior.
+As seções numeradas abaixo reproduzem o ciclo já concluído da limiarização.
 
 ## 1. Preparar o ambiente
 
