@@ -21,8 +21,10 @@ O desenvolvimento, a seleção em imagens e sua reavaliação por indivíduos
 estão concluídos, assim como o teste das cinco nos vídeos completos de seleção.
 As mesmas cinco configurações foram congeladas e executadas na avaliação final.
 A [conclusão da limiarização](conclusao_limiarizacao.md) reúne os resultados
-e as limitações. A [proposta de blobs](plano_blobs.md) descreve a adaptação
-planejada para o próximo detector, ainda sem implementação.
+e as limitações. O [plano de blobs](plano_blobs.md) descreve a adaptação
+para o próximo detector. O detector e a [inspeção inicial (round0)](../scripts/blobs/README.md)
+estão preparados; a execução e revisão dessa inspeção precedem a definição
+dos batches de desenvolvimento.
 
 ```mermaid
 flowchart TD

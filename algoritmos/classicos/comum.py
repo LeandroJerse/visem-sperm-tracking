@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import IntEnum
-from math import isfinite
+from math import isclose, isfinite, pi
 from numbers import Integral, Real
 
 
@@ -93,23 +93,57 @@ class MedidasObjeto:
 
 
 @dataclass(frozen=True, slots=True)
+class MedidasBlob:
+    """Geometria estimada por keypoint; não representa uma região segmentada."""
+
+    centro_blob_x: float
+    centro_blob_y: float
+    diametro_blob: float
+    area_estimada_blob: float
+    area_caixa: int
+    caixa_recortada_na_borda: bool
+
+    def __post_init__(self) -> None:
+        for nome in ("centro_blob_x", "centro_blob_y", "diametro_blob", "area_estimada_blob"):
+            validar_real(nome, getattr(self, nome))
+        if self.centro_blob_x < 0 or self.centro_blob_y < 0:
+            raise ValueError("O centro estimado não pode ter coordenadas negativas.")
+        if self.diametro_blob <= 0 or self.area_estimada_blob <= 0:
+            raise ValueError("Diâmetro e área estimados devem ser positivos.")
+        # Preserva a estimativa anterior ao recorte da caixa na borda da imagem.
+        raio = self.diametro_blob / 2
+        esperada = pi * raio * raio
+        if not isfinite(esperada) or not isclose(
+            self.area_estimada_blob, esperada, rel_tol=1e-12, abs_tol=0.0
+        ):
+            raise ValueError("A área estimada deve corresponder a pi * (diâmetro/2)^2.")
+        validar_inteiro("area_caixa", self.area_caixa, 1)
+        if type(self.caixa_recortada_na_borda) is not bool:
+            raise TypeError("caixa_recortada_na_borda deve ser booleana.")
+
+
+@dataclass(frozen=True, slots=True)
 class Deteccao:
     classe: ClasseObjeto
     caixa: Caixa
-    medidas: MedidasObjeto
+    medidas: MedidasObjeto | MedidasBlob
 
     def __post_init__(self) -> None:
         if not isinstance(self.classe, ClasseObjeto):
             raise TypeError("classe deve ser um membro de ClasseObjeto.")
         if not isinstance(self.caixa, Caixa):
             raise TypeError("caixa deve ser uma Caixa.")
-        if not isinstance(self.medidas, MedidasObjeto):
-            raise TypeError("medidas deve ser MedidasObjeto.")
+        if not isinstance(self.medidas, (MedidasObjeto, MedidasBlob)):
+            raise TypeError("medidas deve ser MedidasObjeto ou MedidasBlob.")
         if self.medidas.area_caixa != self.caixa.largura * self.caixa.altura:
             raise ValueError("area_caixa deve corresponder às dimensões da caixa.")
-        if not self.caixa.x <= self.medidas.centroide_x < self.caixa.x + self.caixa.largura:
+        if isinstance(self.medidas, MedidasBlob):
+            centro_x, centro_y = self.medidas.centro_blob_x, self.medidas.centro_blob_y
+        else:
+            centro_x, centro_y = self.medidas.centroide_x, self.medidas.centroide_y
+        if not self.caixa.x <= centro_x < self.caixa.x + self.caixa.largura:
             raise ValueError("centroide_x deve pertencer à caixa.")
-        if not self.caixa.y <= self.medidas.centroide_y < self.caixa.y + self.caixa.altura:
+        if not self.caixa.y <= centro_y < self.caixa.y + self.caixa.altura:
             raise ValueError("centroide_y deve pertencer à caixa.")
 
 
@@ -156,7 +190,8 @@ class ResultadoDeteccao:
             cx, cy, largura, altura = caixa.normalizada(
                 self.largura_imagem, self.altura_imagem
             )
-            registros.append({
+            estimada = isinstance(medidas, MedidasBlob)
+            registro = {
                 "algoritmo": self.algoritmo,
                 "indice_deteccao": indice,
                 "classe": int(deteccao.classe),
@@ -170,13 +205,26 @@ class ResultadoDeteccao:
                 "caixa_centro_y_norm": cy,
                 "caixa_largura_norm": largura,
                 "caixa_altura_norm": altura,
-                "centroide_x_px": medidas.centroide_x,
-                "centroide_y_px": medidas.centroide_y,
-                "area_pixels": medidas.area_pixels,
+                "centroide_x_px": None if estimada else medidas.centroide_x,
+                "centroide_y_px": None if estimada else medidas.centroide_y,
+                "area_pixels": None if estimada else medidas.area_pixels,
                 "area_caixa_px2": medidas.area_caixa,
-                "alongamento_caixa": medidas.alongamento,
-                "ocupacao_caixa": medidas.ocupacao,
-                "intensidade_media": medidas.intensidade_media,
+                "alongamento_caixa": (
+                    max(caixa.largura, caixa.altura) / min(caixa.largura, caixa.altura)
+                    if estimada else medidas.alongamento
+                ),
+                "ocupacao_caixa": None if estimada else medidas.ocupacao,
+                "intensidade_media": None if estimada else medidas.intensidade_media,
                 "limiar_utilizado": self.limiar_utilizado,
-            })
+            }
+            if estimada:
+                registro.update({
+                    "origem_medidas": "simpleblob_keypoint",
+                    "centro_blob_x_px": medidas.centro_blob_x,
+                    "centro_blob_y_px": medidas.centro_blob_y,
+                    "diametro_blob_px": medidas.diametro_blob,
+                    "area_estimada_blob_px2": medidas.area_estimada_blob,
+                    "caixa_recortada_na_borda": medidas.caixa_recortada_na_borda,
+                })
+            registros.append(registro)
         return tuple(registros)

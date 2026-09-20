@@ -118,8 +118,13 @@ O batch `batch__20260920T030805588232Z` concluiu as 29.550 avaliações,
 as 2.936 ocorrências anotadas de pequenos. O ranking final é descritivo.
 Resultados, parâmetros e limitações estão na
 [conclusão da limiarização](conclusao_limiarizacao.md).
-O próximo método está descrito na [proposta de blobs](plano_blobs.md), ainda
-sem implementação. Os testes de código não foram executados nesta revisão.
+O [plano de blobs](plano_blobs.md) mantém o ciclo com adaptações nas medidas.
+Seu detector e o executor de `round0` estão preparados, com avaliação pelo
+critério atual de indivíduos e classificação separada. O relatório inicial
+(`relatorio_inspecao_blobs.py`) mostra métricas e resultados por quadro, sem
+ranking; sua geração depende da execução pelo pesquisador. Consulte o
+[guia de blobs](../scripts/blobs/README.md). Os testes preparados para essa
+implementação ainda não foram executados.
 Comandos, dependências e saídas estão no
 [guia de limiarização](../scripts/limiarizacao/README.md).
 

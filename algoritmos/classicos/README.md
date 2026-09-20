@@ -8,7 +8,7 @@ reúne o fluxograma e as regras de execução, avaliação e revisão dos batche
 | Método | Estado |
 |---|---|
 | Limiarização manual/Otsu + morfologia + componentes conectados | Desenvolvimento, seleção e avaliação final concluídos; [análise consolidada](../../analise/conclusao_limiarizacao.md) |
-| Blobs | [Proposta técnica](../../analise/plano_blobs.md) em revisão; ainda não implementado |
+| Blobs | Detector e [inspeção inicial (round0)](../../scripts/blobs/README.md) preparados; execução com a base pendente |
 | Watershed | Planejado; representação dos aglomerados a definir |
 
 Os módulos desta pasta não leem nem gravam arquivos. A inspeção de uma imagem
@@ -32,9 +32,12 @@ Todas as execuções dos algoritmos e experimentos serão feitas pelo pesquisado
 ## Arquivos
 
 - `comum.py`: classes, caixas, medidas e representação tabular das detecções.
-- `classificacao.py`: hipótese inicial de classificação por área segmentada.
+- `classificacao.py`: hipóteses de classificação por área segmentada ou estimada,
+  em configurações separadas.
 - `limiarizacao.py`: detecção de componentes após limiarização e morfologia.
+- `blobs.py`: SimpleBlobDetector, caixas aproximadas e medidas estimadas.
 - `requirements.txt`: dependências declaradas; requer Python 3.10 ou posterior.
+- `requirements-blobs.txt`: versão de referência do OpenCV para a inspeção de blobs.
 
 As faixas de versões das dependências não constituem um ambiente experimental
 congelado. As versões efetivamente utilizadas deverão ser registradas nas
@@ -60,10 +63,15 @@ Cada detecção inclui:
 - Caixa em pixels: `x`, `y`, `largura`, `altura`; origem no canto superior esquerdo.
 - Caixa normalizada: `center_x`, `center_y`, `width`, `height`, calculados a partir
   do retângulo e das dimensões da imagem, como nas anotações originais.
-- Centroide dos pixels do componente, separado do centro geométrico da caixa.
-- Área do componente em pixels e área do retângulo, que são medidas diferentes.
-- Alongamento da caixa (maior lado / menor lado), ocupação (área do componente /
-  área da caixa) e intensidade média na imagem cinza anterior à segmentação.
+- Área do retângulo e alongamento da caixa (maior lado / menor lado).
+
+Na **limiarização**, a detecção inclui também centroide dos pixels do componente,
+área segmentada, ocupação da caixa e intensidade média anterior à segmentação.
+Em **blobs**, esses campos ficam vazios: o detector fornece centro e diâmetro
+estimados, dos quais se calcula uma área circular estimada. Esses valores
+ficam em campos próprios, acompanhados da indicação de recorte da caixa na borda.
+O centro do blob pode diferir do centro da caixa recortada. Consulte o
+[guia de blobs](../../scripts/blobs/README.md) para os nomes dos campos e limitações.
 
 O limite direito/inferior da caixa em pixels é exclusivo. Para uma caixa
 `(x, y, largura, altura)`, o centro usado no formato YOLO é
@@ -270,9 +278,10 @@ por vídeo complementam o F1 de indivíduos. Detalhes no [guia de avaliação](.
   Essa ausência continua como limitação documentada da amostragem.
 - Antes do Watershed, definir como representar caixas de aglomerados e de
   indivíduos quando houver sobreposição nas anotações.
-- Antes de blobs, revisar a [proposta de caixas e medidas estimadas](../../analise/plano_blobs.md).
-  O contrato de medidas descrito acima é o implementado para limiarização;
-  a extensão proposta para blobs ainda não existe.
+- Antes das rodadas de blobs, executar e revisar a
+  [inspeção inicial de caixas e medidas estimadas](../../scripts/blobs/README.md).
+  O detector está implementado; sua eficácia e os limites de classificação
+  dependem dos resultados dessa inspeção e das rodadas de desenvolvimento.
 - Rastreamento, SORT, Lucas–Kanade, Horn–Schunck e predição estão fora desta etapa.
 - A reserva de vídeos vale para esta organização experimental. O uso dos dados
   na versão anterior permanece parte do histórico e não torna esses dados inéditos.

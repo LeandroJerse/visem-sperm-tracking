@@ -1,11 +1,13 @@
-# Proposta de avaliação do detector de blobs
+# Plano de avaliação do detector de blobs
 
-20/09/2026 — proposta técnica para revisão, antes da implementação.
+20/09/2026 — detector e inspeção inicial preparados; execução do round0 pendente.
 
 O próximo experimento compara uma nova forma de detectar objetos com a
 [limiarização concluída](conclusao_limiarizacao.md). Este documento propõe
-o método, a representação das saídas e o ciclo experimental. Não contém
-um batch executável nem valores de parâmetros já calibrados.
+o método, a representação das saídas e o ciclo experimental. A primeira
+entrega implementa o detector e a inspeção descrita no
+[guia de blobs](../scripts/blobs/README.md). Ainda não há um batch do round1
+nem valores de parâmetros calibrados pelo novo detector.
 
 ## 1. Método proposto e objetivo
 
@@ -57,14 +59,14 @@ se essa representação é adequada antes de comprometer todas as rodadas.
 
 ### Medidas disponíveis e indisponíveis
 
-| Campo | Proposta |
+| Campo exportado | Significado |
 |---|---|
 | Caixa em pixels e normalizada | Calculada pela regra acima |
-| `centro_blob_x`, `centro_blob_y` | Posição estimada retornada pelo detector |
+| `centro_blob_x_px`, `centro_blob_y_px` | Posição estimada retornada pelo detector |
 | `diametro_blob_px` | Tamanho retornado pelo detector |
 | `area_estimada_blob_px2` | Área do círculo estimado, antes do recorte na borda |
 | `origem_medidas` | Identifica centro/diâmetro estimados pelo SimpleBlobDetector |
-| `area_caixa` | Largura × altura da caixa recortada |
+| `area_caixa_px2` | Largura × altura da caixa recortada |
 | `caixa_recortada_na_borda` | Indica se a caixa calculada ultrapassou a imagem |
 | `area_pixels`, centroide da região, ocupação e intensidade da região | Indisponíveis nesta versão; registrar ausência, nunca zero ou estimativa no lugar |
 | Vídeo, quadro e tempo | Mesmas identificações usadas na limiarização |
@@ -74,12 +76,12 @@ não será gravada como `area_pixels`. Objetos na borda podem ter área estimada
 maior que a área da caixa recortada; são medidas distintas. O alongamento
 da caixa aproximada também não representa a forma real do objeto.
 
-O contrato atual exige medidas de uma região binária. Será necessária uma
-extensão explícita para medidas estimadas, preservando o tipo, o significado
-e as validações das medidas da limiarização. Ausências serão aceitas somente
-na modalidade estimada. A exportação deverá identificar os campos
-indisponíveis, sem alterar os resultados antigos. O avaliador usa caixas e
-classes e poderá manter a mesma regra de correspondência.
+O contrato foi estendido com o tipo `MedidasBlob`, preservando o tipo,
+o significado e as validações das medidas segmentadas em `MedidasObjeto`.
+Ausências são aceitas somente na modalidade estimada. Os registros antigos
+da limiarização conservam seus campos; blobs acrescenta os campos de
+estimativa e deixa vazias as medidas que exigiriam segmentação.
+O avaliador usa caixas e classes, mantendo a mesma correspondência.
 
 ### Alternativa considerada: caixas de contornos
 
@@ -106,9 +108,10 @@ superior, aglomerado a partir de um limite inferior e normal no intervalo.
 Os limites não serão copiados da área segmentada da limiarização. Uma área
 grande não comprova aglomeração, assim como uma pequena não comprova classe 2.
 
-Essa regra precisa aceitar área real positiva e ter o campo de medida
-explicitamente indicado. O classificador atual exige área inteira em pixels;
-não deve receber valores arredondados para simular essa mesma medida.
+Essa regra aceita área real positiva em `ConfiguracaoAreaEstimada`. O
+classificador original da limiarização, `ConfiguracaoArea`, continua exigindo
+área inteira em pixels; não recebe valores arredondados para simular essa
+mesma medida.
 
 | Grupo de parâmetros | O que será investigado | Risco a observar |
 |---|---|---|
@@ -127,8 +130,12 @@ não são os limites do classificador final. Todos os valores e
 filtros habilitados devem constar do plano, sem depender dos padrões implícitos
 da biblioteca. [Parâmetros e filtros](https://docs.opencv.org/4.13.0/d0/d7a/classcv_1_1SimpleBlobDetector.html).
 
-Validar previamente combinações incompatíveis, inclusive a faixa de limiares
-e o requisito de repetição. `limiar_utilizado` será ausente (`null`) por não
+O módulo valida combinações incompatíveis, inclusive a faixa de limiares
+e o requisito de repetição. Nesta versão, o passo precisa ser pelo menos 1
+na escala uint8, evitando passagens subunitárias e uma exploração excessiva
+de limiares equivalentes. São exigidos pelo menos dois limiares e valores
+válidos após a conversão dos parâmetros float32 do OpenCV.
+`limiar_utilizado` é ausente (`null`) por não
 existir um único limiar para toda a detecção; a faixa completa ficará no JSON.
 Não será criado um valor de confiança probabilística sem um modelo calibrado.
 
@@ -207,11 +214,13 @@ flowchart TD
     F --> E["Consolidar resultados e limitações"]
 ```
 
-## 5. Implementação posterior e reprodução
+## 5. Implementação e reprodução
 
-Após revisar a proposta, preparar `algoritmos/classicos/blobs.py` e uma
-inspeção própria em `scripts/blobs/`. O detector receberá apenas imagem e
-configuração, sem ler anotações, modificar a entrada ou gravar arquivos.
+O detector está em [blobs.py](../algoritmos/classicos/blobs.py) e a inspeção
+tem um único ponto de entrada:
+[executar_inspecao.py](../scripts/blobs/executar_inspecao.py).
+O detector recebe apenas imagem e configuração, sem ler anotações,
+modificar a entrada ou gravar arquivos.
 
 Reutilizar avaliação, leitura da base, exportação e composição visual onde
 forem compatíveis. Os executores e relatórios atuais presumem limiarização
@@ -242,12 +251,13 @@ de origem, conferir seu conteúdo e registrar seus hashes. Não escolher a
 execução mais recente automaticamente. Essa melhoria não modifica agora
 os scripts ou os planos congelados da limiarização.
 
-O ambiente da limiarização registrou `opencv-python 4.13.0.92`. Usá-lo como
-referência inicial para compatibilidade; a versão efetivamente usada no blob
-deverá ser fixada e registrada. Não houve instalação ou teste dessa API nesta
-preparação. Os testes futuros devem cobrir geometria, bordas, medidas ausentes,
-configurações inválidas, igualdade da entrada antes/depois e compatibilidade
-dos resultados antigos. A execução dos testes e experimentos caberá ao pesquisador.
+O ambiente da limiarização registrou `opencv-python 4.13.0.92`. Essa versão
+foi fixada em [requirements-blobs.txt](../algoritmos/classicos/requirements-blobs.txt)
+como referência inicial. O executor registra as versões importadas e os
+parâmetros efetivos do OpenCV, além da configuração originalmente informada.
+Os testes preparados cobrem geometria, bordas, medidas ausentes, parâmetros
+inválidos, preservação da entrada, exportação e compatibilidade dos resultados
+antigos. Os experimentos com a base permanecem a cargo do pesquisador.
 
 ## 6. Limitações a preservar na interpretação
 
@@ -270,7 +280,7 @@ dos resultados antigos. A execução dos testes e experimentos caberá ao pesqui
   conjunto final; não apaga o conhecimento anterior. Uma futura confirmação
   independente exigirá dados ainda não usados para orientar decisões.
 
-## 7. Pontos para aprovação
+## 7. Diretrizes da primeira implementação
 
 1. SimpleBlobDetector em cinza, sem processamento adicional inicial.
 2. Caixas por centro/diâmetro e medidas explicitamente estimadas; revisão da
@@ -279,7 +289,49 @@ dos resultados antigos. A execução dos testes e experimentos caberá ao pesqui
 4. Mesmo ciclo e dados, F1 de indivíduos desde o início e diagnóstico por classe.
 5. Até cinco rodadas, teto proposto de tentativas e seed 42 quando houver sorteio.
 
-A implementação do detector e do round0 é a próxima etapa proposta. O plano
-numérico do round1 será uma entrega posterior à inspeção inicial, antes de
-qualquer execução em batch. Nenhum detector, batch ou teste foi executado
-para preparar este documento.
+O plano numérico do round1 será uma entrega posterior à inspeção inicial,
+antes de qualquer execução em batch. Ainda não houve execução do detector
+de blobs sobre a base. A preparação do código não demonstra sua eficácia.
+
+## 8. Viabilidade estrutural e round0 preparado
+
+Foi conferido o formato das caixas anotadas nos mesmos 178 JPEGs de
+desenvolvimento. As dimensões foram lidas dos cabeçalhos JPEG; larguras e
+alturas normalizadas foram convertidas em pixels antes de calcular a razão
+entre o maior e o menor lado. Não houve execução do detector nessa conferência.
+
+| Classe | Ocorrências anotadas | Mediana da razão dos lados | Caixas com razão maior que 2,25 |
+|---|---:|---:|---:|
+| 0 — normal | 3.464 | 1,0833 | 18 |
+| 1 — aglomerado | 109 | 1,1282 | 0 |
+| 2 — pequeno | 134 | 1,1250 | 0 |
+
+No caso geométrico ideal, uma caixa quadrada centrada num retângulo de razão
+`r ≥ 1` alcança no máximo `IoU = 1 / (2 × sqrt(r) - 1)`, otimizando seu tamanho.
+Esse máximo é menor que 0,50 quando `r > 2,25`. A conta ignora arredondamento
+para pixels e recorte nas bordas, que podem alterar o formato exportado.
+Ela serve como diagnóstico da representação, não como novo filtro ou métrica
+de seleção. Nenhuma anotação foi excluída.
+
+A maioria das caixas anotadas tem formato próximo do quadrado, inclusive
+nas classes 1 e 2. Portanto, sua geometria não impede tentar a representação
+proposta. Isso não comprova que o blob estime o centro e o diâmetro corretos
+nem que a região biológica seja circular. Essa adequação depende do round0.
+
+O [plano de inspeção](../scripts/blobs/inspecao/round0.json) fixa seis imagens
+de desenvolvimento e duas configurações, clara e escura: **12 avaliações**.
+Usa os quadros 11/0, 12/200, 19/0, 21/0, 23/0 e 36/1300, com hashes
+conferidos contra o plano do desenvolvimento. Eles incluem as três classes,
+poucos e muitos objetos e anotações próximas das bordas.
+
+Os parâmetros exploram limiares 10 a 240 em passos de 10, repetição mínima 2,
+distância 3 pixels, área interna de 3 inclusive a 5.000 exclusive e filtros
+de forma desligados. A classificação usa diâmetros hipotéticos de 8 e 24
+pixels, convertidos em área estimada. São valores de sondagem, sem calibração
+ou alegação biológica. Motivos e comandos estão no guia de blobs.
+
+Após a execução, revisar as imagens e os pares/pendências. Se a representação
+for adequada, definir o round1 nos 178 quadros; caso contrário, rever as caixas
+no desenvolvimento antes dos batches. O ciclo de seleção e vídeos permanece
+viável como estrutura, condicionado a essa inspeção e às adaptações futuras
+dos executores das etapas seguintes.

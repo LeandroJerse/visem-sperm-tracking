@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from .comum import ClasseObjeto, validar_inteiro
+from .comum import ClasseObjeto, validar_inteiro, validar_real
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,5 +31,32 @@ class ConfiguracaoArea:
         if area_pixels <= self.area_maxima_pequeno:
             return ClasseObjeto.PEQUENO
         if area_pixels >= self.area_minima_aglomerado:
+            return ClasseObjeto.AGLOMERADO
+        return ClasseObjeto.NORMAL
+
+
+@dataclass(frozen=True, slots=True)
+class ConfiguracaoAreaEstimada:
+    """Limites reais para área de círculo estimado, não para pixels segmentados."""
+
+    area_maxima_pequeno: float
+    area_minima_aglomerado: float
+
+    def __post_init__(self) -> None:
+        for nome in ("area_maxima_pequeno", "area_minima_aglomerado"):
+            valor = getattr(self, nome)
+            validar_real(nome, valor)
+            if valor <= 0:
+                raise ValueError(f"{nome} deve ser positivo.")
+        if self.area_minima_aglomerado <= self.area_maxima_pequeno:
+            raise ValueError("O limite de aglomerado deve superar o limite de pequeno.")
+
+    def classificar(self, area_estimada: float) -> ClasseObjeto:
+        validar_real("area_estimada", area_estimada)
+        if area_estimada <= 0:
+            raise ValueError("area_estimada deve ser positiva.")
+        if area_estimada <= self.area_maxima_pequeno:
+            return ClasseObjeto.PEQUENO
+        if area_estimada >= self.area_minima_aglomerado:
             return ClasseObjeto.AGLOMERADO
         return ClasseObjeto.NORMAL

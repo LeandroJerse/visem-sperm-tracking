@@ -1,0 +1,120 @@
+{
+  "versao": 1,
+  "algoritmo": "blobs",
+  "etapa": "inspecao",
+  "rodada": "round0",
+  "particao": "desenvolvimento",
+  "seed": 42,
+  "origem_desenvolvimento": {
+    "plano": "scripts/limiarizacao/rodadas/round1.json",
+    "sha256": "4ce2e19215a6f3b983b60aea35f0a84c138eea63c1495a39768525970624e965"
+  },
+  "quadros": [
+    {
+      "video_id": "11",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_0.txt",
+      "imagem_sha256": "2c0d7438a7cb7fae69b4800fa521538fc425a3d9f05c2b2a62fca1c2a722015e",
+      "anotacao_sha256": "a3850201386afec0c7182f393066c4c8781cd22c5c3f0c643ec6c90ced74d1e6",
+      "objetivo": "Refer�ncia com 43 normais, usada na inspe��o inicial da limiariza��o."
+    },
+    {
+      "video_id": "12",
+      "quadro": 200,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_200.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_200.txt",
+      "imagem_sha256": "e04d38467668f291f19f2e98180ac22861c95077a949c1ae3404d5b1dd5f952d",
+      "anotacao_sha256": "3aefa89a655a762a3ebb7bf189bd0f944b6783b9e09eaf4479a3c361dfb1a6d2",
+      "objetivo": "Tr�s classes presentes: 29 normais, 1 aglomerado e 3 pequenos."
+    },
+    {
+      "video_id": "19",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_0.txt",
+      "imagem_sha256": "90573fdad5d63349fc90d100ff77201eb1b36f3cd76cdc8fbc0d3a6b33a8cb6a",
+      "anotacao_sha256": "fc8e45c667ae0ae930e0c9ab9c3926fbeec025a3e90a22b1220538b2340a963c",
+      "objetivo": "Aglomerados e bordas: 19 normais e 4 aglomerados."
+    },
+    {
+      "video_id": "21",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_0.txt",
+      "imagem_sha256": "dea8bf8f8412cfb64fd048c50898055dde391ccbdb37d7fadae2fa3f75a7d793",
+      "anotacao_sha256": "546a02693db5fed609982eccc1cc8facb8bfe221d674e01ace4fc6b3bd9f4dc9",
+      "objetivo": "Pequenos em outro v�deo: 21 normais e 3 pequenos."
+    },
+    {
+      "video_id": "23",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_0.txt",
+      "imagem_sha256": "2d657f99032045f0d694f97dbc3a93f4a4eb4428eee26fb1a3d713e6cbbe9a9d",
+      "anotacao_sha256": "1cfeef0877908d8ac519ed754d74ebcf44cb68b34849b7e083f6cbb3954061b8",
+      "objetivo": "Baixa quantidade de objetos: 4 normais."
+    },
+    {
+      "video_id": "36",
+      "quadro": 1300,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_1300.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_1300.txt",
+      "imagem_sha256": "77121a8fb32d40091186a26104b3f6ba814a6fd6df12a200b8f3d054fb8cf8e2",
+      "anotacao_sha256": "fb11bb4ca4e7c4dca6b6278814ee3169a8948f2f366fe6a1eb41fe79bffef4cb",
+      "objetivo": "Cena com muitos objetos e bordas: 44 normais e 1 pequeno."
+    }
+  ],
+  "configuracoes": [
+    {
+      "id": "b01",
+      "parametros": {
+        "polaridade": "claro",
+        "limiar_minimo": 10,
+        "limiar_maximo": 250,
+        "passo_limiar": 10,
+        "repetibilidade_minima": 2,
+        "distancia_minima": 3,
+        "area_minima": 3,
+        "area_maxima": 5000,
+        "circularidade_minima": null,
+        "inercia_minima": null,
+        "convexidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        }
+      }
+    },
+    {
+      "id": "b02",
+      "parametros": {
+        "polaridade": "escuro",
+        "limiar_minimo": 10,
+        "limiar_maximo": 250,
+        "passo_limiar": 10,
+        "repetibilidade_minima": 2,
+        "distancia_minima": 3,
+        "area_minima": 3,
+        "area_maxima": 5000,
+        "circularidade_minima": null,
+        "inercia_minima": null,
+        "convexidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        }
+      }
+    }
+  ],
+  "observacoes": [
+    "Inspe��o inicial determin�stica: 6 imagens de desenvolvimento e 2 polaridades, total de 12 avalia��es; n�o integra as cinco rodadas.",
+    "Nenhum sorteio: seed 42 preservada como metadado; a lista de quadros e configura��es � a refer�ncia para repetir.",
+    "Quadros escolhidos pela cobertura de classes e bordas nas anota��es do desenvolvimento; n�o pelos resultados do detector.",
+    "Par�metros de sondagem n�o calibrados. Intensidades 10 a 240 em passos de 10; filtros de forma desligados para observar a geometria antes de restringi-la.",
+    "�rea interna de contornos [3,5000) limita ru�dos min�sculos e grandes regi�es. Seus valores n�o representam �rea estimada do c�rculo ou limiares validados.",
+    "Classifica��o experimental por di�metro: at� 8 pixels equivale ao limite de pequeno; a partir de 24 pixels equivale ao limite de aglomerado. S�o hip�teses geom�tricas, n�o conclus�es biol�gicas nem estat�sticas da base.",
+    "Centro e di�metro estimados definem a caixa; �rea_pixels, centroides de regi�o, ocupa��o e intensidade ficam ausentes.",
+    "Round1 somente ap�s revisar caixas, m�tricas e exemplos deste round0. N�o escolher vencedora pelas seis imagens."
+  ]
+}

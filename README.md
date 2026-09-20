@@ -5,13 +5,17 @@ de microscopia. Os objetos encontrados são comparados com as anotações da bas
 VISEM-Tracking, permitindo medir acertos, falsas detecções, perdas e erros de
 classificação.
 
-O método implementado combina **limiarização manual ou Otsu, abertura,
-fechamento e componentes conectados**. Os experimentos começam em imagens
-fixas, com diferentes configurações, e avançam para vídeos completos. Blobs,
-Watershed e métodos híbridos com k-NN estão previstos para etapas posteriores.
+A **limiarização manual ou Otsu, com morfologia e componentes conectados**,
+concluiu o ciclo de desenvolvimento, seleção e avaliação final. O detector de
+**blobs** e sua inspeção inicial (`round0`) estão preparados para execução.
+Os experimentos começam em imagens fixas, com diferentes configurações, e
+avançam para vídeos completos. Watershed e métodos híbridos com k-NN estão
+previstos para etapas posteriores.
 A comparação com detectores modernos, como YOLO, também faz parte do planejamento.
 
-As saídas incluem caixas, classes, centroides, áreas e tempos dos quadros.
+As saídas incluem caixas, classes, medidas e tempos dos quadros. Na limiarização,
+as medidas vêm dos pixels segmentados; em blobs, centro, diâmetro e área são
+estimativas, registradas em campos próprios.
 Esses dados poderão apoiar estudos de movimento. A implementação atual faz
 detecção quadro a quadro; ainda não associa o mesmo indivíduo entre quadros
 nem calcula trajetórias ou velocidades.
@@ -20,7 +24,8 @@ nem calcula trajetórias ou velocidades.
 
 | Pasta | Conteúdo |
 |---|---|
-| `algoritmos/classicos/` | Detector, estruturas de dados e classificação por área |
+| `algoritmos/classicos/` | Detectores, estruturas de dados e classificação por área |
+| `scripts/blobs/` | Inspeção inicial de blobs, com plano fixo e relatório |
 | `scripts/limiarizacao/` | Execução individual, rodadas, seleção e vídeos |
 | `scripts/limiarizacao/rodadas/` | Planos de parâmetros de `round1` a `round5` |
 | `scripts/limiarizacao/selecao/` | Plano de comparação das configurações em imagens |
@@ -29,6 +34,19 @@ nem calcula trajetórias ou velocidades.
 | `analise/` | Métricas, relatórios, protocolo e análises das rodadas |
 | `bases_de_dados/` | Vídeos, imagens e anotações originais, mantidos localmente |
 | `resultados/` | Mídias, tabelas, configurações e registros das execuções |
+
+## Próxima etapa: inspeção de blobs
+
+O [guia de blobs](scripts/blobs/README.md) reúne dependências e o comando
+`scripts/blobs/executar_inspecao.py`. Ele executa seis imagens de desenvolvimento
+com duas configurações de sondagem e gera imagens comparativas, tabelas e PDF
+em `resultados/frame-to-frame/blobs/round0/`.
+
+Essa inspeção deve confirmar a utilidade das caixas aproximadas antes de
+definir o round1. Os testes sintéticos estão preparados, mas ainda não foram
+executados. O [plano](analise/plano_blobs.md) descreve a viabilidade e as etapas
+seguintes. As seções numeradas abaixo reproduzem o ciclo já concluído da
+limiarização.
 
 ## 1. Preparar o ambiente
 
@@ -378,7 +396,8 @@ argumentos de um script, acrescente `--help` ao comando.
 ## Documentação técnica
 
 - [Conclusão da limiarização: seleção e avaliação final](analise/conclusao_limiarizacao.md).
-- [Proposta técnica do próximo detector: blobs](analise/plano_blobs.md).
+- [Plano de avaliação de blobs e adaptações do ciclo](analise/plano_blobs.md).
+- [Executar a inspeção inicial de blobs (round0)](scripts/blobs/README.md).
 - [Protocolo e fluxograma completo](analise/protocolo_rodadas.md).
 - [Guia dos scripts](scripts/README.md).
 - [Parâmetros e saídas da limiarização](scripts/limiarizacao/README.md).

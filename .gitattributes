@@ -2,4 +2,5 @@
 scripts/limiarizacao/rodadas/*.json text eol=lf
 scripts/limiarizacao/selecao/*.json text eol=lf
 scripts/limiarizacao/videos/*.json text eol=lf
+scripts/blobs/inspecao/*.json text eol=lf
 analise/rodadas/*.json text eol=lf

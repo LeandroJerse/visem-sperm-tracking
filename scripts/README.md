@@ -1,9 +1,22 @@
 # Guia dos scripts
 
+**Próxima execução: inspeção inicial de blobs (`round0`).** O detector e o
+plano fixo estão preparados; a execução com a base ainda está pendente.
+Instale as dependências indicadas no [guia de blobs](blobs/README.md) e execute
+na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\blobs\executar_inspecao.py"
+```
+
+São seis imagens de desenvolvimento e duas configurações de sondagem,
+gerando comparações visuais, tabelas, avaliação e PDF. O objetivo é verificar
+caixas e medidas antes de definir o `round1`; ainda não há ranking de seleção.
+O [plano de blobs](../analise/plano_blobs.md) explica os ajustes no ciclo.
+
 **Limiarização concluída, incluindo a avaliação final.** Consulte a
-[análise consolidada](../analise/conclusao_limiarizacao.md) e a
-[proposta do próximo detector, blobs](../analise/plano_blobs.md).
-Ainda não existe um script de execução de blobs.
+[análise consolidada](../analise/conclusao_limiarizacao.md). Os comandos abaixo
+permitem reproduzir suas etapas já concluídas.
 
 Para repetir a avaliação final, abra o PowerShell na raiz do projeto:
 
@@ -56,6 +69,9 @@ Os resumos e PDFs das rodadas e da seleção original continuam usando
 macro-F1 das três classes.
 
 ## Qual script usar?
+
+Para blobs, use [executar_inspecao.py](blobs/executar_inspecao.py), conforme o
+[guia de round0](blobs/README.md). Os scripts abaixo pertencem à limiarização.
 
 | O que você quer fazer | Script | Quando usar |
 |---|---|---|
