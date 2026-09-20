@@ -1,6 +1,8 @@
 # Protocolo de desenvolvimento por rodadas
 
-Versão 1 — 19/09/2026.
+Versão 2 — critério de indivíduos aprovado após a primeira seleção em imagens.
+Preserva o registro da versão 1, de 19/09/2026, usada nas cinco rodadas e
+na avaliação original da seleção. A data UTC de cada execução consta do manifesto.
 
 Este protocolo registra o fluxo atual de desenvolvimento dos detectores em
 imagens anotadas. Sua aplicação preparada é a limiarização manual/Otsu. Novos
@@ -13,33 +15,91 @@ round1 a round5**. O `round0` é a inspeção inicial e fica fora dessa contagem
 Esse planejamento não garante melhoria a cada rodada. Novos métodos terão
 seu planejamento definido separadamente.
 
-## Fluxograma
+## Fluxograma completo da limiarização
+
+O desenvolvimento, a seleção em imagens e sua reavaliação por indivíduos
+estão concluídos, assim como o teste das cinco nos vídeos completos de seleção.
+As mesmas cinco configurações foram congeladas e executadas na avaliação final.
+A [conclusão da limiarização](conclusao_limiarizacao.md) reúne os resultados
+e as limitações. A [proposta de blobs](plano_blobs.md) descreve a adaptação
+planejada para o próximo detector, ainda sem implementação.
 
 ```mermaid
 flowchart TD
-    I["Round0: inspeção inicial<br/>Verificar saídas e identificar problemas"]
-    P["Definir juntos o round N<br/>Configurações e objetivo da rodada"]
-    F["Salvar o plano da rodada<br/>Parâmetros, seed, quadros e hashes"]
-    E["Pesquisador executa o batch<br/>Conferência das entradas antes da detecção"]
-    D["Executar todas as configurações<br/>Nos mesmos quadros de desenvolvimento"]
-    A["Comparar detecções com anotações<br/>Mesma classe, IoU ≥ 0,50 e um par por objeto"]
-    M["Somar TP, FP e FN por classe<br/>Calcular precisão, recall, F1 e macro-F1"]
-    S["Salvar no respectivo round N<br/>Imagens, tabelas, registro e relatório PDF"]
-    R["Revisar juntos os resultados<br/>Erros, classes e variação entre vídeos"]
-    Q{"Concluímos o round5?"}
-    N["Definir novos testes<br/>Refinar faixas promissoras e manter exploração"]
-    C["Encerrar o desenvolvimento<br/>Fixar as candidatas para a seleção posterior"]
+    INICIO["Definir detector, classes e protocolo<br/>Caixas e classes 0, 1 e 2 da base"]
 
-    I --> P --> F --> E --> D --> A --> M --> S --> R --> Q
-    Q -->|Não| N --> P
-    Q -->|Sim| C
+    subgraph DESENV["1. Desenvolvimento em imagens — concluído"]
+        I["Round0: inspeção inicial<br/>Conferir detecções e saídas"]
+        P["Planejar o round e salvar sua configuração<br/>Parâmetros, seed, quadros e hashes"]
+        D["Executar todas as configurações<br/>Nos mesmos 178 frames de desenvolvimento"]
+        A["Comparar com as anotações e calcular F1<br/>Salvar imagens, tabelas e PDF do round"]
+        R["Revisar juntos os resultados<br/>Erros, classes e diferenças entre vídeos"]
+        Q{"Round5 concluído e revisado?"}
+        N["Definir ajustes para o próximo round"]
+        C["Encerrar os ajustes e retirar repetições<br/>Fixar as 122 configurações distintas"]
+        I --> P --> D --> A --> R --> Q
+        Q -->|Não| N --> P
+        Q -->|Sim| C
+    end
+
+    subgraph SELECAO["2. Seleção em outras imagens — concluída"]
+        S["122 configurações fixas já executadas<br/>60 frames dos vídeos 13, 29, 52 e 54"]
+        M["Avaliação original preservada<br/>Macro-F1 das três classes"]
+        G["Reavaliar caixas salvas com a regra aprovada<br/>Indivíduos 0 e 2 juntos; aglomerados 1 separados"]
+        K["Ordenar pelo F1 de indivíduos<br/>Registrar trocas 0/2 e cobertura por classe e vídeo"]
+        E["Cinco aprovadas após revisão conjunta<br/>s068, s067, s090, s099 e s101"]
+        S --> M --> G --> K --> E
+    end
+
+    subgraph VIDEO["3. Teste em vídeos completos de seleção — concluído"]
+        V0["Conferir a correspondência<br/>Entre frames do vídeo e anotações"]
+        V1["Executar as cinco configurações<br/>Vídeos completos 13, 29, 52 e 54"]
+        V2["Avaliar as detecções quadro a quadro<br/>Salvar 20 vídeos comparativos, tabelas e PDF"]
+        V3["Revisar os resultados em conjunto<br/>Congelar as escolhas para a avaliação final"]
+        V0 --> V1 --> V2 --> V3
+    end
+
+    subgraph FINAL["4. Avaliação final em vídeos reservados — concluída"]
+        T["Executar as escolhas congeladas<br/>Vídeos completos 14, 24, 38 e 82"]
+        U["Comparar com as anotações disponíveis<br/>Manter parâmetros e critérios fixos"]
+        F["Consolidar resultados e limitações do algoritmo<br/>Documentar a avaliação final"]
+        T --> U --> F
+    end
+
+    INICIO --> I
+    C --> S
+    E --> V0
+    V3 --> T
 ```
 
-O fluxo resume uma rodada completa. Na implementação, a detecção, a avaliação
-e a gravação acontecem por quadro/configuração; a consolidação reúne as
-contagens ao final de cada configuração. Os resumos são atualizados conforme
-as configurações terminam. Após a conclusão do batch, o relatório PDF reúne
-os resultados salvos em gráficos e estatísticas descritivas.
+O ciclo de ajustes acontece somente no desenvolvimento. A seleção mantém
+os parâmetros das 122 candidatas fixos. O teste das cinco em vídeos completos
+usa os mesmos vídeos da seleção em imagens, portanto não é uma avaliação
+independente desse conjunto. A avaliação final usa os outros quatro vídeos,
+após o congelamento das escolhas. O diagrama não cria uma regra adicional
+para reduzir as cinco a uma única configuração antes dessa avaliação.
+
+Em todas as etapas, o pesquisador executa os experimentos e os resultados
+são revisados em conjunto. Mantêm-se IoU ≥ 0,50, pareamento um para um e
+soma de TP, FP e FN antes de calcular F1. Na versão 1, o acerto exigia a
+mesma classe e a comparação usava macro-F1, com F1 normal somente no empate.
+Na regra atual, a correspondência exige o mesmo grupo: indivíduos (0/2)
+ou aglomerados (1). A seleção prioriza F1 de indivíduos e mantém os erros
+de classificação separados. Valores sem casos permanecem indefinidos;
+empates do novo ranking exigem discussão conjunta, sem desempate automático.
+
+Nos vídeos completos, a detecção percorrerá os quadros e a avaliação usará
+os quadros com anotações disponíveis e correspondência conferida. Quadros
+sem anotação não são considerados automaticamente sem objetos. Esta fase
+continua sendo detecção quadro a quadro; rastreamento e predição de movimento
+serão tratados posteriormente.
+
+Na implementação atual em imagens, detecção, avaliação e gravação acontecem
+por quadro/configuração; a consolidação reúne as contagens ao final de cada
+configuração. Após a conclusão do batch, o PDF reúne os resultados salvos.
+O executor de seleção em vídeos foi executado e seus resultados conferidos.
+A etapa final também foi executada e seus registros conferidos. Os testes
+de código não foram executados nesta revisão documental.
 
 ## Preparação e comparação justa
 
@@ -50,17 +110,20 @@ os resultados salvos em gráficos e estatísticas descritivas.
 | `round2` | Testar ajustes de área, classificação, morfologia e limiar manual | 32 configurações executadas; lista determinística baseada no round1; revisão dos resultados |
 | `round3` | Refinar as hipóteses a partir dos resultados do round2 | 24 configurações executadas e analisadas; lista determinística |
 | `round4` | Refinar limites de classificação e limiares manuais nas segmentações comparadas | 18 configurações executadas e analisadas; lista determinística |
-| `round5` | Fazer a última rodada planejada de desenvolvimento, antes da revisão conjunta e do congelamento das candidatas | 14 configurações salvas; ainda não executadas; execução pelo pesquisador; não é a avaliação final |
+| `round5` | Fazer a última rodada planejada de desenvolvimento | 14 configurações executadas e analisadas; desenvolvimento encerrado; não é a avaliação final |
+| `selecao` | Comparar as candidatas fixadas nos frames reservados | 122 configurações distintas × 60 quadros executados e reavaliados por grupos; cinco aprovadas |
+| Vídeos de seleção | Avaliar as cinco nos quatro MP4 completos | 5.850 quadros por configuração executados; resultados e PDF conferidos |
+| Avaliação final | Medir as cinco escolhas congeladas nos quatro vídeos finais | 5.910 quadros por configuração executados; 29.550 avaliações, 20 MP4 e PDF concluídos; registros conferidos |
 
 O mesmo `scripts/limiarizacao/executar_rodada.py` executa todas as rodadas.
 `--rodada round1` identifica o plano `scripts/limiarizacao/rodadas/round1.json`;
 `--rodada round2`, `--rodada round3`, `--rodada round4` e `--rodada round5`
 identificam os planos seguintes. `--plano` permite informar uma cópia salva
-em outro local. Os cinco planos estão preparados; o round5 ainda não foi
-executado. Sem argumentos, o executor continua em `round1`. A
+em outro local. Os cinco planos foram executados. Sem argumentos, o executor
+continua em `round1`. A
 criação de uma pasta de resultados não prepara automaticamente uma rodada.
 
-Para o pesquisador executar a quinta rodada, na raiz do projeto:
+Para repetir a quinta rodada, na raiz do projeto:
 
 ```powershell
 & "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round5
@@ -85,12 +148,13 @@ limiares manuais.
 A [revisão do round4](rodadas/round4_revisao.md) e a
 [reavaliação de 25 combinações salvas](rodadas/round4_reavaliacao_areas.json)
 orientaram o plano de [14 configurações do round5](../scripts/limiarizacao/rodadas/round5.json):
-2.492 avaliações nos mesmos quadros, ainda não executadas, com PDF automático
-ao concluir. São quatro controles, duas variações de classificação Otsu e
+2.492 avaliações concluídas nos mesmos quadros, com PDF. São quatro controles,
+duas variações de classificação Otsu e
 oito variações manuais de limiar ou forma do fechamento. Os planos anteriores
-permanecem preservados. Depois da execução, a revisão conjunta precederá o
-congelamento das candidatas e a seleção posterior; não há garantia de ganho
-nem escolha de finalistas nesta preparação.
+permanecem preservados. A [revisão do round5](rodadas/round5_revisao.md)
+registra a melhoria pequena e o encerramento das cinco rodadas. Todas as
+122 configurações distintas foram fixadas para a seleção, sem escolher
+finalistas com os dados de desenvolvimento.
 
 Na primeira rodada são 24 configurações manuais e 24 Otsu, com equilíbrio
 entre polaridades clara e escura. A configuração `c01` repete os parâmetros
@@ -108,7 +172,7 @@ exclusão automática. Todas as configurações comparáveis usam as mesmas
 imagens, anotações e regras de avaliação. O detector recebe somente a imagem
 e os parâmetros; as anotações são usadas na avaliação e na comparação visual.
 
-## Avaliação de uma rodada
+## Avaliação histórica das rodadas — versão 1
 
 O acerto exige a mesma classe da anotação e IoU maior ou igual a 0,50, com
 correspondência um para um. Entre associações válidas, maximiza-se primeiro
@@ -131,7 +195,7 @@ principal. Resultados por vídeo, imagens e tabelas de pares/pendências ajudam
 a verificar falsos positivos, perdas, confusões entre classes e concentração
 do desempenho em poucos vídeos.
 
-## Revisão e definição da próxima rodada
+## Revisão e definição das rodadas — versão 1
 
 As configurações são comparadas pelo macro-F1. Somente em empate exato,
 antes do arredondamento, a classe 0 recebe prioridade pelo seu F1. O tempo
@@ -197,12 +261,201 @@ do batch e permite gerar somente o PDF posteriormente.
 ## Etapas posteriores
 
 Depois das cinco rodadas de desenvolvimento da limiarização, o protocolo
-acordado prevê comparar candidatas
-nas imagens dos vídeos de seleção (13, 29, 52 e 54), escolher cinco e avaliá-las
+acordado prevê comparar candidatas nas imagens dos vídeos de seleção
+(13, 29, 52 e 54), escolher cinco e avaliá-las
 nos vídeos completos desse conjunto. Após congelar as escolhas, a avaliação
 final usará os vídeos completos 14, 24, 38 e 82 e as anotações disponíveis.
-Essas etapas não são executadas pelo batch atual. A reserva dos conjuntos
-nesta versão não elimina o histórico de exposição anterior aos dados.
+A reserva dos conjuntos nesta versão não elimina o histórico de exposição
+anterior aos dados.
+
+A composição da seleção foi aprovada após o round5: **todas as 122
+configurações distintas**, preservando seus parâmetros, nos **60 quadros**
+0, 100, ..., 1400 dos quatro vídeos reservados. Os pares estão completos;
+não há exclusões. A deduplicação considera equivalentes as diferenças de
+forma/tamanho em operações morfológicas desativadas, como no executor atual.
+Os 136 registros de execução das rodadas permanecem preservados.
+
+O [plano de seleção](../scripts/limiarizacao/selecao/plano.json) registra
+as origens das candidatas e os hashes de todas as entradas. IDs `s001` a
+`s122` seguem a primeira ocorrência nas rodadas. A composição foi fixada
+antes de qualquer resultado de detecção nesses 60 quadros nesta etapa.
+Não serão criados novos parâmetros com base na seleção.
+
+O pesquisador executou `scripts/limiarizacao/executar_selecao.py`:
+7.320 avaliações, com saídas em `resultados/frame-to-frame/limiarizacao/selecao/`
+e PDF automático. Essa avaliação original usou as regras de pareamento,
+agregação, macro-F1 e desempate da classe 0 do desenvolvimento. Na versão 1,
+empates remanescentes e valores indefinidos exigiam revisão conjunta; o ID
+no relatório serve somente à ordem visual estável. Não há promoção automática.
+
+A seleção original foi concluída em `batch__20260920T012713968145Z`, com
+7.320 avaliações e PDF. A reavaliação e a escolha das cinco também foram
+concluídas. Antes de
+avaliar os vídeos, será conferida a correspondência entre frames decodificados
+e anotações disponíveis; ausência de anotação não equivale a ausência de objetos.
+
+## Reavaliação por indivíduos — versão 2, concluída
+
+Após observar a primeira seleção, foi acordado priorizar a localização de
+indivíduos e separar o erro entre normal e pequeno. Essa é uma alteração
+posterior à observação dos resultados: não deve ser apresentada como critério
+fixado antes dos experimentos. Os resultados e o ranking históricos continuam
+disponíveis, permitindo discutir o efeito da mudança. Não há novos parâmetros,
+novas candidatas ou novas imagens nesta reavaliação.
+
+O novo pareamento usa as caixas e os rótulos salvos, com IoU ≥ 0,50:
+
+- Classes 0 e 2 pertencem ao grupo de indivíduos. Um par 0/2 ou 2/0 conta
+  como TP de detecção e como erro de classificação registrado à parte.
+- A classe 1 pertence ao grupo de aglomerados. Uma troca entre indivíduo e
+  aglomerado não forma par: conta FN no grupo anotado e FP no previsto.
+- Cada caixa participa de no máximo um par. Maximiza-se primeiro o número
+  de pares válidos e depois a soma das IoUs, sem preferir rótulos iguais.
+- O pareamento é refeito; não se reaproveitam pares da avaliação anterior,
+  pois a mudança das correspondências permitidas pode alterar as associações.
+
+O critério principal é **F1 de indivíduos**, calculado após somar as contagens
+dos 60 quadros. Não é macro-F1 das classes 0 e 2, nem uma média por vídeo.
+Classes e vídeos com mais indivíduos anotados influenciam mais essa medida.
+Por isso, a revisão conjunta observará também precisão, recall, cobertura de
+normais e pequenos separadamente, erros 0/2, aglomerados e resultados por vídeo.
+Não foi adotado peso numérico, limite mínimo ou desempate secundário adicional.
+
+O ranking compara a fração exata `2TP/(2TP+FP+FN)`. Configurações empatadas
+recebem o mesmo posto; o ID organiza apenas a apresentação. Empates que
+atravessem as posições cinco e seis são destacados para discussão. Valores
+indefinidos aparecem como `sem_casos` e não recebem posto. Nenhum script
+escolhe ou promove cinco automaticamente.
+
+A classificação é descrita pela matriz 0/2 dos indivíduos pareados e pela
+acurácia condicional: rótulos corretos divididos pelos pares de indivíduos.
+Essa taxa exclui objetos perdidos e falsas detecções, e deve ser lida junto
+com o F1 e a cobertura. Um bom valor condicional isolado não implica boa
+detecção. As classes originais continuam preservadas nas tabelas e na base.
+
+O pesquisador executou `scripts/limiarizacao/reavaliar_selecao.py`.
+As saídas estão dentro do batch original em
+`reavaliacoes_individuos/20260920T021112218814Z/`, com cópia do código, hashes,
+contagens por quadro/vídeo/configuração, ranking e PDF. A execução usou somente
+as tabelas salvas. A conferência confirmou as 7.320 avaliações, as origens
+e a coerência das contagens. Após a revisão, foram aprovadas as cinco abaixo.
+
+## Vídeos de seleção — execução concluída e revisada
+
+| Configuração | F1 de indivíduos nos 60 quadros | TP | FP | FN |
+|---|---:|---:|---:|---:|
+| s068 | 0,273511 | 365 | 1044 | 895 |
+| s067 | 0,257778 | 348 | 1092 | 912 |
+| s090 | 0,173576 | 224 | 1097 | 1036 |
+| s099 | 0,172026 | 222 | 1099 | 1038 |
+| s101 | 0,172026 | 222 | 1099 | 1038 |
+
+Os valores acima são arredondados apenas para apresentação. `s099` e `s101`
+ocupam as posições 4 e 5 em empate; a sexta tem F1 inferior. Ambas permanecem,
+pois diferem no limite de classificação pequeno/normal. Não houve desempate
+novo ou alteração dos parâmetros. Os resultados justificam medir as limitações
+em mais quadros, sem caracterizar bom desempenho: as duas manuais não detectaram
+indivíduos nos quadros amostrados dos vídeos 29 e 52, e a cobertura de pequenos
+foi baixa nas cinco configurações.
+
+O [plano de vídeos](../scripts/limiarizacao/videos/plano_selecao.json) fixa
+as cinco configurações, os MP4 completos e todos os arquivos de anotação.
+Vídeos 13, 29 e 54 contêm 1.470 quadros a 49 FPS; o vídeo 52 contém 1.440
+a 48 FPS. Todos têm 640 × 480 pixels e 30 segundos, conforme os metadados
+dos MP4. Existem arquivos de anotação para todos os 5.850 índices, base zero.
+Foram 29.250 avaliações e 20 MP4 comparativos, sem amostragem ou novos ajustes.
+
+Antes de detectar, o executor confere hashes e conteúdo das anotações. Para
+cada vídeo, compara cinco JPEGs de referência (quadros 0, 100, 700, 1400 e
+último) contra todos os quadros MP4, pelo erro médio absoluto em cinza.
+Cada índice esperado deve ser o mínimo único; divergência ou empate interrompe
+a execução antes de qualquer detector. As imagens comparativas e diferenças
+ficam salvas em `conferencia/`. Isso verifica correspondência temporal nas
+referências, sem comprovar igualdade de pixels entre formatos ou alinhamento
+individual de todos os JPEGs. A conferência real passou nas 20 referências
+do batch de seleção, com o índice esperado como mínimo único em todas.
+
+Essa primeira decodificação registra hashes BGR de todos os quadros, que
+precisam coincidir antes de cada detecção nas cinco configurações. O tempo
+relativo é o índice dividido pelo FPS, coerente com a taxa constante registrada
+nos arquivos. Índices de detecção são locais, sem rastreamento ou velocidade.
+Os vídeos gerados preservam a velocidade original e mostram anotações à esquerda,
+detecções à direita, classes, quadro, tempo e contagens de indivíduos. Após
+gravar, o executor reabre cada MP4 para conferir dimensões, FPS e completude.
+
+Tabelas, configurações, cópia do código, versões, hashes e PDF ficam em uma
+nova pasta `resultados/videos/limiarizacao/selecao/batch__<execucao>/`.
+A seed 42 é mantida como registro; esta etapa não sorteia parâmetros ou quadros.
+Repetições usam o plano congelado e criam novas pastas. Os originais e resultados
+anteriores permanecem preservados. Os vídeos já participaram da seleção em
+imagens; diferenças JPEG/MP4 e mais quadros podem alterar as métricas. Esta
+etapa não é uma avaliação independente da seleção.
+
+O pesquisador concluiu `batch__20260920T023832151694Z`. A conferência dos
+registros verificou 5.879 hashes de origem, 98 de saída, 20 MP4, cinco execuções
+completas e a consistência entre caixas, pares, pendências e resumos. O executor
+registrou a decodificação completa dos MP4 gerados; a auditoria posterior
+conferiu os hashes, sem decodificá-los novamente. O PDF de três páginas foi
+inspecionado visualmente.
+
+| Configuração | F1 de indivíduos nos vídeos completos |
+|---|---:|
+| s068 | 0,257230 |
+| s067 | 0,246072 |
+| s090 | 0,163433 |
+| s099 | 0,162946 |
+| s101 | 0,162946 |
+
+A ordem permaneceu igual à seleção em imagens, mas os resultados continuam
+limitados. Nos vídeos 29 e 52, as duas manuais geraram uma caixa cobrindo a
+imagem inteira como aglomerado em todos os quadros e não tiveram TP de
+indivíduos. Otsu teve melhor desempenho nesses vídeos, mas pior nos outros
+dois. A cobertura de pequenos ficou abaixo de 5% nas cinco configurações;
+todos os pequenos localizados nos pares válidos foram classificados como normais.
+Esses resultados foram discutidos antes de congelar as escolhas.
+
+## Avaliação final — concluída e consolidada
+
+Foi aprovado manter **s068, s067, s090, s099 e s101**, sem alterar parâmetros,
+nos vídeos completos **14, 24, 38 e 82**. O
+[plano final](../scripts/limiarizacao/videos/plano_final.json) registra a
+decisão, os hashes das fontes e a proveniência da seleção concluída. Ele
+preserva os mesmos critérios: F1 de indivíduos 0/2, erros de classificação
+separados, aglomerados à parte e IoU ≥ 0,50. Não há novos pesos ou desempates.
+
+Vídeos 14, 24 e 38 têm 1.470 quadros a 49 FPS; o 82 tem 1.500 a 50 FPS.
+Todos têm 640 × 480 pixels e 30 segundos. As 5.910 anotações existem e seu
+formato foi conferido, sem lacunas. Foram **29.550 avaliações e 20 vídeos
+comparativos**. A verificação temporal usou as mesmas cinco posições de
+referência por vídeo, com hashes dos pixels antes de cada detecção.
+
+O mesmo script executa a etapa final com `--etapa final`. Sem essa opção,
+o padrão permanece seleção. Planos, tipos de manifesto, vídeos e pastas são
+validados por etapa. Os resultados finais ficam em
+`resultados/videos/limiarizacao/final/batch__<execucao>/`, com a mesma estrutura
+de mídia, tabelas, código arquivado, hashes e PDF.
+
+As cinco escolhas e os critérios foram congelados antes da execução final
+nesta versão. Os resultados finais são apresentados para as cinco, sem
+iniciar outra busca de parâmetros nesse conjunto. Não se interpretará uma
+escolha posterior pelo maior F1 final como decisão anterior ao teste. A exposição
+histórica aos dados permanece documentada; a reserva atual não torna os vídeos
+inéditos. A limiarização foi consolidada com suas limitações antes de
+implementar o próximo detector em etapa própria.
+
+O batch final `batch__20260920T030805588232Z` está concluído. A conferência
+verificou cobertura sem lacunas, contagens por quadro/vídeo/configuração,
+hashes das fontes e saídas e código arquivado. Os registros indicam a
+conferência de decodificação dos 20 MP4 feita pelo executor; não houve nova
+decodificação nem renderização do PDF nesta revisão. Os testes de código
+também não foram executados nesta revisão.
+
+`s099` e `s101` empataram no maior F1 final de indivíduos, 0,566796, mas não
+localizaram as 2.936 ocorrências de pequenos. As manuais, líderes na seleção,
+ficaram próximas de 0,02 no final. A
+[análise consolidada](conclusao_limiarizacao.md) detalha essa variação,
+os erros de classificação e as limitações do estudo. O ranking é descritivo;
+não redefine retroativamente a escolha feita antes da avaliação final.
 
 Comandos e detalhes das saídas: [scripts/README.md](../scripts/README.md).
 Regras das métricas: [analise/README.md](README.md).

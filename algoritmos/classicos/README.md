@@ -7,17 +7,26 @@ reúne o fluxograma e as regras de execução, avaliação e revisão dos batche
 
 | Método | Estado |
 |---|---|
-| Limiarização manual/Otsu + morfologia + componentes conectados | Primeira inspeção individual executada pelo pesquisador; validação experimental pendente |
-| Blobs | Planejado |
+| Limiarização manual/Otsu + morfologia + componentes conectados | Desenvolvimento, seleção e avaliação final concluídos; [análise consolidada](../../analise/conclusao_limiarizacao.md) |
+| Blobs | [Proposta técnica](../../analise/plano_blobs.md) em revisão; ainda não implementado |
 | Watershed | Planejado; representação dos aglomerados a definir |
 
 Os módulos desta pasta não leem nem gravam arquivos. A inspeção de uma imagem
 anotada pode ser feita com o primeiro script descrito em
 [`scripts/README.md`](../../scripts/README.md), que grava mídia, tabelas e configuração.
 O cálculo das métricas está no avaliador separado descrito em
-[`analise/README.md`](../../analise/README.md). A primeira rodada em batch está
-preparada em `scripts/limiarizacao/executar_rodada.py`; sua execução cabe ao
-pesquisador. Processamento de vídeos ainda não está implementado.
+[`analise/README.md`](../../analise/README.md). As cinco rodadas executadas
+usaram `scripts/limiarizacao/executar_rodada.py`. A seleção original executou
+122 configurações distintas nos 60 quadros reservados. A reavaliação por F1
+de indivíduos (0 e 2), com classificação separada, foi concluída e orientou
+a aprovação de `s068`, `s067`, `s090`, `s099` e `s101`.
+`scripts/limiarizacao/executar_videos.py` aplicou essas cinco aos vídeos
+completos 13, 29, 52 e 54: 29.250 avaliações, 20 MP4 comparativos e PDF
+concluídos. Após a revisão, foram congeladas as cinco para a avaliação final
+nos vídeos 14, 24, 38 e 82. A execução com `--etapa final` concluiu
+29.550 avaliações, 20 MP4 e PDF no batch `batch__20260920T030805588232Z`.
+Contagens e integridade dos registros foram conferidas. A conclusão preserva
+as limitações de cobertura e a variação de desempenho entre vídeos.
 Todas as execuções dos algoritmos e experimentos serão feitas pelo pesquisador.
 
 ## Arquivos
@@ -76,8 +85,9 @@ das tabelas vazias. O executor de batch preserva essa mesma convenção.
 Sequência: imagem cinza → limiar manual ou Otsu → abertura → fechamento →
 componentes conectados → filtro de área → classificação por área → caixas.
 
-Todos os parâmetros experimentais devem ser fornecidos. Não há configurações
-selecionadas ou valores apresentados como já calibrados.
+Todos os parâmetros experimentais devem ser fornecidos. O módulo não define
+valores calibrados por padrão; as cinco configurações aprovadas estão no plano
+de vídeos, preservando os parâmetros usados na seleção em imagens.
 
 | Campo | Significado |
 |---|---|
@@ -119,20 +129,22 @@ para permitir sua definição e análise posteriores.
 
 ## Organização das execuções
 
-Os módulos de detecção não escolhem pastas nem escrevem arquivos. O primeiro
-script implementa o caminho em imagens abaixo; vídeos permanecem planejados:
+Os módulos de detecção não escolhem pastas nem escrevem arquivos. Os executores
+organizam imagens e vídeos da seguinte forma:
 
 ```text
 resultados/
 ├── frame-to-frame/
 │   └── <algoritmo>/
-│       └── round<N>/<configuracao>__<execucao>/
+│       └── round<N>/
+│           ├── batch__<execucao>/
+│           └── <configuracao>__<execucao>/
 └── videos/
     └── <algoritmo>/
         ├── selecao/
-        │   └── <configuracao>__<execucao>/
+        │   └── batch__<execucao>/<id>__<configuracao>__<execucao>/
         └── final/
-            └── <configuracao>__<execucao>/
+            └── batch__<execucao>/<id>__<configuracao>__<execucao>/
 ```
 
 Os nomes de algoritmo serão `limiarizacao`, `blobs` e `watershed`.
@@ -143,6 +155,14 @@ O script individual registra a etapa como `inspecao_individual` e também export
 `anotacoes.csv` e `predicoes.txt`. O avaliador separado cria `avaliacao.json` e
 as tabelas de diagnóstico em `avaliacoes/<data-hora-UTC>/` dentro da execução,
 sem sobrescrever resultados anteriores. Os detalhes estão nas documentações dos scripts.
+
+O executor de vídeos salva `avaliacao.json`, resumos, pares e pendências
+diretamente na pasta de cada configuração. Seus 20 MP4 comparativos mostram
+anotações à esquerda e detecções à direita. A pasta do batch contém conferências
+de alinhamento, resumos gerais e PDF. O plano fixa todas as fontes e o executor
+confere os pixels decodificados antes de cada detecção.
+`--etapa selecao` usa o plano e a pasta de seleção; `--etapa final` usa os
+quatro vídeos finais. A ausência dessa opção mantém o padrão seleção.
 
 O nome de configuração terá um resumo legível e um identificador derivado de
 todos os parâmetros; o identificador da execução incluirá data e hora UTC.
@@ -200,7 +220,7 @@ quatro vídeos completos de seleção. Depois do congelamento das escolhas, a
 avaliação final usará os quatro vídeos completos reservados e as anotações
 disponíveis, sem limitação a 15 imagens por vídeo.
 
-Acerto: correspondência única entre previsão e anotação, mesma classe e
+Na avaliação histórica, o acerto exigia correspondência única entre previsão e anotação, mesma classe e
 IoU maior ou igual a 0,50. Previsões sem correspondência contam como falsos
 positivos; anotações sem correspondência contam como falsos negativos.
 Uma previsão da classe errada não é acerto de classificação: contribui como
@@ -209,16 +229,15 @@ Entre as correspondências admissíveis, o avaliador maximiza primeiro o número
 de pares e depois a soma das IoUs. Uma segunda correspondência independente,
 ignorando a classe, serve somente ao diagnóstico de localização.
 
-A seleção utilizará a média dos F1 das três classes (macro-F1), calculando
+A avaliação histórica usou a média dos F1 das três classes (macro-F1), calculando
 primeiro as contagens de cada classe no conjunto de seleção. Acompanharemos
 também precisão, recall e resultados separados por vídeo. Os vídeos podem
 contribuir com quantidades diferentes de objetos dentro de cada classe.
 
-Critérios em ordem:
+Critérios históricos implementados:
 
 1. Maior macro-F1.
 2. Apenas em empate, maior F1 da classe 0.
-3. Persistindo o empate, menor tempo de processamento.
 
 Os empates serão avaliados antes do arredondamento. Diferenças próximas não
 equivalem a empate ou a superioridade estatística demonstrada. A medição do
@@ -231,6 +250,16 @@ antes de recalcular as métricas. O script de avaliação individual continua
 processando uma imagem; a agregação é feita pelo executor de batch. Nenhum
 deles seleciona automaticamente as cinco melhores configurações.
 
+Após observar a seleção, foi aprovado o critério atual: **F1 de indivíduos**,
+reunindo 0 e 2. A correspondência permanece única e exige IoU ≥ 0,50, mas
+aceita trocas 0/2, registradas como erros de classificação separados. A classe
+1 permanece em outro grupo; trocas indivíduo/aglomerado continuam erros de
+detecção. A reavaliação refaz o pareamento sobre as mesmas caixas salvas e
+preserva os resultados históricos. Não altera os detectores ou a classificação
+por área. Empates ficam para revisão conjunta, sem desempate automático
+por outra métrica. Cobertura por classe, classificação condicional e resultados
+por vídeo complementam o F1 de indivíduos. Detalhes no [guia de avaliação](../../analise/README.md).
+
 ## Pendências e limites
 
 - As 174 lacunas do vídeo 23 constam dos registros locais como arquivos de
@@ -241,8 +270,9 @@ deles seleciona automaticamente as cinco melhores configurações.
   Essa ausência continua como limitação documentada da amostragem.
 - Antes do Watershed, definir como representar caixas de aglomerados e de
   indivíduos quando houver sobreposição nas anotações.
-- Antes de blobs, definir a extração das regiões e das caixas, mantendo
-  explícita a diferença entre área segmentada e área estimada.
+- Antes de blobs, revisar a [proposta de caixas e medidas estimadas](../../analise/plano_blobs.md).
+  O contrato de medidas descrito acima é o implementado para limiarização;
+  a extensão proposta para blobs ainda não existe.
 - Rastreamento, SORT, Lucas–Kanade, Horn–Schunck e predição estão fora desta etapa.
 - A reserva de vídeos vale para esta organização experimental. O uso dos dados
   na versão anterior permanece parte do histórico e não torna esses dados inéditos.

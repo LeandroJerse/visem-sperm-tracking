@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+from collections.abc import Callable
 from contextlib import ExitStack
 import csv
 from dataclasses import asdict
@@ -232,6 +233,9 @@ def executar_configuracao(item_config: dict, config, plano: dict, pasta: Path, m
         "quantidade_quadros_prevista": len(plano["quadros"]), "quantidade_quadros_concluida": 0,
         "metricas_calculadas": False,
     }
+    if "origens" in item_config:
+        registro["origens_desenvolvimento"] = item_config["origens"]
+        registro["sha256_parametros_canonicos"] = item_config["sha256_parametros_canonicos"]
     pasta.mkdir(exist_ok=False)
     por_video = defaultdict(list)
     tempos = defaultdict(int)
@@ -319,8 +323,19 @@ def registrar_falha(caminho: Path, registro: dict, erro: BaseException) -> None:
 
 def executar(args: argparse.Namespace) -> Path:
     caminho_plano, rodada_solicitada = localizar_plano(args)
+    return executar_plano(caminho_plano, carregar_plano, rodada_solicitada=rodada_solicitada)
+
+
+def executar_plano(
+    caminho_plano: Path,
+    carregador: Callable[[bytes], dict],
+    *,
+    rodada_solicitada: str | None = None,
+    fontes_adicionais: tuple[Path, ...] = (),
+) -> Path:
+    """Compartilha a execução; cada entrada conserva seu validador de partição."""
     plano_bytes = caminho_plano.read_bytes()
-    plano = carregar_plano(plano_bytes)
+    plano = carregador(plano_bytes)
     if rodada_solicitada is not None and plano["rodada"] != rodada_solicitada:
         raise ValueError(f"O plano solicitado para {rodada_solicitada} declara {plano['rodada']}. Corrija a identificação antes de executar.")
     try:
@@ -354,7 +369,8 @@ def executar(args: argparse.Namespace) -> Path:
               RAIZ / "scripts" / "limiarizacao" / "preparar_rodada.py",
               *sorted((RAIZ / "algoritmos").rglob("*.py")),
               RAIZ / "analise" / "__init__.py", RAIZ / "analise" / "avaliacao_deteccao.py",
-              RAIZ / "analise" / "agregacao_deteccao.py", RAIZ / "analise" / "relatorio_rodada.py"]
+              RAIZ / "analise" / "agregacao_deteccao.py", RAIZ / "analise" / "relatorio_rodada.py",
+              *fontes_adicionais]
     fontes_bytes = {arquivo.relative_to(RAIZ).as_posix(): arquivo.read_bytes() for arquivo in fontes}
     codigo["sha256_arquivos"] = {nome: sha256(conteudo) for nome, conteudo in fontes_bytes.items()}
     inicio = agora()
@@ -364,7 +380,8 @@ def executar(args: argparse.Namespace) -> Path:
         raise ValueError("A pasta da rodada precisa permanecer dentro de limiarizacao/.")
     pasta_batch = saida_rodada / f"batch__{identificador}"
     metadados = {
-        "etapa": "desenvolvimento_imagens", "algoritmo": "limiarizacao", "rodada": plano["rodada"],
+        "etapa": {"desenvolvimento": "desenvolvimento_imagens", "selecao": "selecao_imagens"}[plano["particao"]],
+        "algoritmo": "limiarizacao", "rodada": plano["rodada"],
         "batch_id": identificador, "seed": plano["seed"], "plano_sha256": sha256(plano_bytes),
         "plano_salvo": (pasta_batch / "rodada.json").relative_to(RAIZ).as_posix(),
         "exclusoes": plano["exclusoes"],

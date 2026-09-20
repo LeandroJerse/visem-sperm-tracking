@@ -6,14 +6,242 @@ Todos os comandos abaixo são executados na raiz do projeto.
 O [protocolo de desenvolvimento por rodadas](../../analise/protocolo_rodadas.md)
 registra o fluxo de preparação, execução, avaliação e revisão conjunta.
 
-## Quinta rodada em batch — preparada, ainda não executada
+## Avaliação final em vídeos — concluída
+
+A seleção em vídeos foi concluída e conferida no batch
+`batch__20260920T023832151694Z`. Após a revisão dos resultados, foram aprovadas
+as mesmas **s068, s067, s090, s099 e s101**, com parâmetros e métricas congelados,
+para os vídeos **14, 24, 38 e 82**. O [plano final](videos/plano_final.json)
+registra essa decisão, as fontes e a execução de seleção que a antecedeu.
+
+Para repetir, execute na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_videos.py" --etapa final
+```
+
+| Vídeo final | Quadros | FPS |
+|---|---:|---:|
+| 14 | 1470 | 49 |
+| 24 | 1470 | 49 |
+| 38 | 1470 | 49 |
+| 82 | 1500 | 50 |
+
+Todos têm 640 × 480 pixels e 30 segundos; existem imagens e arquivos de
+anotação para todos os índices. São **5.910 quadros por configuração**,
+**29.550 avaliações** e **20 MP4 comparativos**, além das tabelas e do PDF
+de três páginas. O conteúdo visual mantém anotações à esquerda, detecções
+à direita, classes, quadro, tempo e contagens de indivíduos.
+
+As saídas usam a mesma estrutura descrita abaixo, na pasta
+`resultados/videos/limiarizacao/final/batch__<execucao>/`. As conferências
+de fontes, alinhamento e pixels acontecem antes das detecções e a integridade
+dos vídeos gerados é verificada após a gravação. Divergências interrompem
+a execução, sem substituições ou exclusões automáticas.
+
+**Informe `--etapa final`: sem esse argumento, o padrão continua sendo seleção.**
+O executor rejeita misturas entre plano, vídeos e etapa. `--plano` aceita uma
+cópia exata do plano correspondente; não serve para editar configurações.
+Os relatórios identificam a etapa e seus quatro vídeos. Para gerar somente
+outro PDF de uma execução final concluída:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_videos.py" --etapa final --somente-relatorio ".\resultados\videos\limiarizacao\final\batch__<execucao>"
+```
+
+Nesta etapa, o ranking descreve o desempenho das cinco escolhas congeladas.
+Não cria novas candidatas nem autoriza ajustes pelos resultados finais.
+A reserva dos vídeos nesta versão não elimina seu uso histórico anterior.
+O batch `batch__20260920T030805588232Z` concluiu as 29.550 avaliações,
+20 MP4 e PDF. A conferência verificou cobertura, contagens e hashes, sem
+reexecutar detectores ou decodificar novamente os vídeos. A
+[conclusão da limiarização](../../analise/conclusao_limiarizacao.md) reúne
+os resultados e as limitações. Os testes de código não foram executados
+nesta revisão; seus comandos permanecem na seção seguinte.
+
+## Vídeos completos de seleção — concluídos
+
+Foram aprovadas `s068`, `s067`, `s090`, `s099` e `s101`, mantendo exatamente
+os parâmetros da seleção em imagens. O [plano](videos/plano_selecao.json)
+fixa essas configurações, os vídeos 13, 29, 52 e 54 e todas as anotações.
+
+Na raiz do projeto, instale as dependências no Python usado para executar:
+
+```powershell
+& "C:\Python313\python.exe" -m pip install -r ".\algoritmos\classicos\requirements.txt" -r ".\analise\requirements.txt" -r ".\analise\requirements-relatorio.txt"
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_videos.py" --etapa selecao
+```
+
+O comando processa os quatro MP4 completos para cada configuração e gera
+**20 vídeos comparativos**: anotações originais à esquerda, detecções à direita,
+com caixas, classes, número do quadro, tempo e TP/FP/FN dos indivíduos.
+As cores permanecem amarelo (0), roxo (1) e ciano (2). Cada vídeo tem 30 segundos,
+na velocidade original; a comparação lado a lado tem 1280 × 584 pixels.
+
+| Vídeo | Quadros | FPS |
+|---|---:|---:|
+| 13 | 1470 | 49 |
+| 29 | 1470 | 49 |
+| 52 | 1440 | 48 |
+| 54 | 1470 | 49 |
+
+São **5.850 quadros por configuração**, totalizando 29.250 avaliações.
+Antes da detecção, o executor confere os arquivos e o alinhamento temporal
+entre cinco JPEGs de referência de cada vídeo e todos os seus quadros MP4.
+O quadro esperado precisa ser o único mais semelhante, pelo erro médio
+absoluto em cinza; divergências ou ambiguidades interrompem a execução.
+Essa conferência usa amostras e não exige igualdade dos pixels JPEG/MP4.
+Imagens da conferência ficam disponíveis para inspeção visual.
+
+A primeira leitura também registra o hash dos pixels de todos os quadros.
+As cinco configurações precisam receber esses mesmos pixels nas leituras
+seguintes. O tempo salvo é `quadro / FPS`, com índice começando em zero,
+conforme os metadados de taxa constante dos MP4. Os arquivos originais são
+somente lidos. Os vídeos finais 14, 24, 38 e 82 pertencem à etapa posterior.
+
+```text
+resultados/videos/limiarizacao/selecao/batch__<execucao>/
+├── plano.json, execucao.json, codigo.zip
+├── conferencia/                 imagens, alinhamento e hashes dos quadros
+├── resumo_configuracoes.csv, resumo_por_video.csv, ranking.csv
+├── <id>__<configuracao>__<execucao>/
+│   ├── configuracao.json, execucao.json, avaliacao.json
+│   ├── deteccoes.csv, anotacoes.csv, por_quadro.csv
+│   ├── pares.csv, pendentes.csv, resumo.csv, resumo_por_video.csv
+│   └── midia/<id>__cfg-<hash>__video-<numero>.mp4
+└── relatorios/<execucao>/relatorio.pdf
+```
+
+O nome da pasta resume os parâmetros; o nome curto de cada MP4 identifica a
+configuração e o vídeo, evitando caminhos excessivamente longos no Windows.
+`configuracao.json` contém todos os valores. As tabelas preservam caixas em
+pixels e normalizadas, classes, áreas, centroides, origem e tempo. Índices de
+detecção valem dentro do quadro; ainda não representam trajetórias ou indivíduos
+únicos ao longo do vídeo.
+
+O F1 mantém a regra aprovada: indivíduos 0/2 juntos, erros de classificação
+separados e aglomerados à parte. As contagens são somadas antes do cálculo.
+O PDF terá três páginas com F1, cobertura, classificação e variação por vídeo.
+O ranking não escolhe uma vencedora automaticamente.
+
+Cada chamada cria uma nova pasta. Se falhar, os arquivos parciais permanecem
+com a falha registrada; não há retomada automática. Se apenas o PDF falhar,
+as métricas continuam concluídas. Para gerar somente outro relatório:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_videos.py" --somente-relatorio ".\resultados\videos\limiarizacao\selecao\batch__<execucao>"
+```
+
+O pesquisador executou a seleção no batch `batch__20260920T023832151694Z`:
+as 29.250 avaliações, os 20 MP4 e o PDF foram concluídos. Foram conferidos
+os hashes, as contagens, os registros de alinhamento e as três páginas do PDF.
+As configurações manuais falharam em localizar indivíduos nos vídeos 29 e 52;
+os resultados permanecem preservados. Para executar os testes de código,
+incluindo as verificações acrescentadas para a etapa final:
+
+```powershell
+& "C:\Python313\python.exe" -m unittest scripts.testes.test_videos_limiarizacao analise.test_relatorio_videos
+```
+
+## Reavaliação de indivíduos — concluída
+
+A seleção de 122 configurações nos 60 quadros foi concluída no batch
+`batch__20260920T012713968145Z`. A reavaliação foi concluída em
+`reavaliacoes_individuos/20260920T021112218814Z/`. Para repeti-la:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\reavaliar_selecao.py"
+```
+
+Ele refaz o pareamento com dois grupos: indivíduos (0 e 2) e aglomerados (1).
+Uma troca 0/2 é acerto de detecção com erro de classificação separado.
+Indivíduos e aglomerados não formam par entre si. O ranking usa F1 de
+indivíduos, sem pesos ou desempate automático por outra métrica.
+As regras e suas limitações estão no [guia de avaliação](../../analise/README.md).
+
+O script lê somente tabelas e registros salvos, confere suas origens,
+configurações, quadros e caixas antes de avaliar e registra hashes e código.
+Não abre vídeos, imagens ou anotações originais nem repete a detecção.
+`--batch` permite informar outra execução completa do mesmo plano aprovado;
+sem esse argumento, a origem é fixa e não depende da pasta mais recente.
+
+Cada execução cria a seguinte estrutura dentro do batch:
+
+```text
+reavaliacoes_individuos/<data-hora-UTC>/
+├── execucao.json, codigo.zip
+├── resumo_configuracoes.csv, resumo_por_video.csv, ranking.csv
+├── s001/ ... s122/
+│   ├── avaliacao.json, por_quadro.csv
+│   └── pares.csv, pendentes.csv
+└── relatorios/<data-hora-UTC>/
+    ├── relatorio.pdf
+    ├── relatorio.json
+    └── execucao_origem.json
+```
+
+`pasta_origem` remete às configurações e imagens comparativas anteriores;
+não são geradas novas imagens. As tabelas registram contagens e métricas dos
+dois grupos, cobertura de cada classe original, matriz de classificação 0/2
+e erros entre os indivíduos pareados. `ranking.csv` mantém postos iguais nos
+empates exatos, destaca empate atravessando a quinta posição e não promove
+configurações automaticamente.
+
+O PDF reúne F1 de indivíduos, cobertura de normais/pequenos, classificação
+condicional e variação por vídeo. Uma falha no PDF preserva as métricas.
+Para gerar apenas outro PDF, substitua `<execucao>` pelo nome da reavaliação:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\reavaliar_selecao.py" --somente-relatorio ".\resultados\frame-to-frame\limiarizacao\selecao\batch__20260920T012713968145Z\reavaliacoes_individuos\<execucao>"
+```
+
+Dependências: `analise/requirements.txt` e `analise/requirements-relatorio.txt`.
+O pesquisador executou a reavaliação e gerou seu PDF; os resultados foram
+conferidos. Os testes de código permanecem disponíveis:
+
+```powershell
+& "C:\Python313\python.exe" -m unittest analise.test_avaliacao_individuos analise.test_relatorio_individuos scripts.testes.test_reavaliar_selecao
+```
+
+## Seleção original — concluída
+
+As cinco rodadas foram concluídas. A [revisão do round5](../../analise/rodadas/round5_revisao.md)
+recomenda encerrar o desenvolvimento e registra a seleção aprovada:
+122 configurações distintas das cinco rodadas, sem novos ajustes, nos
+quadros 0, 100, ..., 1400 dos vídeos 13, 29, 52 e 54.
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_selecao.py"
+```
+
+O [plano de seleção](selecao/plano.json) fixa os 60 quadros, seus hashes,
+as 122 configurações e todas as suas origens. São 7.320 avaliações.
+Os IDs `s001` a `s122` seguem a primeira ocorrência nas rodadas; não são
+posições no ranking. Repetições equivalentes foram retiradas apenas da seleção.
+
+Os resultados foram salvos em `resultados/frame-to-frame/limiarizacao/selecao/`,
+no mesmo formato das rodadas: uma pasta de batch, uma por configuração,
+imagens comparativas, previsões, tabelas e PDF. Com 122 configurações e
+quatro vídeos, o PDF terá nove páginas, em três blocos de até 48 configurações.
+Repetir o comando cria nova execução, preservando a anterior.
+`--plano` permite apontar uma cópia do plano salvo.
+
+O executor confere a composição aprovada e os hashes antes de detectar.
+Não aceita vídeos de desenvolvimento ou de avaliação final como substitutos.
+Esse executor mantém as regras históricas: macro-F1 das três classes e
+F1 normal somente no empate. Seu PDF facilita a revisão, sem escolher cinco.
+A reavaliação acima usa o novo critério acordado, em saídas separadas.
+As cinco aprovadas seguem para a execução em vídeos descrita no início deste guia.
+
+## Quinta rodada em batch — concluída
 
 O plano [round5.json](rodadas/round5.json) contém **14 configurações** definidas
 após a [revisão do round4](../../analise/rodadas/round4_revisao.md). É a última
 rodada planejada de desenvolvimento. A
 [reavaliação de 25 combinações](../../analise/rodadas/round4_reavaliacao_areas.json)
 sobre caixas salvas não superou a melhor macro-F1 do round4 nessa grade.
-Os novos parâmetros abaixo são hipóteses a verificar, sem melhoria garantida.
+Os parâmetros abaixo foram testados; seus resultados estão na
+[revisão do round5](../../analise/rodadas/round5_revisao.md).
 
 | Grupo | Configurações | Parâmetros comparados |
 |---|---:|---|
@@ -27,7 +255,7 @@ e conectividade 8. As áreas são pixels da região segmentada. Os parâmetros
 completos e os objetivos de cada configuração estão no plano.
 
 São os mesmos **178 quadros**, ordem, hashes e duas exclusões das rodadas
-anteriores: **2.492 avaliações de imagem**. O pesquisador executará:
+anteriores: **2.492 avaliações de imagem**, já concluídas. Para repetir:
 
 ```powershell
 & "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round5
@@ -39,10 +267,9 @@ a seed 42 permanece como registro. Para repetir, use o mesmo JSON salvo.
 `preparar_rodada.py` não reconstrói essa lista. **Sem argumentos, o executor
 continua usando round1**, por isso informe `--rodada round5`.
 
-Após a execução, a revisão conjunta dos resultados precederá o congelamento
-das candidatas para a seleção. Nenhuma finalista foi escolhida nesta preparação.
-Round0 fica fora das cinco rodadas de desenvolvimento; a seleção e a avaliação
-final permanecem posteriores, conforme o protocolo.
+A revisão encerrou as cinco rodadas e orientou o plano de seleção acima.
+Nenhuma finalista foi escolhida com os resultados de desenvolvimento.
+Round0 fica fora das cinco rodadas; a avaliação final permanece posterior.
 
 ## Quarta rodada em batch — anterior
 
@@ -247,8 +474,8 @@ gere somente o PDF, na raiz do projeto:
 Para outra execução, substitua o caminho de `--batch` pela pasta que contém
 `resumo_configuracoes.csv` e `resumo_por_video.csv` daquela execução. Não
 informe a pasta inteira do `round` nem a pasta de uma configuração isolada.
-O gerador do relatório foi conferido estaticamente. O pesquisador o executa;
-a apresentação visual do primeiro PDF ainda precisa ser conferida.
+Os PDFs das cinco rodadas foram gerados e conferidos. A adaptação à seleção
+foi revisada estaticamente; seu primeiro PDF depende da execução pelo pesquisador.
 
 ### Repetição e seed
 
@@ -288,8 +515,8 @@ rodada existente, use `executar_rodada.py` com o plano salvo.
 
 O gerador exige um arquivo novo, não sobrescreve planos e registra sua versão
 e a versão do Python. Seu espaço é o da exploração inicial. Round2, round3,
-round4 e round5 usam listas determinísticas já salvas. O round5 ainda será
-executado e seus resultados serão revisados em conjunto.
+round4 e round5 usam listas determinísticas já salvas e executadas.
+Seus resultados foram revisados antes de preparar a seleção.
 
 | Parâmetro explorado | Valores da primeira rodada |
 |---|---|
@@ -311,7 +538,7 @@ O código foi conferido estaticamente. A execução do batch e dos testes cabe
 ao pesquisador. Testes sintéticos de agregação e integridade do plano:
 
 ```powershell
-& "C:\Python313\python.exe" -m unittest analise.test_avaliacao_deteccao analise.test_agregacao_deteccao scripts.testes.test_plano_limiarizacao
+& "C:\Python313\python.exe" -m unittest analise.test_avaliacao_deteccao analise.test_agregacao_deteccao scripts.testes.test_plano_limiarizacao scripts.testes.test_selecao_limiarizacao
 ```
 
 ## Execução individual em imagem

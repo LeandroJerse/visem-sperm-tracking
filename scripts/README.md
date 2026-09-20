@@ -1,33 +1,67 @@
 # Guia dos scripts
 
-**Para executar a quinta rodada**, abra o PowerShell na raiz do projeto:
+**Limiarização concluída, incluindo a avaliação final.** Consulte a
+[análise consolidada](../analise/conclusao_limiarizacao.md) e a
+[proposta do próximo detector, blobs](../analise/plano_blobs.md).
+Ainda não existe um script de execução de blobs.
+
+Para repetir a avaliação final, abra o PowerShell na raiz do projeto:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_rodada.py" --rodada round5
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\executar_videos.py" --etapa final
 ```
 
-Esse comando executa e avalia as 14 configurações nos mesmos 178 quadros
-aprovados (2.492 avaliações) e gera um PDF ao concluir. O plano está preparado,
-mas o round5 ainda não foi executado; a execução será feita pelo pesquisador.
-Antes da primeira execução com relatório, instale as dependências indicadas no
-[guia de limiarização](limiarizacao/README.md).
-Os resultados ficam em `resultados/frame-to-frame/limiarizacao/round5/`.
-Repetir o comando usa o mesmo plano e cria novas saídas, sem sobrescrever.
-O motivo dos novos parâmetros está na [revisão do round4](../analise/rodadas/round4_revisao.md)
-e a lista completa, no [plano do round5](limiarizacao/rodadas/round5.json).
-As quatro rodadas anteriores já foram executadas e permanecem disponíveis com
-`--rodada round1`, `--rodada round2`, `--rodada round3` ou `--rodada round4`.
-**Sem argumentos, o executor ainda usa round1.**
+A seleção em imagens e a reavaliação das **122 configurações × 60 quadros**
+foram concluídas, assim como o teste das cinco nos vídeos 13, 29, 52 e 54.
+Após a revisão, foram congeladas **s068, s067, s090, s099 e s101** para os
+vídeos finais **14, 24, 38 e 82**. O comando processa **5.910 quadros por
+configuração**, com parâmetros e critérios preservados no
+[plano final](limiarizacao/videos/plano_final.json).
 
-**Onde ver o F1:** abra `batch__<execucao>/resumo_configuracoes.csv` dentro
-do respectivo `round`. `macro_f1` é a métrica principal; `f1_classe_0`,
-`f1_classe_1` e `f1_classe_2` mostram cada classe. O PDF fica em
-`batch__<execucao>/relatorios/<data-hora-UTC>/relatorio.pdf`.
+São gerados **20 MP4 comparativos**: anotações da base à esquerda e detecções
+à direita. Tabelas, ranking e PDF acompanham os vídeos em
+`resultados/videos/limiarizacao/final/batch__<data-hora-UTC>/`.
+O F1 de indivíduos (0 e 2) continua sendo o critério principal; trocas de
+classificação e aglomerados (1) são registrados separadamente.
+Antes da detecção, o executor verifica arquivos e alinhamento temporal.
+O batch final `batch__20260920T030805588232Z` concluiu as 29.550 avaliações,
+os vídeos e o PDF; contagens e hashes foram conferidos. Os testes de código
+não foram executados nesta revisão documental.
+Repetições criam novas pastas e preservam o histórico. Detalhes, dependências
+e comandos de relatório estão no [guia de limiarização](limiarizacao/README.md).
+
+**Sem `--etapa final`, o comando continua executando a seleção.** Para repetir
+explicitamente a etapa concluída, use `executar_videos.py --etapa selecao`.
+O mesmo script atende às duas etapas; cada uma tem seu plano e sua pasta.
+
+Para repetir somente a reavaliação das caixas salvas das imagens:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\reavaliar_selecao.py"
+```
+
+Esse comando mantém como origem o batch `batch__20260920T012713968145Z` e
+cria `reavaliacoes_individuos/<execucao>/` dentro dele, sem repetir a detecção.
+As cinco rodadas anteriores já foram executadas e permanecem disponíveis com
+`executar_rodada.py --rodada round1` até `--rodada round5`.
+**Sem argumentos, `executar_rodada.py` ainda usa round1.**
+
+**Onde ver o F1:** `ranking.csv`, coluna `f1_individuos`, na pasta do batch de
+vídeos após sua execução. Para as imagens, consulte
+`reavaliacoes_individuos/<execucao>/ranking.csv` dentro do batch de seleção.
+Na respectiva pasta, `resumo_configuracoes.csv` traz cobertura e
+classificação; `resumo_por_video.csv` mostra a variação entre vídeos.
+O PDF fica em `relatorios/<data-hora-UTC>/relatorio.pdf` dentro da execução.
+Os resumos e PDFs das rodadas e da seleção original continuam usando
+macro-F1 das três classes.
 
 ## Qual script usar?
 
 | O que você quer fazer | Script | Quando usar |
 |---|---|---|
+| Repetir a avaliação das cinco configurações em vídeos completos | [limiarizacao/executar_videos.py](limiarizacao/executar_videos.py) | `--etapa final` ou `--etapa selecao`: etapas concluídas; `--somente-relatorio`: outro PDF |
+| Repetir a reavaliação das caixas salvas | [limiarizacao/reavaliar_selecao.py](limiarizacao/reavaliar_selecao.py) | Etapa já concluída; também regenera seu PDF com `--somente-relatorio` |
+| Repetir a detecção nas imagens de seleção | [limiarizacao/executar_selecao.py](limiarizacao/executar_selecao.py) | Execução original já concluída; preserva avaliação histórica por três classes |
 | Executar e avaliar uma rodada completa | [limiarizacao/executar_rodada.py](limiarizacao/executar_rodada.py) | Comando principal dos batches; a avaliação já está incluída |
 | Inspecionar uma única imagem | [limiarizacao/inspecionar_imagem.py](limiarizacao/inspecionar_imagem.py) | Comparação visual e tabelas, com imagem, anotação e configuração informadas |
 | Avaliar uma inspeção individual já salva | [avaliacao/avaliar_imagem.py](avaliacao/avaliar_imagem.py) | Calcula as métricas de uma imagem; não é necessário depois do batch |
@@ -40,15 +74,20 @@ do respectivo `round`. `macro_f1` é a métrica principal; `f1_classe_0`,
 [round5.json](limiarizacao/rodadas/round5.json) estão prontos.
 Os quatro últimos são listas determinísticas definidas pela análise,
 sem novo sorteio; a seed 42 permanece apenas como registro. Estão previstas
-cinco rodadas de desenvolvimento. Depois da execução do round5, haverá revisão
-conjunta e congelamento das candidatas para a seleção; o batch não escolhe
-finalistas nem constitui avaliação final. `round0` reúne as inspeções iniciais
+cinco rodadas de desenvolvimento, já concluídas. As 122 configurações distintas
+foram comparadas na seleção; as cinco candidatas para vídeos foram aprovadas
+após a revisão da reavaliação. Nenhum batch promove candidatos automaticamente.
+A avaliação final é identificada por `--etapa final`.
+`round0` reúne as inspeções iniciais
 e fica fora dessa contagem.
 
 ```text
 scripts/
 ├── limiarizacao/
 │   ├── executar_rodada.py
+│   ├── executar_selecao.py
+│   ├── reavaliar_selecao.py
+│   ├── executar_videos.py
 │   ├── inspecionar_imagem.py
 │   ├── preparar_rodada.py
 │   ├── rodadas/round1.json
@@ -56,12 +95,15 @@ scripts/
 │   ├── rodadas/round3.json
 │   ├── rodadas/round4.json
 │   ├── rodadas/round5.json
+│   ├── selecao/plano.json
+│   ├── videos/plano_selecao.json
+│   ├── videos/plano_final.json
 │   └── README.md                 detalhes e demais comandos
 ├── avaliacao/
 │   ├── avaliar_imagem.py
 │   └── gerar_relatorio_rodada.py
 ├── configuracoes/limiarizacao.modelo.json
-└── testes/test_plano_limiarizacao.py
+└── testes/                       verificações dos planos e das entradas
 ```
 
 O modelo em `configuracoes/` serve à inspeção individual. O batch usa as

@@ -3,7 +3,129 @@
 O fluxo de execução, avaliação e revisão conjunta de cada rodada está no
 [protocolo de desenvolvimento por rodadas](protocolo_rodadas.md), com fluxograma.
 
-O avaliador compara caixas detectadas com as anotações já exportadas por uma
+## Critério atual: localizar indivíduos e registrar a classificação
+
+A seleção original de 122 configurações nos 60 quadros dos vídeos 13, 29, 52
+e 54 foi concluída. Após a revisão dos resultados, foi aprovada uma nova
+avaliação das **mesmas caixas salvas**, mantendo os resultados anteriores:
+
+- **Indivíduos (0 e 2):** uma correspondência com IoU ≥ 0,50 conta como acerto
+  de detecção, mesmo com troca entre normal e pequeno. Essa troca é registrada
+  como erro de classificação.
+- **Aglomerados (1):** avaliados separadamente. Uma troca entre indivíduo e
+  aglomerado continua sendo erro de detecção nos respectivos grupos.
+- O pareamento é um para um, maximiza a quantidade de pares e depois a soma
+  das IoUs. As correspondências são recalculadas, preservando os rótulos originais.
+
+`avaliacao_individuos.py` implementa as novas regras e a agregação das contagens.
+O pesquisador executou `scripts/limiarizacao/reavaliar_selecao.py`.
+Para repetir essa reavaliação:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\limiarizacao\reavaliar_selecao.py"
+```
+
+O batch de origem padrão é `batch__20260920T012713968145Z`, na seleção.
+Dentro dele, cada execução cria `reavaliacoes_individuos/<execucao>/`:
+
+| Campo ou arquivo | Como interpretar |
+|---|---|
+| `ranking.csv`: `f1_individuos` | Métrica principal, usando TP/FP/FN somados dos indivíduos |
+| `recall_classe_0`, `recall_classe_2` | Fração dos normais/pequenos anotados que recebeu par, mesmo com troca 0/2 |
+| `f1_aglomerados` | F1 separado da classe 1 |
+| `pares_corretos`, `pares_incorretos` | Rótulos iguais ou trocados entre indivíduos pareados |
+| `matriz_0_0`, `matriz_0_2`, `matriz_2_0`, `matriz_2_2` | Primeiro índice: anotação; segundo: previsão, somente indivíduos pareados |
+| `acuracia_condicional` | Pares com rótulo correto / pares de indivíduos; exclui perdas e falsas detecções |
+| `resumo_por_video.csv` | Mesmos diagnósticos por vídeo |
+| `sXXX/pares.csv`, `sXXX/pendentes.csv` | Correspondências e objetos sem par, rastreáveis até suas caixas salvas |
+
+O F1 de indivíduos não é a média dos F1 de normal e pequeno. Somar as
+contagens dá mais influência às classes e vídeos com mais casos; cobertura
+por classe e resultados por vídeo complementam a revisão. Acurácia condicional
+alta, sozinha, não significa que o detector encontrou muitos objetos.
+Denominadores nulos permanecem indefinidos. Se houver apenas FP ou FN, F1=0.
+
+O ranking usa a fração exata do F1: empates mantêm o mesmo posto, sem pesos
+ou desempate automático por outra métrica. IDs apenas estabilizam a ordem
+visual. Após a revisão, foram aprovadas `s068`, `s067`, `s090`, `s099` e `s101`
+para os vídeos completos de seleção. O empate entre as duas últimas ocupa
+as posições 4 e 5; não atravessa o limite das cinco vagas.
+
+`relatorio_individuos.py` gera um novo PDF com F1 de indivíduos, cobertura,
+classificação condicional e comparação entre vídeos. As estatísticas são
+descritivas entre configurações, sem teste de significância. Para as 122
+candidatas, são nove páginas. Os comandos de repetição do relatório, dependências
+e testes estão no [guia de limiarização](../scripts/limiarizacao/README.md).
+A reavaliação `20260920T021112218814Z` e seu PDF foram executados pelo
+pesquisador e conferidos: 122 configurações × 60 quadros, preservando as caixas.
+
+A mudança do critério foi decidida após observar a primeira seleção.
+Esse histórico está registrado na versão 2 do protocolo; a mudança não deve
+ser apresentada como uma regra anterior aos resultados. As métricas de três
+classes, o macro-F1 e os PDFs históricos descritos a seguir permanecem intactos.
+
+## Avaliação dos vídeos completos de seleção — concluída
+
+`scripts/limiarizacao/executar_videos.py` aplica as cinco configurações aprovadas
+aos MP4 completos 13, 29, 52 e 54, sem mudar parâmetros ou critérios.
+São 5.850 quadros por configuração, todos com arquivo de anotação previsto.
+O executor verifica fontes e alinhamento antes de detectar; interrupções não
+são transformadas em quadros sem objetos. Os detalhes e comandos estão no
+[guia de limiarização](../scripts/limiarizacao/README.md).
+
+As contagens de indivíduos e aglomerados são somadas antes de recalcular F1,
+tanto por vídeo como por configuração. As tabelas distinguem cobertura de
+normais/pequenos e erros de classificação entre os pares 0/2. As contagens
+representam ocorrências nos quadros, sem deduplicação temporal ou rastreamento.
+
+`relatorio_videos.py` gera três páginas com F1 de indivíduos, cobertura,
+classificação condicional e resultados por vídeo. Confere os hashes dos
+resumos, a cobertura esperada e a coerência entre totais e subtotais antes
+de montar o PDF. As estatísticas descrevem as cinco configurações, sem teste
+de significância ou escolha automática da vencedora. O relatório usa os
+resumos; a conferência dos MP4 gerados cabe ao executor.
+
+O pesquisador concluiu o batch `batch__20260920T023832151694Z`: 29.250
+avaliações, 20 MP4 e PDF de três páginas. Hashes, contagens e correspondências
+salvas foram conferidos, assim como o alinhamento registrado e a apresentação
+do PDF. O maior F1 de indivíduos foi 0,257230 (`s068`), com falhas importantes:
+as duas manuais tiveram F1 zero nos vídeos 29 e 52; a cobertura de pequenos
+ficou abaixo de 5% nas cinco configurações. Os pequenos localizados foram
+rotulados como normais nos pares aceitos.
+Os vídeos de seleção já foram usados em imagens. Diferenças de compressão
+JPEG/MP4 e a ampliação para todos os quadros devem ser consideradas na análise;
+essa etapa não constitui uma nova amostra independente.
+
+## Avaliação final — concluída
+
+Após revisar a seleção em vídeos, foram aprovadas as mesmas cinco configurações
+para os MP4 completos **14, 24, 38 e 82**. Parâmetros, IoU, grupos, agregação
+e regras de classificação permaneceram iguais. Foram avaliados **5.910 quadros
+por configuração**, com arquivos de anotação para todos os índices, totalizando
+29.550 avaliações. Arquivos ausentes ou divergentes interrompem a execução.
+
+O comando é `scripts/limiarizacao/executar_videos.py --etapa final`; as saídas
+ficam em `resultados/videos/limiarizacao/final/`. O mesmo módulo de relatório
+distingue seleção e final pelo manifesto, pelo plano e pela pasta de origem.
+Os gráficos finais descrevem as cinco escolhas já congeladas; o ranking não
+serve para iniciar novos ajustes ou apresentar a melhor escolha posterior
+como se tivesse sido fixada antes de observar os resultados finais.
+
+A reserva dos dados nesta versão não elimina seu histórico de uso anterior.
+O batch `batch__20260920T030805588232Z` concluiu as 29.550 avaliações,
+20 vídeos e PDF. Contagens, cobertura e hashes foram conferidos. `s099` e
+`s101` empataram com F1 de indivíduos de 0,566796, mas nenhuma localizou
+as 2.936 ocorrências anotadas de pequenos. O ranking final é descritivo.
+Resultados, parâmetros e limitações estão na
+[conclusão da limiarização](conclusao_limiarizacao.md).
+O próximo método está descrito na [proposta de blobs](plano_blobs.md), ainda
+sem implementação. Os testes de código não foram executados nesta revisão.
+Comandos, dependências e saídas estão no
+[guia de limiarização](../scripts/limiarizacao/README.md).
+
+## Avaliadores históricos: três classes e localização auxiliar
+
+O avaliador original compara caixas detectadas com as anotações já exportadas por uma
 execução individual. Ele não executa novamente o detector, não abre os arquivos
 originais da base e não gera novas imagens. As três classes permanecem:
 0 — normal, 1 — aglomerado e 2 — pequeno (`small_or_pinhead`).
@@ -16,6 +138,17 @@ as métricas. O executor `scripts/limiarizacao/executar_rodada.py` usa essas dua
 funções na rodada de desenvolvimento descrita em [`scripts/README.md`](../scripts/README.md).
 A seleção das melhores configurações permanece uma decisão conjunta.
 
+As cinco rodadas de desenvolvimento estão concluídas. A
+[revisão do round5](rodadas/round5_revisao.md) apresenta o balanço geral, e
+[desenvolvimento_resumo.json](rodadas/desenvolvimento_resumo.json) reúne
+as 122 configurações distintas, métricas e origens. Essa ordenação não
+substitui a seleção nos dados reservados.
+
+`scripts/limiarizacao/executar_selecao.py` realizou a comparação
+das mesmas candidatas nos 60 quadros aprovados dos vídeos 13, 29, 52 e 54.
+As saídas usam a pasta `selecao` no lugar de `round<N>`, com os mesmos
+resumos e regras. O PDF identifica essa partição como Seleção.
+
 ## Onde consultar o F1 de uma rodada
 
 Dentro de `resultados/frame-to-frame/limiarizacao/round<N>/batch__<execucao>/`,
@@ -24,7 +157,7 @@ abra `resumo_configuracoes.csv`. Cada linha representa uma configuração:
 | Coluna | Significado |
 |---|---|
 | `configuracao_id` | Identificador da configuração no plano |
-| `macro_f1` | Métrica principal: média dos três F1 de classe, após agregar as contagens |
+| `macro_f1` | Métrica principal histórica: média dos três F1 de classe, após agregar as contagens |
 | `f1_classe_0`, `f1_classe_1`, `f1_classe_2` | F1 de normal, aglomerado e pequeno, respectivamente |
 | `f1_localizacao` | Diagnóstico auxiliar, ignorando a classe |
 | `pasta` | Local das imagens, parâmetros e tabelas detalhadas dessa configuração |
@@ -66,8 +199,9 @@ padrão amostral exige pelo menos dois valores. Essas estatísticas não são
 intervalos de confiança ou testes de significância. O tempo permanece
 diagnóstico. O relatório não cria novas regras de seleção ou agregação.
 
-A implementação foi conferida estaticamente. O pesquisador executa o gerador;
-a apresentação visual do primeiro PDF ainda precisa ser conferida.
+Os PDFs das cinco rodadas e da seleção original foram produzidos e conferidos.
+Para 122 configurações e quatro
+vídeos, a paginação divide os gráficos em três blocos, totalizando nove páginas.
 
 ## Preparação e execução
 

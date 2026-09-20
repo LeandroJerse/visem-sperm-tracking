@@ -176,8 +176,12 @@ def _carregar(pasta: Path) -> dict:
     if _sha256(plano_bytes) != execucao.get("plano_sha256"):
         raise ValueError("O plano salvo não corresponde ao hash registrado na execução.")
     plano = _json(plano_bytes)
-    if plano.get("versao") != 1 or plano.get("particao") != "desenvolvimento":
+    if plano.get("versao") != 1 or plano.get("particao") not in ("desenvolvimento", "selecao"):
         raise ValueError("Formato de plano ou partição não suportados pelo relatório.")
+    if plano["particao"] == "selecao" and (
+        plano.get("rodada") != "selecao" or execucao.get("etapa") != "selecao_imagens"
+    ):
+        raise ValueError("Plano de seleção incompatível com a etapa registrada.")
     for chave in ("rodada", "algoritmo", "seed"):
         if plano.get(chave) != execucao.get(chave):
             raise ValueError(f"Plano e execução divergem em {chave}.")
@@ -413,7 +417,8 @@ def _cabecalho(pdf, dados: dict, titulo: str, subtitulo: str, pagina: int, total
     _texto(pdf, subtitulo, 32, altura - 56, 9)
     pdf.setStrokeColorRGB(0.84, 0.87, 0.9)
     pdf.line(32, 38, largura - 32, 38)
-    _texto(pdf, f"Desenvolvimento | seed {dados['plano']['seed']} | plano {dados['execucao']['plano_sha256'][:12]}", 32, 23, 8)
+    etapa = "Seleção" if dados["plano"]["particao"] == "selecao" else "Desenvolvimento"
+    _texto(pdf, f"{etapa} | seed {dados['plano']['seed']} | plano {dados['execucao']['plano_sha256'][:12]}", 32, 23, 8)
     pdf.setFont("Helvetica", 8)
     pdf.drawRightString(largura - 32, 23, f"Gerado {criado} | {pagina}/{total}")
     deps = dados["execucao"].get("dependencias", {})
@@ -451,7 +456,8 @@ def _escrever_pdf(caminho: Path, dados: dict, estatisticas: dict, linhas: list[d
     pagina = 0
     with caminho.open("xb") as arquivo:
         pdf = Canvas(arquivo, pagesize=landscape(A4), pageCompression=1)
-        pdf.setTitle(f"{dados['plano']['rodada']} - resultados de desenvolvimento")
+        etapa = "seleção" if dados["plano"]["particao"] == "selecao" else "desenvolvimento"
+        pdf.setTitle(f"{dados['plano']['rodada']} - resultados de {etapa}")
         pdf.setAuthor("")
         pdf.setSubject("Relatório descritivo das configurações de detecção em imagens")
         pdf.setCreator("Relatório de rodadas")
@@ -493,7 +499,12 @@ def _escrever_pdf(caminho: Path, dados: dict, estatisticas: dict, linhas: list[d
                 _inserir_figura(pdf, _mapa_videos(grupo, dados, parte_videos, largura - 64, 425), 32, 89, largura - 64, 425)
                 _texto(pdf, "Cinza: macro-F1 indefinido porque pelo menos uma classe está sem casos. Não equivale a zero.", 32, 74, 9)
                 _texto(pdf, "Quadros do mesmo vídeo não são observações independentes; este relatório não estima significância estatística.", 32, 59, 9)
-                _texto(pdf, "Dados de desenvolvimento já explorados. Nenhuma configuração é promovida automaticamente para seleção ou avaliação final.", 32, 44, 8)
+                nota = (
+                    "Seleção com parâmetros fixos. A escolha das cinco configurações para vídeos depende da revisão conjunta."
+                    if dados["plano"]["particao"] == "selecao" else
+                    "Dados de desenvolvimento já explorados. Nenhuma configuração é promovida automaticamente para seleção ou avaliação final."
+                )
+                _texto(pdf, nota, 32, 44, 8)
                 pdf.showPage()
         pdf.save()
     return total_paginas
@@ -534,6 +545,7 @@ def gerar_relatorio(pasta_batch: Path) -> Path:
         "origens_sha256": dados["origens_sha256"],
         "codigo_relatorio_sha256": _sha256(Path(__file__).read_bytes()),
         "dependencias_relatorio": dependencias, "rodada": dados["plano"]["rodada"],
+        "particao": dados["plano"]["particao"],
         "seed": dados["plano"]["seed"], "plano_sha256": dados["execucao"]["plano_sha256"],
         "dependencias_experimento": dados["execucao"].get("dependencias"),
         "codigo_experimento": dados["execucao"].get("codigo"),
