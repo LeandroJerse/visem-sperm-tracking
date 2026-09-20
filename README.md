@@ -15,17 +15,20 @@ Blobs e Watershed serão implementados em etapas posteriores.
 O contrato dos resultados, o protocolo acordado e as pendências estão em
 [`algoritmos/classicos/README.md`](algoritmos/classicos/README.md).
 O [guia dos scripts](scripts/README.md) apresenta o comando principal e a
-finalidade de cada entrada. As três primeiras rodadas foram executadas pelo
-pesquisador. A [revisão do round3](analise/rodadas/round3_revisao.md) orientou o
-plano de [18 configurações do round4](scripts/limiarizacao/rodadas/round4.json),
-nos mesmos 178 quadros: 3.204 avaliações, com PDF automático ao concluir.
+finalidade de cada entrada. As quatro primeiras rodadas estão concluídas e
+analisadas. A [revisão do round4](analise/rodadas/round4_revisao.md) orientou o
+plano de [14 configurações do round5](scripts/limiarizacao/rodadas/round5.json),
+nos mesmos 178 quadros: 2.492 avaliações, com PDF automático ao concluir.
+O round5 está preparado e ainda não foi executado; o pesquisador o executará.
 O mesmo [executor](scripts/limiarizacao/executar_rodada.py) atende a todas as
-rodadas. Use `--rodada round4` para o próximo batch; sem argumentos, o padrão
+rodadas. Use `--rodada round5` para o próximo batch; sem argumentos, o padrão
 continua sendo `round1`. Os planos de [round1](scripts/limiarizacao/rodadas/round1.json),
-[round2](scripts/limiarizacao/rodadas/round2.json) e
-[round3](scripts/limiarizacao/rodadas/round3.json) permanecem disponíveis para repetição.
-Estão previstas cinco rodadas de desenvolvimento; o plano do round5 depende
-dos resultados do round4. A avaliação final permanece posterior, conforme o
+[round2](scripts/limiarizacao/rodadas/round2.json),
+[round3](scripts/limiarizacao/rodadas/round3.json) e
+[round4](scripts/limiarizacao/rodadas/round4.json) permanecem disponíveis para repetição.
+O round5 é a última rodada planejada de desenvolvimento. Após sua execução,
+a revisão conjunta definirá o congelamento das candidatas para a seleção.
+A avaliação final permanece posterior, conforme o
 [protocolo](analise/protocolo_rodadas.md).
 Para uma única imagem, há comandos separados de inspeção visual e avaliação.
 Os detalhes estão no [guia de limiarização](scripts/limiarizacao/README.md) e
