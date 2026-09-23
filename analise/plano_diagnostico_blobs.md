@@ -1,6 +1,24 @@
 # Diagnóstico e próximos testes de blobs
 
-20/09/2026 — plano preparado para execução posterior pelo pesquisador.
+20/09/2026 — round0 e diagnóstico concluídos; round1 concluído e analisado.
+Round2 a definir (ver [análise do round1](analise_round1_blobs.md)).
+
+**Revisão de escopo:** a [síntese de continuidade](estado_pesquisa.md) registra
+a decisão de incorporar testes de candidatos, caixas e classificação às rodadas formais.
+As seções abaixo descrevem hipóteses, não uma exigência de calibrar o detector
+antes do round1. O formato e a exportação já são compatíveis com o avaliador.
+F1 baixo não impede iniciar a busca. Foram aprovados original/escala/margem
+e até cinco rodadas de 48/32/24/18/14 configurações, com teto de 122 distintas.
+O executor e o [plano congelado do round1](../scripts/blobs/rodadas/round1.json)
+estão preparados: 12 controles + 36 combinações exploratórias distintas,
+seed 42 e 8.544 avaliações previstas nos mesmos 178 quadros. Os planos das
+rodadas seguintes dependem dos resultados.
+
+O [diagnóstico do round0](diagnostico_round0_blobs.md) registra os resultados:
+caixas subdimensionadas apesar de conversão coerente, candidatos excedentes
+e diferenças entre classes. O formato quadrado, isoladamente, não explica
+a insuficiência observada. As adaptações de caixa foram implementadas e
+verificadas com dados sintéticos e analisadas nas saídas da rodada completa.
 
 ## Objetivo e situação atual
 
@@ -40,7 +58,8 @@ excesso de candidatos precisam ser investigados separadamente.
 ## Regras preservadas
 
 - Manter os arquivos originais, os resultados e o código arquivado do round0.
-- Preparar agora; executar testes e experimentos posteriormente pelo pesquisador.
+- As próximas execuções experimentais serão realizadas pelo pesquisador;
+  o diagnóstico dos registros está concluído.
 - Manter o avaliador atual: IoU mínimo de 0,50, grupos 0/2 e 1, correspondência
   um para um, classificação separada e agregação das contagens antes do F1.
 - Não transformar os diagnósticos abaixo em critérios novos de ranking.
@@ -54,23 +73,23 @@ excesso de candidatos precisam ser investigados separadamente.
 
 ```mermaid
 flowchart TD
-    A["Round0 original concluído e preservado"] --> B["Diagnosticar candidatos e caixas salvos"]
-    B --> C["Revisar casos nas imagens: ausência, excesso e ambiguidade"]
-    C --> D["Planejar testes de geração e filtragem de candidatos"]
-    D --> E["Testar delimitação nos mesmos candidatos"]
-    E --> F{"Representação adequada?"}
-    F -->|Não| G["Investigar segmentação local ou limitação do método"]
-    G --> C
-    F -->|Sim| H["Revisar classificação; conferir pequenos e aglomerados"]
-    H --> I["Round1 amplo nos 178 quadros de desenvolvimento"]
-    I --> J["Rounds2–5: analisar, formular hipótese e congelar próximo plano"]
-    J --> K["Congelar configurações distintas; seleção nos 60 quadros"]
+    A["Round0 e diagnóstico concluídos; saída compatível"] --> B["Plano congelado: 12 controles + 36 exploratórias; seed 42"]
+    B --> C["Executor, variantes e relatório implementados; conferências concluídas"]
+    C --> I["Pesquisador executa round1 nos 178 quadros; ainda pendente"]
+    I --> J["Analisar resultados e exemplos; refinar rounds2–5 dentro do orçamento"]
+    J --> R["Após round5, documentar desenvolvimento, decisões e limitações"]
+    R --> K["Encerrar ajustes; congelar configurações distintas; seleção nos 60 quadros"]
     K --> L["Revisar cinco finalistas; testar vídeos de seleção"]
     L --> M["Congelar as cinco; executar vídeos finais"]
     M --> N["Comparar métodos e registrar limitações"]
 ```
 
-### Etapa A — diagnóstico dos registros existentes: pronta para executar
+### Etapa A — diagnóstico dos registros existentes: concluída
+
+Execução `diagnostico__20260920T175946938558Z`: 12/12 casos concluídos,
+origem preservada e arquivos conferidos. Os 36 testes sintéticos específicos
+do diagnóstico passaram. A [análise dos resultados](diagnostico_round0_blobs.md)
+separa extensão das caixas, posição dos centros e multiplicidade.
 
 O novo comando lê o round0 concluído e produz uma pasta de diagnóstico, sem
 executar SimpleBlobDetector ou mudar caixas, classes ou métricas anteriores.
@@ -106,7 +125,11 @@ Saídas em uma pasta nova `resultados/frame-to-frame/blobs/round0/diagnostico__<
 Essa etapa não gera outro PDF ou outras imagens: o PDF e as comparações
 originais continuam disponíveis. Não é uma rodada adicional de parâmetros.
 
-### Etapa B — revisão visual orientada pelo diagnóstico
+### Etapa B — revisão visual pontual, quando necessária
+
+Os exemplos já examinados permitem formular hipóteses para o round1. Revisar
+casos adicionais apenas quando houver uma dúvida concreta; o preenchimento
+integral da ficha não é requisito para iniciar a busca formal.
 
 Revisar as duas configurações nos mesmos seis quadros. Começar por casos com
 nenhum centro, vários centros, sobreposição de anotações e caixa pequena com
@@ -136,12 +159,14 @@ Entrega desta etapa: lista de causas observadas e exemplos localizáveis por
 configuração, vídeo, quadro e índice. As seis imagens são uma amostra
 intencional de inspeção; não estimam o desempenho geral do método.
 
-### Etapa C — testes de geração e filtragem de candidatos
+### Etapa C — hipóteses de candidatos para as rodadas
 
-Definir os valores somente após A/B. As famílias de testes já ficam ordenadas
-abaixo. Em cada comparação inicial, alterar um fator e conservar os demais,
-incluindo construção da caixa e limites de classificação. Manter b01/b02 como
-referências, sem escolher uma polaridade apenas pelo F1 atual.
+Os valores do round1 estão definidos no [plano detalhado](plano_round1_blobs.md),
+usando o diagnóstico concluído. As famílias abaixo orientam as hipóteses.
+O primeiro plano contém comparações controladas de caixa e combinações amplas
+do detector/classificação; novos controles de filtros poderão ser definidos
+nas rodadas seguintes. b01/b02 permanecem como referências, sem escolher
+uma polaridade apenas pelo F1 atual.
 
 | Teste planejado | O que varia | O que observar |
 |---|---|---|
@@ -160,16 +185,18 @@ de remoção de duplicatas. Nenhum filtro passa a ser obrigatório por hipótese
 As anotações continuam sendo usadas apenas na avaliação e na revisão dos
 experimentos. O detector recebe somente imagem e configuração.
 
-Antes de executar: salvar plano numérico, lista de imagens, referências,
+O round1 já registra plano numérico, lista de imagens, referências,
 justificativa e quantidade de tentativas. Não executar o produto cartesiano
 de todos os fatores. Inspeções adicionais ficam registradas separadamente da
 busca formal nos 178 quadros e devem constar do esforço total do método.
 
-### Etapa D — testes de delimitação, mantendo candidatos fixos
+### Etapa D — hipóteses de delimitação para as rodadas
 
-Só testar a conversão das caixas após compreender os candidatos. Preservar
-o mesmo conjunto de centros, diâmetros e classes entre as variantes, para
-isolar o efeito da representação. Registrar a caixa original e a adaptada.
+O diagnóstico já fundamenta investigar o tamanho da caixa. As variantes
+D0/D1/D2 estão implementadas separadamente em
+[caixas_blobs.py](../algoritmos/classicos/caixas_blobs.py). Nas comparações controladas,
+preservar os mesmos centros, diâmetros e classes para isolar o efeito da
+representação. Registrar a caixa original e a adaptada.
 
 | Variante planejada | Regra | Limitação a verificar |
 |---|---|---|
@@ -188,8 +215,8 @@ evidência. Uma adaptação explícita, reproduzível e congelada é diferente d
 alterar manualmente caixas ou afrouxar o avaliador. Aumentar a caixa não muda
 centro, diâmetro e área estimados originais, nem muda automaticamente a classe.
 
-D3 só será implementada se as variantes simples forem visualmente
-inadequadas. Antes disso, definir a região de busca, segmentação, vínculo
+D3 não integra a implementação do round1. Só reconsiderar essa extensão
+após os resultados e discussão do escopo. Antes disso, definir a região de busca, segmentação, vínculo
 blob/região, tratamento de falhas e de vários blobs na mesma região. Não
 assumir correspondência por índice com a lista de contornos do OpenCV.
 Métodos clássicos combinados continuam sendo clássicos; k-NN fica para o
@@ -199,7 +226,7 @@ Entrega: representação documentada e seus limites. Uma melhoria no F1 de
 seis imagens, sozinha, não encerra essa decisão: verificar falsas detecções,
 vizinhos, pequenos, aglomerados e estabilidade no desenvolvimento.
 
-### Etapa E — classificação, após a localização
+### Etapa E — hipóteses de classificação nas rodadas
 
 Rever os limites de pequeno/normal/aglomerado na medida efetivamente
 disponível. Caixas maiores não justificam reclassificar uma cabeça como
@@ -214,33 +241,40 @@ tentativas, ainda que não executem novamente o detector.
 
 ### Etapa F — retomada do ciclo completo
 
-Os testes isolados de C/D/E explicam efeitos iniciais; não tornam os fatores
-independentes. Nas rodadas, comparar também combinações justificadas de
+As hipóteses de C/D/E não tornam os fatores independentes. No round1,
+o bloco controlado isola a caixa; as exploratórias combinam fatores. Nas
+rodadas seguintes, comparar também combinações justificadas de
 filtros, caixa e classificação, com controles. Um filtro pode alterar a
 distribuição de tamanhos, e uma classificação pode mudar o grupo avaliado.
 Essas interações fazem parte do plano numérico e do registro de tentativas.
 
-Com representação, configuração e registros definidos:
+Com saídas verificáveis, configurações e registros definidos, sem exigir
+uma métrica mínima ou calibração prévia completa:
 
-1. Preparar round1 nos mesmos 178 quadros de desenvolvimento.
+1. Round1 preparado nos mesmos 178 quadros de desenvolvimento, sem execução.
 2. Executar e revisar; propor rounds2–5 conforme as hipóteses sustentadas
    pelos resultados. Nenhuma melhoria por rodada é garantida.
-3. Preservar o orçamento proposto no plano geral, registrando também o
-   esforço das inspeções adicionais. Confirmar distribuição antes dos batches.
-4. Congelar as configurações distintas e compará-las nos mesmos 60 quadros
+3. Preservar o orçamento aprovado de 48/32/24/18/14 configurações, até 136
+   execuções e 122 distintas, registrando também inspeções adicionais.
+4. Após concluir e analisar o round5, produzir o relatório obrigatório do
+   desenvolvimento de blobs: implementação, hipóteses, decisões, resultados
+   que orientaram cada rodada, reprodução e limitações.
+5. Congelar as configurações distintas e compará-las nos mesmos 60 quadros
    dos vídeos 13, 29, 52 e 54, com o avaliador atual.
-5. Revisar as cinco finalistas e eventuais empates; executar vídeos completos
+6. Revisar as cinco finalistas e eventuais empates; executar vídeos completos
    de seleção, depois as mesmas cinco congeladas nos vídeos 14, 24, 38 e 82.
-6. Consolidar a comparação com limiarização e suas limitações. Não acrescentar
+7. Consolidar a comparação com limiarização e suas limitações. Não acrescentar
    rodadas orientadas pelo resultado final.
 
 Se o método continuar inadequado, registrar o resultado e discutir o limite
 do escopo; não adicionar indefinidamente etapas para forçar uma melhoria.
 
-## Testes de código preparados e verificações futuras
+## Testes de código e verificações
 
-Os testes do diagnóstico usam apenas dados sintéticos em memória ou em
-pastas temporárias. Ainda não foram executados nesta preparação.
+Os 36 testes do diagnóstico passaram na entrega do diagnóstico. Na preparação
+do round1, passaram **179 testes sintéticos: 66 novos e 113 de regressão**,
+incluindo medidas, detector, inspeção, diagnóstico e avaliador. Usam dados
+sintéticos em memória ou em pastas temporárias, sem executar o round1 na base.
 
 | Contrato | Verificação |
 |---|---|
@@ -253,19 +287,20 @@ pastas temporárias. Ainda não foram executados nesta preparação.
 | Repetição | Criar nova saída e manter a anterior; registrar falhas |
 | Escopo | Nenhuma chamada ao detector, novo F1, ranking ou ajuste automático |
 
-Quando C/D/E forem implementadas, acrescentar testes de identidade da
-configuração original, isolamento do fator alterado, recorte nas bordas,
-preservação das medidas brutas, vizinhos, pequenos, classes e validade do
-formato YOLO. Usar também imagens sintéticas com objetos de tamanho e posição
-conhecidos para conferir a integração real com o OpenCV. Esses testes futuros
-não estão implementados pelo simples fato de estarem previstos neste plano.
+A preparação do round1 acrescentou testes de identidade da configuração
+original, recorte nas bordas, preservação das medidas brutas/classes/índices,
+formato YOLO, identidade efetiva das configurações, geração balanceada,
+executor, falhas e relatório. O PDF sintético de oito páginas foi revisado.
+A conferência real `--conferir` também passou para 48 configurações e
+178 quadros: conferiu dependências, hashes e imagens sem chamar o detector
+nem criar pastas de resultados. Os resultados de desempenho continuam pendentes.
 
-## Ordem dos comandos quando retomarmos
+## Reproduzir o diagnóstico concluído
 
-Na raiz do projeto, primeiro executar os testes preparados:
+Na raiz do projeto, primeiro executar os testes específicos do diagnóstico:
 
 ```powershell
-& "C:\Python313\python.exe" -m unittest scripts.testes.test_medidas_blobs scripts.testes.test_blobs scripts.testes.test_inspecao_blobs scripts.testes.test_diagnostico_blobs scripts.testes.test_diagnosticar_round0
+& "C:\Python313\python.exe" -m unittest scripts.testes.test_diagnostico_blobs scripts.testes.test_diagnosticar_round0
 ```
 
 Se os testes passarem, gerar o diagnóstico da execução existente:
@@ -274,8 +309,11 @@ Se os testes passarem, gerar o diagnóstico da execução existente:
 & "C:\Python313\python.exe" ".\scripts\blobs\diagnosticar_round0.py" --origem ".\resultados\frame-to-frame\blobs\round0\inspecao__20260920T041252237886Z"
 ```
 
-Abrir `guia_revisao.md` na pasta informada e preencher uma cópia da ficha de
-revisão junto às imagens. Depois analisar os resultados em conjunto e fixar o plano
-numérico da etapa seguinte. Os batches de filtros, adaptações de caixa,
-classificação, round1 e vídeos ainda dependem dessa revisão; não serão
-disparados pelo comando de diagnóstico.
+O diagnóstico já foi analisado; o comando acima serve para reproduzi-lo.
+`guia_revisao.md` e uma cópia da ficha podem apoiar dúvidas pontuais nas imagens.
+O próximo trabalho experimental é a execução do round1 pelo pesquisador.
+O [desenho do round1](plano_round1_blobs.md) e o
+[guia de comandos](../scripts/blobs/README.md) descrevem o executor preparado,
+`--conferir`, a execução do plano salvo e a regeneração do relatório. Filtros,
+delimitação e classificação serão investigados nas rodadas; o comando de
+diagnóstico não as executa.

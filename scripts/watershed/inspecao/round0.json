@@ -1,0 +1,326 @@
+{
+  "versao": 1,
+  "algoritmo": "watershed",
+  "rodada": "round0",
+  "particao": "desenvolvimento",
+  "seed": 42,
+  "criterios": {
+    "versao": 1,
+    "limiar_iou": 0.5,
+    "grupos": {
+      "individuos": [
+        0,
+        2
+      ],
+      "aglomerados": [
+        1
+      ]
+    },
+    "descricao_matching": "Correspondência um-para-um entre objetos do mesmo grupo, com IoU >= 0,5. Maximiza o número de pares válidos e depois a soma das IoUs. A classe original não é critério de desempate.",
+    "classificacao": "Trocas entre 0 e 2 são acertos de localização de indivíduos e erros de classificação. Trocas entre indivíduo e aglomerado não formam pares: geram FN no grupo anotado e FP no grupo previsto. Os três rótulos originais são preservados.",
+    "matriz_classificacao": "Somente pares de indivíduos; linhas são classes anotadas e colunas são classes previstas, na ordem [0, 2]. Acurácia condicional aos pares, sem incluir objetos perdidos ou falsas detecções.",
+    "cobertura": "Por classe original da anotação: localizada quando possui par no mesmo grupo, mesmo que haja troca entre 0 e 2; recall = localizadas/anotacoes.",
+    "agregacao": "Somar contagens antes de calcular métricas, sem médias de F1 por quadro.",
+    "politica_sem_casos": "Divisão por zero resulta em null. F1 = 2TP/(2TP+FP+FN), com null somente se TP=FP=FN=0. Previsões sem anotação contam como FP e dão F1 zero."
+  },
+  "origem_inspecao_blobs": {
+    "arquivo": "scripts/blobs/inspecao/round0.json",
+    "sha256": "6b28d76132becfb22bcdb1965ed3e8228d84b03f7894c4134fdace07426d96a6"
+  },
+  "origem_parametros": {
+    "arquivo": "scripts/limiarizacao/rodadas/round5.json",
+    "sha256": "2f6be6cc436f6d31a64692772b7003ae7e5ac61f5e7b7995249dfb9044a2544e",
+    "configuracao_id": "c01",
+    "alteracoes": "Área mínima 48 -> 3 para inspecionar pequenos candidatos; polaridade claro/escuro. Demais parâmetros mantidos da referência de desenvolvimento."
+  },
+  "quadros": [
+    {
+      "video_id": "11",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_0.txt",
+      "imagem_sha256": "2c0d7438a7cb7fae69b4800fa521538fc425a3d9f05c2b2a62fca1c2a722015e",
+      "anotacao_sha256": "a3850201386afec0c7182f393066c4c8781cd22c5c3f0c643ec6c90ced74d1e6",
+      "objetivo": "Refer�ncia com 43 normais, usada na inspe��o inicial da limiariza��o."
+    },
+    {
+      "video_id": "12",
+      "quadro": 200,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_200.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_200.txt",
+      "imagem_sha256": "e04d38467668f291f19f2e98180ac22861c95077a949c1ae3404d5b1dd5f952d",
+      "anotacao_sha256": "3aefa89a655a762a3ebb7bf189bd0f944b6783b9e09eaf4479a3c361dfb1a6d2",
+      "objetivo": "Tr�s classes presentes: 29 normais, 1 aglomerado e 3 pequenos."
+    },
+    {
+      "video_id": "19",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_0.txt",
+      "imagem_sha256": "90573fdad5d63349fc90d100ff77201eb1b36f3cd76cdc8fbc0d3a6b33a8cb6a",
+      "anotacao_sha256": "fc8e45c667ae0ae930e0c9ab9c3926fbeec025a3e90a22b1220538b2340a963c",
+      "objetivo": "Aglomerados e bordas: 19 normais e 4 aglomerados."
+    },
+    {
+      "video_id": "21",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_0.txt",
+      "imagem_sha256": "dea8bf8f8412cfb64fd048c50898055dde391ccbdb37d7fadae2fa3f75a7d793",
+      "anotacao_sha256": "546a02693db5fed609982eccc1cc8facb8bfe221d674e01ace4fc6b3bd9f4dc9",
+      "objetivo": "Pequenos em outro v�deo: 21 normais e 3 pequenos."
+    },
+    {
+      "video_id": "23",
+      "quadro": 0,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_0.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_0.txt",
+      "imagem_sha256": "2d657f99032045f0d694f97dbc3a93f4a4eb4428eee26fb1a3d713e6cbbe9a9d",
+      "anotacao_sha256": "1cfeef0877908d8ac519ed754d74ebcf44cb68b34849b7e083f6cbb3954061b8",
+      "objetivo": "Baixa quantidade de objetos: 4 normais."
+    },
+    {
+      "video_id": "36",
+      "quadro": 1300,
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_1300.jpg",
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_1300.txt",
+      "imagem_sha256": "77121a8fb32d40091186a26104b3f6ba814a6fd6df12a200b8f3d054fb8cf8e2",
+      "anotacao_sha256": "fb11bb4ca4e7c4dca6b6278814ee3169a8948f2f366fe6a1eb41fe79bffef4cb",
+      "objetivo": "Cena com muitos objetos e bordas: 44 normais e 1 pequeno."
+    }
+  ],
+  "configuracoes": [
+    {
+      "id": "w01",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "claro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.5,
+        "politica_aglomerados": "separar"
+      }
+    },
+    {
+      "id": "w02",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "claro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.5,
+        "politica_aglomerados": "preservar_por_area"
+      }
+    },
+    {
+      "id": "w03",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "claro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.75,
+        "politica_aglomerados": "separar"
+      }
+    },
+    {
+      "id": "w04",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "claro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.75,
+        "politica_aglomerados": "preservar_por_area"
+      }
+    },
+    {
+      "id": "w05",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "escuro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.5,
+        "politica_aglomerados": "separar"
+      }
+    },
+    {
+      "id": "w06",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "escuro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.5,
+        "politica_aglomerados": "preservar_por_area"
+      }
+    },
+    {
+      "id": "w07",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "escuro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.75,
+        "politica_aglomerados": "separar"
+      }
+    },
+    {
+      "id": "w08",
+      "parametros": {
+        "segmentacao": {
+          "metodo": "otsu",
+          "polaridade": "escuro",
+          "limiar_manual": null,
+          "abertura": {
+            "forma": "elipse",
+            "tamanho": 3,
+            "iteracoes": 0
+          },
+          "fechamento": {
+            "forma": "retangulo",
+            "tamanho": 5,
+            "iteracoes": 1
+          },
+          "conectividade": 8,
+          "area_minima": 3,
+          "area_maxima": 5000,
+          "classificacao": {
+            "area_maxima_pequeno": 120,
+            "area_minima_aglomerado": 900
+          }
+        },
+        "fracao_semente": 0.75,
+        "politica_aglomerados": "preservar_por_area"
+      }
+    }
+  ]
+}

@@ -1,17 +1,55 @@
 # Guia dos scripts
 
-**Próxima execução: diagnóstico do round0 de blobs já concluído.** Siga os
-testes sintéticos do [guia de blobs](blobs/README.md) e depois execute na raiz:
+**Etapa atual: vídeos de seleção de watershed preparados para execução.**
+A [análise](../analise/analise_selecao_watershed.md) fundamentou a aprovação
+de s063, s064, s061, s062 e s098. Não é necessário repetir a seleção em imagens.
+Próximo comando, na raiz do projeto:
 
 ```powershell
-& "C:\Python313\python.exe" ".\scripts\blobs\diagnosticar_round0.py" --origem ".\resultados\frame-to-frame\blobs\round0\inspecao__20260920T041252237886Z"
+& "C:\Python313\python.exe" ".\scripts\watershed\executar_videos.py" --etapa selecao
 ```
 
-Esse comando analisa candidatos e caixas já salvos e cria uma nova pasta
-de diagnóstico; não executa o detector nem modifica as métricas. As 12
-avaliações, comparações e PDF originais permanecem preservados.
-O [plano dos próximos testes](../analise/plano_diagnostico_blobs.md) separa
-geração de candidatos, delimitação e classificação antes do round1.
+São 29.250 avaliações, vinte vídeos comparativos e PDF automático de quatro
+páginas. A opção `--conferir` verifica entradas e metadados sem executar o detector.
+O [plano](../analise/plano_videos_watershed.md) descreve parâmetros e saídas.
+Os vídeos finais serão preparados após a revisão desta execução.
+Veja o [guia de watershed](watershed/README.md). Blobs está
+[concluído, incluindo os vídeos finais](../analise/conclusao_blobs.md).
+Os comandos abaixo reproduzem etapas anteriores.
+
+**Blobs: cinco rodadas e seleção em imagens concluídas e analisadas.**
+As 7.140 avaliações da seleção foram conferidas. A
+[análise](../analise/analise_selecao_blobs.md) fundamentou a aprovação de
+s052, s082, s084, s103 e s051. **Os vídeos completos de seleção foram concluídos
+e conferidos**, com F1 0,668702 para s052. Veja a
+[análise dos vídeos](../analise/analise_videos_selecao_blobs.md).
+Veja a [análise do round5](../analise/analise_round5_blobs.md) e o
+[documento completo do desenvolvimento](../analise/desenvolvimento_blobs.html).
+A avaliação final foi concluída nos vídeos **14, 24, 38 e 82**.
+Para reproduzi-la, na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\blobs\executar_videos.py" --etapa final
+```
+
+Esse comando executa 29.550 avaliações e gera vinte vídeos, tabelas e PDF,
+preservando tentativas anteriores. Acrescente `--conferir` para apenas conferir
+as entradas, metadados e dependências, sem executar detecções. O
+[guia de blobs](blobs/README.md) explica as saídas, os testes e a regeneração
+do PDF. O round0 e seu [diagnóstico](../analise/diagnostico_round0_blobs.md)
+estão concluídos. A [justificativa do round1](../analise/plano_round1_blobs.md)
+descreve as 12 comparações controladas e as 36 configurações exploratórias.
+
+O round5 terminou íntegro e os controles reproduziram o round4. São 119
+configurações distintas no conjunto das cinco rodadas. A
+[seleção em imagens está concluída](../analise/analise_selecao_blobs.md).
+O [plano dos vídeos](../analise/plano_videos_blobs.md) descreve as conferências
+e saídas em `resultados/videos/blobs/selecao/`, com as fontes em `origens/`.
+Não é necessário repetir a seleção. O [plano final](../analise/plano_videos_final_blobs.md)
+preserva as cinco configurações e salva em `resultados/videos/blobs/final/`,
+também com as fontes em `origens/`. Essa etapa já foi executada e conferida.
+Para repetir uma rodada concluída, use `executar_rodada.py --rodada round1`
+até `--rodada round5`; isso não é necessário para a seleção.
 
 **Limiarização concluída, incluindo a avaliação final.** Consulte a
 [análise consolidada](../analise/conclusao_limiarizacao.md). Os comandos abaixo
@@ -69,9 +107,12 @@ macro-F1 das três classes.
 
 ## Qual script usar?
 
-Para blobs, use [diagnosticar_round0.py](blobs/diagnosticar_round0.py) para
-analisar a origem concluída e [executar_inspecao.py](blobs/executar_inspecao.py)
-para repetir a detecção original. Consulte o [guia](blobs/README.md).
+Para blobs, use [executar_videos.py](blobs/executar_videos.py) na etapa atual;
+[executar_selecao.py](blobs/executar_selecao.py) reproduz a seleção em imagens;
+[executar_rodada.py](blobs/executar_rodada.py) reproduz o desenvolvimento;
+[diagnosticar_round0.py](blobs/diagnosticar_round0.py) analisa a inspeção concluída
+e [executar_inspecao.py](blobs/executar_inspecao.py) repete sua detecção original.
+Consulte o [guia](blobs/README.md).
 Os scripts abaixo pertencem à limiarização.
 
 | O que você quer fazer | Script | Quando usar |
@@ -100,6 +141,29 @@ e fica fora dessa contagem.
 
 ```text
 scripts/
+├── blobs/
+│   ├── executar_videos.py         etapa atual; vídeos de seleção/final e PDF
+│   ├── videos/plano_selecao.json  cinco configurações aprovadas e quatro vídeos
+│   ├── videos/plano_final.json    mesmas cinco e quatro vídeos finais
+│   ├── planejamento_videos_final.py  geração e validação do plano final
+│   ├── planejamento_videos.py     geração e validação do plano de vídeos
+│   ├── executar_selecao.py        reprodução da seleção em imagens
+│   ├── selecao/plano.json         119 configurações e 60 imagens
+│   ├── executar_rodada.py         reprodução das cinco rodadas
+│   ├── planejamento.py           geração e validação dos planos
+│   ├── planejamento_round2.py    desenho do round2; módulo interno
+│   ├── planejamento_round3.py    desenho do round3; módulo interno
+│   ├── planejamento_round4.py    desenho do round4; módulo interno
+│   ├── planejamento_round5.py    desenho do round5; módulo interno
+│   ├── rodadas/round1.json        48 configurações congeladas
+│   ├── rodadas/round2.json        32 configurações congeladas
+│   ├── rodadas/round3.json        24 configurações congeladas
+│   ├── rodadas/round4.json        18 configurações congeladas
+│   ├── rodadas/round5.json        14 configurações congeladas
+│   ├── executar_inspecao.py       reprodução do round0
+│   ├── diagnosticar_round0.py     análise dos registros da inspeção
+│   ├── inspecao/round0.json
+│   └── README.md
 ├── limiarizacao/
 │   ├── executar_rodada.py
 │   ├── executar_selecao.py

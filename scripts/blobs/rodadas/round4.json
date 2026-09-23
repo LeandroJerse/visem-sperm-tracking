@@ -1,0 +1,2169 @@
+{
+  "algoritmo": "blobs",
+  "configuracoes": [
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 2
+      },
+      "id": "r4c01",
+      "metodo": "simpleblob",
+      "parametros": {
+        "area_maxima": 500,
+        "area_minima": 48,
+        "circularidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 28.274333882308138,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "convexidade_minima": null,
+        "distancia_minima": 6,
+        "inercia_minima": 0.4,
+        "limiar_maximo": 220,
+        "limiar_minimo": 80,
+        "passo_limiar": 5,
+        "polaridade": "claro",
+        "repetibilidade_minima": 2
+      },
+      "perfil_forma": "inercia_04",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c09"
+    },
+    {
+      "bloco": "controle",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 3
+      },
+      "id": "r4c02",
+      "metodo": "simpleblob",
+      "parametros": {
+        "area_maxima": 500,
+        "area_minima": 48,
+        "circularidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 28.274333882308138,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "convexidade_minima": null,
+        "distancia_minima": 6,
+        "inercia_minima": 0.4,
+        "limiar_maximo": 220,
+        "limiar_minimo": 80,
+        "passo_limiar": 5,
+        "polaridade": "claro",
+        "repetibilidade_minima": 2
+      },
+      "perfil_forma": "inercia_04",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c05"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 2
+      },
+      "id": "r4c03",
+      "metodo": "simpleblob",
+      "parametros": {
+        "area_maxima": 500,
+        "area_minima": 64,
+        "circularidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 28.274333882308138,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "convexidade_minima": null,
+        "distancia_minima": 6,
+        "inercia_minima": 0.4,
+        "limiar_maximo": 220,
+        "limiar_minimo": 80,
+        "passo_limiar": 5,
+        "polaridade": "claro",
+        "repetibilidade_minima": 2
+      },
+      "perfil_forma": "inercia_04",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c09"
+    },
+    {
+      "bloco": "controle",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 3
+      },
+      "id": "r4c04",
+      "metodo": "simpleblob",
+      "parametros": {
+        "area_maxima": 500,
+        "area_minima": 64,
+        "circularidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 28.274333882308138,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "convexidade_minima": null,
+        "distancia_minima": 6,
+        "inercia_minima": 0.4,
+        "limiar_maximo": 220,
+        "limiar_minimo": 80,
+        "passo_limiar": 5,
+        "polaridade": "claro",
+        "repetibilidade_minima": 2
+      },
+      "perfil_forma": "inercia_04",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c09"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 2
+      },
+      "id": "r4c05",
+      "metodo": "simpleblob",
+      "parametros": {
+        "area_maxima": 500,
+        "area_minima": 80,
+        "circularidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 28.274333882308138,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "convexidade_minima": null,
+        "distancia_minima": 6,
+        "inercia_minima": 0.4,
+        "limiar_maximo": 220,
+        "limiar_minimo": 80,
+        "passo_limiar": 5,
+        "polaridade": "claro",
+        "repetibilidade_minima": 2
+      },
+      "perfil_forma": "inercia_04",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c09"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 3
+      },
+      "id": "r4c06",
+      "metodo": "simpleblob",
+      "parametros": {
+        "area_maxima": 500,
+        "area_minima": 80,
+        "circularidade_minima": null,
+        "classificacao": {
+          "area_maxima_pequeno": 28.274333882308138,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "convexidade_minima": null,
+        "distancia_minima": 6,
+        "inercia_minima": 0.4,
+        "limiar_maximo": 220,
+        "limiar_minimo": 80,
+        "passo_limiar": 5,
+        "polaridade": "claro",
+        "repetibilidade_minima": 2
+      },
+      "perfil_forma": "inercia_04",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c09"
+    },
+    {
+      "bloco": "controle",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 6
+      },
+      "id": "r4c07",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.12,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 8
+      },
+      "id": "r4c08",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.12,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 6
+      },
+      "id": "r4c09",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.16,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 8
+      },
+      "id": "r4c10",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.16,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 6
+      },
+      "id": "r4c11",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.2,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 8
+      },
+      "id": "r4c12",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.2,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 6
+      },
+      "id": "r4c13",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.24,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 8
+      },
+      "id": "r4c14",
+      "metodo": "dog",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.24,
+        "polaridade": "claro",
+        "razao_sigma": 1.6,
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c24"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 5
+      },
+      "id": "r4c15",
+      "metodo": "log",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.08,
+        "numero_escalas": 10,
+        "polaridade": "claro",
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c18"
+    },
+    {
+      "bloco": "controle",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 6
+      },
+      "id": "r4c16",
+      "metodo": "log",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.08,
+        "numero_escalas": 10,
+        "polaridade": "claro",
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c16"
+    },
+    {
+      "bloco": "exploracao",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 5
+      },
+      "id": "r4c17",
+      "metodo": "log",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.12,
+        "numero_escalas": 10,
+        "polaridade": "claro",
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c18"
+    },
+    {
+      "bloco": "controle",
+      "caixa": {
+        "modo": "margem",
+        "pixels": 6
+      },
+      "id": "r4c18",
+      "metodo": "log",
+      "parametros": {
+        "classificacao": {
+          "area_maxima_pequeno": 50.26548245743669,
+          "area_minima_aglomerado": 452.3893421169302
+        },
+        "limiar_resposta": 0.12,
+        "numero_escalas": 10,
+        "polaridade": "claro",
+        "sigma_maximo": 12.0,
+        "sigma_minimo": 2.0,
+        "sobreposicao": 0.5
+      },
+      "perfil_forma": "escala",
+      "preprocessamento": {
+        "metodo": "nenhum"
+      },
+      "referencia": "r3c18"
+    }
+  ],
+  "etapa": "desenvolvimento",
+  "geracao": {
+    "aleatoriedade_utilizada": false,
+    "arquivo_gerador": "scripts/blobs/planejamento_round4.py",
+    "configuracoes_distintas_acumuladas": 109,
+    "configuracoes_distintas_anteriores": 96,
+    "controles_repetidos": {
+      "r4c02": "r3c05",
+      "r4c04": "r3c09",
+      "r4c07": "r3c24",
+      "r4c16": "r3c16",
+      "r4c18": "r3c18"
+    },
+    "fatores": {
+      "dog": {
+        "limiar_resposta": [
+          0.12,
+          0.16,
+          0.2,
+          0.24
+        ],
+        "margem_pixels": [
+          6,
+          8
+        ]
+      },
+      "log": {
+        "limiar_resposta": [
+          0.08,
+          0.12
+        ],
+        "margem_pixels": [
+          5,
+          6
+        ]
+      },
+      "simpleblob": {
+        "area_minima": [
+          48,
+          64,
+          80
+        ],
+        "margem_pixels": [
+          2,
+          3
+        ]
+      }
+    },
+    "identidades_round1": {
+      "r1c01": "052dfc22471362bb97e51dad255194101d99f16d82a944b6a258dfa7012bf95a",
+      "r1c02": "38f0998fc4fb61cc2cf1f55e50a7a1ff8a9c8378ae93f5d1bc52db2caa378c13",
+      "r1c03": "2e1551f4f40b6239f615d9b81029e9acbc18e8e86f7a470079cef8a7ec581e89",
+      "r1c04": "b3df0253ccd8dbd6f47dea8a5355eb49b56ad25d39ec958a68de370474972553",
+      "r1c05": "bd5d788a1a53bffecfd5ea72b6ef831e6ee7728ca4d04a9ecea773535b5f44ed",
+      "r1c06": "7f5e826d265279ac202e8264ebd9896c2b8916ae925ed8c68582e537cdb76108",
+      "r1c07": "f3ede01acaf08f1db59f400db39ec7c3ce3852f47b92e9f621b01a044d7bdc73",
+      "r1c08": "d43cf8edeb96d3aa029d8425df921fa451d5f5ada9985de2c1ce7a558203484e",
+      "r1c09": "532ce64cc8617a0868e7ecc14210e49c0adbbac00e2259e5aa1dd6306afd1ff2",
+      "r1c10": "d6b16c02eddaad07ab516e5f4224694e7d5451bdf1fe3860e62ee75c3c8130e9",
+      "r1c11": "0f14c4d502aedb008ca2d1038a919984f171c8f232f767f6a6e94edd83df5101",
+      "r1c12": "fcf488177e56c28973a41926334f4710ef88aa1aa5cf6890ae06cfefa95b0a85",
+      "r1c13": "fa8173cf4f01448a935aacc3143d8a863d83b083904db66d8bc9d703f2a5d1b5",
+      "r1c14": "a93a84ee0fc67796aa10c79d28e363225fa577eb237710c173833ba157d8d610",
+      "r1c15": "97e8c9cb8a857f601a3a17ad2eb84b9d1ac9f7950099885cc5a3fc6ff292613b",
+      "r1c16": "d31feb6d12e749086f358fed6e00294983fbd590a76f6313e87f97e910e2a628",
+      "r1c17": "bb5a5e868921089f1da5cc8d4ea58d019a963d5a7f11c3ec5503bfb93d951c17",
+      "r1c18": "0c7099e7b92d9832d49723eca0d9283b45eb070f043e9392f2635bd713b0b8e8",
+      "r1c19": "1dbc358b15ecee113dab5e1daab2537a776c45e52820cd3fb108c240914071c4",
+      "r1c20": "8b269ebefcf44231a8579029190a36efcb4cff747495a0b0a42c261b3bc84ee8",
+      "r1c21": "f4dce4420ffec8828e893e1d9bae2b2f907d706f3f57e81933921b0c7280ad2a",
+      "r1c22": "592898be7b4db3cd82f4beda443ab265c69c869beddaec6febee5b9ae3322ec6",
+      "r1c23": "6c6db4a1e6eba51d6383a2d2993a8ca490179f7cb9ab5d61a412a1c375fe97f0",
+      "r1c24": "ec7f95784aec5a453fa9fdc8f53111b0cd576c3552a501f9fe6150f1b0dcd6dc",
+      "r1c25": "d491190ed2b6c969e36028a558894ef2ac758b083c91f3594f616daf007ed20d",
+      "r1c26": "a3ad5aadc60456103ef8779aae9a81a82f3fa58ca5905d74573c9389be56f8b3",
+      "r1c27": "e0f5f2a8c372a66235290afaea0eb8881701b40cdbc1ee41f3b26d08eeeeb37b",
+      "r1c28": "1effdc99330fe265f563fa1e9c716984a1fbcb5fae1744e7b012851ff72572be",
+      "r1c29": "888892b8578213628d2fb7ba627bb127093b798de2be260aea1e5c99ac2e2d3d",
+      "r1c30": "5581f53c8529bed8b3a7b6790355eaf0e632e2a4fab3f448ee264beef1784f3f",
+      "r1c31": "f24e8893457f40d6bbc24f31929b70fd299e500821af70c0c02d36bd48e55dcd",
+      "r1c32": "6e667a5a5bab64c2648fd3943dcaeb3f65741ffa9b8baea01262307fe26e3d90",
+      "r1c33": "c0e836d765a4f69698bec90cfb961a545a120b32e2127083669f0123617fb84f",
+      "r1c34": "100154304c3ff6a66f51c3fac96874f77a67ea0263bf42d09a075111b2bc2c66",
+      "r1c35": "9f261948bed96f47ec6b0dd6f9696cad407b903833c08dcc1f1b0dd2d418cf4c",
+      "r1c36": "1e55e31106eacc2a827168d50302c56d08e6f04c20875e87a94ce2657a89572c",
+      "r1c37": "d4244a907df06af1f3fde807fa6d420300e3225a598deaaaf4633e125f3f4cb3",
+      "r1c38": "399b6998bb523764cc9c6a6aca667c7c80d5bdca068d8b3d4a29710bad68f40c",
+      "r1c39": "002d07bc4582ec4735bec5215a725db00bcf2cbece89d3b75f974e5e0ac34a31",
+      "r1c40": "00ed40588d650024594c9fbf9ee1312aeb795bac86e5c1966e565122671d06d9",
+      "r1c41": "9335ea9558c7d3b04a99b13f9c4f27038a1cc3dab559d3f5dc19b445edca865e",
+      "r1c42": "bd5144161b12103262aef6a6d6bd80b11f6adc63b606a34b613cceb881228acb",
+      "r1c43": "fac365cfdb44d9d12c36f992c5669bdbe820b2fbc8717da0b58a19ca7ae7996c",
+      "r1c44": "e8722accdf0e3a9c8c62069077215d0b9497f56178e04e3a6d41d421556013f7",
+      "r1c45": "f961e306115a3de36748185cfc60d56c629ab16b1f5a275636615501eae968b9",
+      "r1c46": "9f6806b6fe334eba41834b7145bc68f79ad7c36f0fbf55f4c1966a83671de5b2",
+      "r1c47": "2e435fb5acb8fe1c64decbe95acabfc3a6a9a36c156c0b0713dc44c1bd1ec203",
+      "r1c48": "23359e85f0cdcdd57807b7fdfec1692ad22255ceb12ab24cc5425866755f2a7e"
+    },
+    "identidades_round2": {
+      "r2c01": "888892b8578213628d2fb7ba627bb127093b798de2be260aea1e5c99ac2e2d3d",
+      "r2c02": "6c6db4a1e6eba51d6383a2d2993a8ca490179f7cb9ab5d61a412a1c375fe97f0",
+      "r2c03": "a3ad5aadc60456103ef8779aae9a81a82f3fa58ca5905d74573c9389be56f8b3",
+      "r2c04": "fac365cfdb44d9d12c36f992c5669bdbe820b2fbc8717da0b58a19ca7ae7996c",
+      "r2c05": "bf410944fd3c8c87ddcfd34a81bda39019fa7fe6bdd1db06181b5fdd7f44b1b3",
+      "r2c06": "5427e49a7bc12d83d4dc37b7147ddc59af0a403b64128bfb41f01f4667105151",
+      "r2c07": "b58290099c7a026468f20bf38f042bb6adfd87d7147dd10cd4918f43c6e99092",
+      "r2c08": "9f338a047d2c06957a2c5abd1b40437161293b8f82b0070b4630af5221ff9ae0",
+      "r2c09": "9365e52f6a4dfd9558c779b6a1efa187e6957a537c940e90b4048ac991078ef7",
+      "r2c10": "b0db32a7d72e135416a0ddae47f0a228484157da96e1ec083344a254d9b9e43b",
+      "r2c11": "e130d7b62d9ec445e660fbd4f22e161701154d7670346f9a135c42416754ddba",
+      "r2c12": "f654ce51034f61199476bbf4e4e3348f36d5032caec52e23f6f3d7af771cf161",
+      "r2c13": "bd41844a64b81743d887b7fbfb3905ef96d6dc34478bad2137d13279ea2be383",
+      "r2c14": "ec6d27a7754cb3163efafa123ca42747678fb1d60ead6663afaae767debe970f",
+      "r2c15": "1c3fe1c2c7644302f5a831fa0cd826021eab1772144743d320295dfeb28e181c",
+      "r2c16": "dc765c7e1ccdda82a6aa273c6503103ba521f0eb2c2d6cc6f51892e54fcc3bb4",
+      "r2c17": "92c90786eb8eb503cd1a9fe8633a4030cad12c0e77540129b6995dad1a9ae9a9",
+      "r2c18": "fde8aeee9e29e0313b0ea67e3bfd0bb83d670ab4358ef952978c6c30da2a608f",
+      "r2c19": "5560eef65379ff36ab4655ef979db9783cb3d3da98994fca1594cde8df60aa0b",
+      "r2c20": "81af659f123c75099037770181b0bbb9b9f0f2d9b9951eacd5770de7f5ffe0ca",
+      "r2c21": "48d0284f7e434416f57e691d531040ea26260a9ac49788993274f049c5de91a1",
+      "r2c22": "d6560a2b27144d39ae70e83d616d224e8a428fd72db8e9a978d10e40bc85b380",
+      "r2c23": "7a172a30efe85d9c1227fe95d75189dd28a98c5cd41d7f0c60fa72220695f198",
+      "r2c24": "db2ad839e761a74d80bf6ce82618ee73c1409be708c68f20ee9a4ad5214481b5",
+      "r2c25": "6449b140ca29ba08628b126c279ad1279f8d973a3ac18dfb7bb87801096ef63c",
+      "r2c26": "05f894ff9b198f041a324ceffca50d649a1317e31af2fe122b03edf770cec677",
+      "r2c27": "9367892baea4620039cc1c0f1b4565d7840d6628ddcda62c5162673b5cbed92c",
+      "r2c28": "5c3bb5da154c91be15214df52d2ab5e50137451b839e57f2d1096b8e63f17c36",
+      "r2c29": "5d0e7017c4b87ee6dc83b51a33218699de8c76706643e47582e05d8ee33ec1a2",
+      "r2c30": "bcde371f9fa087e7b0b5fe1188088a93ab223b771fc0ce3968278b55de118efb",
+      "r2c31": "1aff02656477b2b4e1dd81cec366970afe552eb99d1b4fcac86142ed6073467c",
+      "r2c32": "a21f6fa433a6a9a15ab3a434263287ed3727e1dd7861d903722dad85d936bdc3"
+    },
+    "identidades_round3": {
+      "r3c01": "8b77121e3d35d3dbd791fa6850ce6976a9ad2b0c9e9310d6d9fe1851b2b24314",
+      "r3c02": "ec6d27a7754cb3163efafa123ca42747678fb1d60ead6663afaae767debe970f",
+      "r3c03": "5427e49a7bc12d83d4dc37b7147ddc59af0a403b64128bfb41f01f4667105151",
+      "r3c04": "888892b8578213628d2fb7ba627bb127093b798de2be260aea1e5c99ac2e2d3d",
+      "r3c05": "2948859154dc4cec66c2a29e30db853f7f096dc198bcfde2a9fb02ba5566adf0",
+      "r3c06": "0ce1ab77745481aa40a6c33906725f78305705d1ebd069d6cd4c66bb1fb60919",
+      "r3c07": "f5a35a773bc71102c79e2758bae02cadba54e24fbe98d9970e2de930d8d0f98d",
+      "r3c08": "e130d7b62d9ec445e660fbd4f22e161701154d7670346f9a135c42416754ddba",
+      "r3c09": "ad8479792057c752d5c23c21ebd838f7fb652ca64b6ec182d60c371373177d7c",
+      "r3c10": "b3fcacbd994287fbc7b6f48c6a97660183253eb298c08faacc2293a66a283f4e",
+      "r3c11": "6f7e68cff95b8627f7d9aeb1d520d69820f7dce2d3169a0378bcdf566056200f",
+      "r3c12": "ce20afa1deccc626f291a14b2e524044968d77a905abff2d1811664921672304",
+      "r3c13": "853b9553fa86d289856fc8031d9093af55f79115cf98e758b1d27c42e51c7184",
+      "r3c14": "bf3f11803ef048e4b8d12360da0d9130d694cbee4914c4d9c58566d35cadf6f8",
+      "r3c15": "1c2a163826de709a2b61e92f7dcf63ab4693527a0a0235bbad13cd1d24061820",
+      "r3c16": "a32a582b671204b2809b483acfb8dca57935e902b9c8072902856ff6e22deed8",
+      "r3c17": "7e8f51594ddcf2f478a01750a602edc6484218e319c4d69efffeb89fd0f3127d",
+      "r3c18": "12f91e3620025f14a465dfed483cf0eed1ce4426fb193b490f75599cfc28df22",
+      "r3c19": "c9fa1d016fd35cee682f3c4c3c89ae34b9409b461af9cf8d7d86de71e7b9e0f9",
+      "r3c20": "f8f01a7e05799a458571471cdf1db29b638693b66cac26ba8f9aa25d67db6473",
+      "r3c21": "265ad6b2781a7b03b14d17c774a474c7e85829436a9b1f859cc7ae82c936bebe",
+      "r3c22": "dc2e635bc2aae105f31036a18ed9501baca340b515d630fc4e817296a5fa90ff",
+      "r3c23": "b58316cbd4c5599f1602b6559b1ed952ae2507612c18e394994a42ff16aa547c",
+      "r3c24": "4ef7890167b496750d1469262b3150b7c8616b652b7abc14cd53732fb5d90c88"
+    },
+    "limite_configuracoes_distintas": 122,
+    "limite_execucoes_configuracao": 136,
+    "limite_novas_round5": 13,
+    "ordem_blocos": [
+      "simpleblob",
+      "dog",
+      "log"
+    ],
+    "ordem_fatores": {
+      "dog": [
+        "limiar_resposta",
+        "margem_pixels"
+      ],
+      "log": [
+        "limiar_resposta",
+        "margem_pixels"
+      ],
+      "simpleblob": [
+        "area_minima",
+        "margem_pixels"
+      ]
+    },
+    "procedimento": "grades_fatoriais_completas_sem_sorteio",
+    "python": "3.13.3",
+    "quantidade_controles": 5,
+    "quantidade_dog": 8,
+    "quantidade_escala": 12,
+    "quantidade_exploratorias": 13,
+    "quantidade_log": 4,
+    "quantidade_prevista_round5": 14,
+    "quantidade_simpleblob": 6,
+    "referencias_base": {
+      "dog": "r3c24",
+      "log": "r3c18",
+      "simpleblob": "r3c09"
+    },
+    "sha256_gerador": "ab7ecb5791599d3c81e867c29167acd5e1f6861d98bd87c713fd8cab144afb3e",
+    "versao_gerador": "4.0"
+  },
+  "observacoes": [
+    "Mesmos 178 quadros, ordem, anotações e hashes das três rodadas anteriores; nenhuma entrada original alterada.",
+    "r4c01-r4c06: SimpleBlobDetector a partir de r3c09, áreas mínimas 48/64/80 e margens 2/3, fixando distância 6 e demais parâmetros.",
+    "O cruzamento de área e margem investiga a interação observada; área 80 é hipótese de filtragem, não garantia de melhora ou preservação de recall.",
+    "r4c07-r4c14: DoG a partir de r3c24, respostas 0,12/0,16/0,20/0,24 e margens 6/8; demais parâmetros e classificação preservados.",
+    "A grade DoG verifica respostas mais restritivas e expansão das caixas; ambas podem perder acertos, por isso os fatores são comparados mantendo o outro fixo.",
+    "r4c15-r4c18: LoG a partir de r3c18, respostas 0,08/0,12 e margens 5/6; a resposta 0,08 mantém uma frente de cobertura de pequenos.",
+    "A margem 5 do LoG investiga excesso geométrico das caixas nos candidatos já disponíveis; não aumenta sigma nem altera medidas brutas.",
+    "Controles r4c02/r4c04/r4c07/r4c16/r4c18 repetem respectivamente r3c05/r3c09/r3c24/r3c16/r3c18, preservando também método e pré-processamento.",
+    "A classificação mantém as áreas circulares estimadas e limites de cada referência; a adaptação da caixa não altera centro, sigma, diâmetro ou classe.",
+    "Sem CLAHE, nova polaridade, fusão ou aprendizado nesta rodada. LoG mantém dez escalas lineares; DoG razão 1,6; sigma mínimo 2, máximo solicitado 12 e sobreposição 0,5.",
+    "A limitação de DoG para classe 1 permanece: sua grade termina em sigma 8,192 e não alcança o diâmetro 24 de classificação de aglomerados.",
+    "Seed 42 registrada; geração e execução não sorteiam parâmetros. Os planos congelados, a cadeia de fontes e as versões definem a reprodução.",
+    "São 18 configurações por 178 quadros: 3204 avaliações, cinco repetições e 13 novas; 109 distintas acumuladas, teto 122 distintas e 136 configurações nas cinco rodadas.",
+    "Round5 permanece limitado a 14 configurações, com no máximo 13 novas para respeitar o teto; não é obrigatório atingir 122 distintas.",
+    "Mantidos F1 de indivíduos por contagens somadas, IoU >= 0,50, classes 0/2 agrupadas, aglomerados e classificação separados; não seleciona finalistas.",
+    "A análise mantém diferenças pareadas por vídeo e bootstrap exploratório, sem tratar os 178 frames como independentes ou decidir por intervalos de confiança isolados.",
+    "Analisar o round4 antes de definir round5. O documento explicativo completo permanece previsto após round5, antes da seleção e dos vídeos."
+  ],
+  "origem_desenvolvimento": {
+    "plano": "scripts/limiarizacao/rodadas/round1.json",
+    "sha256": "4ce2e19215a6f3b983b60aea35f0a84c138eea63c1495a39768525970624e965"
+  },
+  "origem_inspecao": {
+    "plano": "scripts/blobs/inspecao/round0.json",
+    "sha256": "6b28d76132becfb22bcdb1965ed3e8228d84b03f7894c4134fdace07426d96a6"
+  },
+  "origem_round1": {
+    "plano": "scripts/blobs/rodadas/round1.json",
+    "sha256": "59eba7c3ca133b45c5b581860677add18675a2458fbc65d28d267cf5883b2b69"
+  },
+  "origem_round2": {
+    "plano": "scripts/blobs/rodadas/round2.json",
+    "sha256": "29a9ae0de042b1da2a5b5563d9834565e5b8a8069a53e302793389b7435755da"
+  },
+  "origem_round3": {
+    "plano": "scripts/blobs/rodadas/round3.json",
+    "sha256": "1b362082bd1fa22b2885a8b3f898c5116c2a34f4915de8c3f7cf374a457bce46"
+  },
+  "particao": "desenvolvimento",
+  "quadros": [
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_0.txt",
+      "anotacao_sha256": "a3850201386afec0c7182f393066c4c8781cd22c5c3f0c643ec6c90ced74d1e6",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_0.jpg",
+      "imagem_sha256": "2c0d7438a7cb7fae69b4800fa521538fc425a3d9f05c2b2a62fca1c2a722015e",
+      "quadro": 0,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_100.txt",
+      "anotacao_sha256": "d4f5024c382faa406295017014245a8c03cd0d859bdb2946baae01fa40a3cec7",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_100.jpg",
+      "imagem_sha256": "b8dea9b338daa891adfdca18b8ab660bf7e086368f32ac8ab29a071ca6ed35a6",
+      "quadro": 100,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_200.txt",
+      "anotacao_sha256": "14d2c202d28ebbae49e14d7ad611d8a369553e50baa0493c8e8b2331016fde28",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_200.jpg",
+      "imagem_sha256": "0514871287aa6680e6bd3d5396981bb1522ca1da710dfd9059af1a0d87125533",
+      "quadro": 200,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_300.txt",
+      "anotacao_sha256": "5804b4946174045045422d67d76cc468f189452a041f6000acbab436928f1da0",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_300.jpg",
+      "imagem_sha256": "6cf39aba5fe5bd1669d42cda6ba8ffc8e4b86cb8275a8ec16743e72396208000",
+      "quadro": 300,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_400.txt",
+      "anotacao_sha256": "2d7f7a68b9ae913661a8688a6e182237b44ef54757268fdfa4daee8275e7316b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_400.jpg",
+      "imagem_sha256": "8eb7aaa9da09c1b58f87da767dd12d178bdbd54595c564c8fb2908aef4c0905b",
+      "quadro": 400,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_500.txt",
+      "anotacao_sha256": "f940cc8e358e6354deec0581f139bc8d432e14900e7eef522d29af836ab6f23f",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_500.jpg",
+      "imagem_sha256": "92a7d315c27c505af4a515a5c215d71d92615a41dedb8e330921a77b019dbfee",
+      "quadro": 500,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_600.txt",
+      "anotacao_sha256": "80c4f344cd03a0f2b504a43c15e27bc9180db7e1a83533290ea15e7826b0a75e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_600.jpg",
+      "imagem_sha256": "b47ab49b4fa70dc197e5fd72ff495bc3acb08d1a355153d842de5670ee924d1d",
+      "quadro": 600,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_700.txt",
+      "anotacao_sha256": "a1755287d0587d284cffeda83456960d8ea1d9557f3c06e30387e8501696c42b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_700.jpg",
+      "imagem_sha256": "2a9b2ae5d95523004fff72122fc88657ab1429bc7c75622fdca61e1b295c3178",
+      "quadro": 700,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_800.txt",
+      "anotacao_sha256": "71fa8afb85cadea8399fe44784ca74ea45dde7cfb9edb91c727f5abaa76585ef",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_800.jpg",
+      "imagem_sha256": "3edc4e3a93ded2b66204ff52807cc33ff0169ccb175b82a708930cee0451d28c",
+      "quadro": 800,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_900.txt",
+      "anotacao_sha256": "4b91c2e1daf38e713dca26f5565c610fed3f77d7c2ed22a08b943f5ed68ec8f2",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_900.jpg",
+      "imagem_sha256": "715a5779049b7ab1347ab387562c78b193df84e9aa1ea0b926564e5a537a2acf",
+      "quadro": 900,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_1000.txt",
+      "anotacao_sha256": "ce1ef9e47fd9ac30e1d59895e63829be4a09bbd4af34acc143351928c10a7256",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_1000.jpg",
+      "imagem_sha256": "73f17db54cdaba260fc42c7d55dd55288d963f08467c802e2063b231b9259073",
+      "quadro": 1000,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_1100.txt",
+      "anotacao_sha256": "d8029b1c355dda770f29acef011c349fa455ea75a778fa7b43febbf16bad154e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_1100.jpg",
+      "imagem_sha256": "52d29979425553c0ed169c99a056165e48a306c3fcb4c5c7ee9959de58197212",
+      "quadro": 1100,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_1200.txt",
+      "anotacao_sha256": "75387f667c1c14f79e508e7893509cc876e8b37518a11aaeb1df0c5b95e48205",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_1200.jpg",
+      "imagem_sha256": "963aa4625cdb1e88575f652dfcc7c1b17da41ffff0498b4e27c94b2a56998ebb",
+      "quadro": 1200,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_1300.txt",
+      "anotacao_sha256": "b9497377ba75597124b09babe06feb9c4079a39318dc536436f4232a491891c6",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_1300.jpg",
+      "imagem_sha256": "1bca6eaa3a1d10f631a49239a9cd96c77b3b0f6377d124b8be30e4a7c760b2c9",
+      "quadro": 1300,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/11/labels/11_frame_1400.txt",
+      "anotacao_sha256": "446facda5bf734c9ebf4c049d90fbe42c2d69671589fff98ee683faf81e4a68d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/11/images/11_frame_1400.jpg",
+      "imagem_sha256": "394ab904b23792b2faff1938a9c41e3918c426a47a568aa7db90947bffaedd39",
+      "quadro": 1400,
+      "video_id": "11"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_0.txt",
+      "anotacao_sha256": "c0501a26af5061b11b8cd4ee343bc75e5932aeafa49096bcb9e7e1e3fb394229",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_0.jpg",
+      "imagem_sha256": "1bd3fa1056e0eb0b59d22d11a9f15f6f62147a8ac3d89837b8e3bf0ba5fd78c4",
+      "quadro": 0,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_100.txt",
+      "anotacao_sha256": "4f5852428d3cb5494ec7aa9b36415668daec6900854e661f5ab3e411e94cb9c9",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_100.jpg",
+      "imagem_sha256": "9b4f9675fecc2ef1138297e6aaf44b8b5fd2503017322de88c5d9a2ba6493636",
+      "quadro": 100,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_200.txt",
+      "anotacao_sha256": "3aefa89a655a762a3ebb7bf189bd0f944b6783b9e09eaf4479a3c361dfb1a6d2",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_200.jpg",
+      "imagem_sha256": "e04d38467668f291f19f2e98180ac22861c95077a949c1ae3404d5b1dd5f952d",
+      "quadro": 200,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_300.txt",
+      "anotacao_sha256": "f539c725ffe8bb26f6be9b32eaaafb51337f2f17d7be4f41c1cf3878a1997e40",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_300.jpg",
+      "imagem_sha256": "dfe4fa89928c113c15b72e7143771fe6d4363edc591408d56b12700edffce943",
+      "quadro": 300,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_400.txt",
+      "anotacao_sha256": "6a0e49300856d7241490162d8563c8639e21c9bc34adf7bbe86c366289e45a59",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_400.jpg",
+      "imagem_sha256": "ee61ab44530f70cf537366566051ee5459889d4d0e3a81c5650d1489556a29fc",
+      "quadro": 400,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_500.txt",
+      "anotacao_sha256": "300b516b7771d53003bcda8e44136fb5a89bf96cfc4b274fb8d49ec34018cff3",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_500.jpg",
+      "imagem_sha256": "74b6727d2a16e6ed1ab49525512d8862f3ccc4abce80698a50b3c1a230cb9f38",
+      "quadro": 500,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_600.txt",
+      "anotacao_sha256": "5f693adc98c6fbfb440a856072b66c127c9e8c5013b800d7262fca6a999abe5d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_600.jpg",
+      "imagem_sha256": "d25c5fd7a12a78bda883e4d749761fb60cb61c10f8112ad7ee9994fd74c7757c",
+      "quadro": 600,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_700.txt",
+      "anotacao_sha256": "d9520e9f698e273dc3ef40f899ba0289ae394b229ef10e6d109b68bc8e3329cc",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_700.jpg",
+      "imagem_sha256": "20a6efd9869b2a3ac1eb8ea17817cd4bf86504e9c9bfaa8d577bae58d7263201",
+      "quadro": 700,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_800.txt",
+      "anotacao_sha256": "780c1aa7e39d1c8d5d68331796661a41b1b1ce4d0495c9ab81e4017a24521e46",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_800.jpg",
+      "imagem_sha256": "1aaf4be3f207da6fe83e0918f891a6a45d357dcd24c3f80f2197f7e8dbf515d8",
+      "quadro": 800,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_900.txt",
+      "anotacao_sha256": "16605abe2f420b2ad2d763a6d88a38bdf4692da79d06b4de7fd71fa63999ce2b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_900.jpg",
+      "imagem_sha256": "b53625e944c447b7c52b43db2a54a696cc776127d57357f31fe12fd04cf150ca",
+      "quadro": 900,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_1000.txt",
+      "anotacao_sha256": "f0291a7e41027a03401bc7d9de13fa498669741acb816d9edde91dd0285d77b9",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_1000.jpg",
+      "imagem_sha256": "9c21808bb946342750185ad40bc75b8f5f6ed4b1f9c3647c16cd50b446685f72",
+      "quadro": 1000,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_1100.txt",
+      "anotacao_sha256": "3f138ec1960316acc458517ca8a97c78f64006d99d84665aa15b2597dd6a9490",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_1100.jpg",
+      "imagem_sha256": "ecb81d43a4ad2626865a779be84d319ffff7c00808e5ae652fdb2d358f26a1c7",
+      "quadro": 1100,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_1200.txt",
+      "anotacao_sha256": "c36cf3d246fbf8ccf7c2976e86975c84e77856125192d4190e1941968b71f830",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_1200.jpg",
+      "imagem_sha256": "68ef4764b45da48ca6968fece18e6e843f128bfb1ac0aba2c2d0a7e96b5d4af7",
+      "quadro": 1200,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_1300.txt",
+      "anotacao_sha256": "7bf79b738f90d4be2aa6d312daba9f238017992adca5dd345fcc6407253aa951",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_1300.jpg",
+      "imagem_sha256": "2bd8929cc368aa55997562fb9f39341b2a9233a77d74db9da9e8320cf5fcfa6d",
+      "quadro": 1300,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/12/labels/12_frame_1400.txt",
+      "anotacao_sha256": "07de6e9e26233dd30628b3dea4f5725168aefdb50469590ef189d274ef279837",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/12/images/12_frame_1400.jpg",
+      "imagem_sha256": "6a18f8e7aa4869c162afebc24e4829060c7b05921933353b4a0fe71160391bca",
+      "quadro": 1400,
+      "video_id": "12"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_0.txt",
+      "anotacao_sha256": "f095080520d7b7feeda76cc0c9883a02b62270452f7d52da631bc9b3fcb45d9d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_0.jpg",
+      "imagem_sha256": "6e2e737d1d801908569cca4b004f48b48591935dc33e127a1647a3efc8ef8be6",
+      "quadro": 0,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_100.txt",
+      "anotacao_sha256": "aa230de9bc7192e0e6bbb0fc0f20ef8a678938e35a4e599879c642b08d0bb7eb",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_100.jpg",
+      "imagem_sha256": "18165e8b75bad3c5dfa4516b14445e93381867d0d55f015d7ed04c6551af7df9",
+      "quadro": 100,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_200.txt",
+      "anotacao_sha256": "49fde4248820b14ad145b12eccd37077732259e03890a30b81aefffdd1b06598",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_200.jpg",
+      "imagem_sha256": "9505e70e69f639c43707e5f0b0094f0857e5d48469ac05c0f3ebd835a25253d8",
+      "quadro": 200,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_300.txt",
+      "anotacao_sha256": "7a2525e429f846355b1806d44d95d3212651a40c520e4dc5f1416e631e7cd48d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_300.jpg",
+      "imagem_sha256": "b3027a91d00bd503b5a910c2e1329e5323804151d520d79c2af1aeb17bf7ff6c",
+      "quadro": 300,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_400.txt",
+      "anotacao_sha256": "fd52df8cbf99a6e2e0e3a3baeac96e16e3e2ce11ebfe7d836add3820e13e7bf2",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_400.jpg",
+      "imagem_sha256": "c97b12bb2d7903dbdfbd548dda8ac264de35b1f39d9bb72afaa7f739bdd76d21",
+      "quadro": 400,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_500.txt",
+      "anotacao_sha256": "7c92cbe81fe502b8c6360661a403816c773ce9b45bfec66f3b8f9429e953bec5",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_500.jpg",
+      "imagem_sha256": "f5a307715fc5b27fc7d1978c1636cfc2939408a01219efe9d03d3bb56d7cc8ce",
+      "quadro": 500,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_600.txt",
+      "anotacao_sha256": "e5153c147a39bd66d325be9e59b5ae69c650d1dda1becf8d2c9d0c9775f9f7fa",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_600.jpg",
+      "imagem_sha256": "0734827f5b7ca18f5b3156084c9db536065c4edb945bf28b8af8e0ca35a7eebc",
+      "quadro": 600,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_700.txt",
+      "anotacao_sha256": "da68e8b88d989ccedec68242217d54033b37d5d53ff998eacd0d5b5426f88a87",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_700.jpg",
+      "imagem_sha256": "3420567a60d8c800f022b7cebc0f7a3c182e9fe714ef714fecd354da88a7e24e",
+      "quadro": 700,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_800.txt",
+      "anotacao_sha256": "5e634d4626e3f29eb555e07d6fc4ba603a96631b240f59784b11b109d5a9c7cb",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_800.jpg",
+      "imagem_sha256": "76279dddd0605b49cc6d7f571a6a21de4329d01828a02da80499fff44b51671d",
+      "quadro": 800,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_900.txt",
+      "anotacao_sha256": "514e22cb5eca6e3a51cbacd5b91cd6ec9ce16640cb7c9de6bc8499fabcdf1332",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_900.jpg",
+      "imagem_sha256": "52e97a0d1fa76b5a103a00afb0acd18db86b63f7299279f22760934613fd5e57",
+      "quadro": 900,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_1000.txt",
+      "anotacao_sha256": "e06ace638d73f1de85fe9a6791e2aeea18daba8e7a98d6cad404b831ff6c3e7d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_1000.jpg",
+      "imagem_sha256": "41be63d1e9abbba5d0a5d4091d500579a6d3840ee1dc1c07aadc7b4b1d862c06",
+      "quadro": 1000,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_1100.txt",
+      "anotacao_sha256": "b9696eec0ee1c40e63c4a14806aa8b8b71243e0b4dc4b782c5c47cef099cf37a",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_1100.jpg",
+      "imagem_sha256": "9c159bead70d4fc94eddd7827d6843491a72c1fea21de6430e0454ad8a697009",
+      "quadro": 1100,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_1200.txt",
+      "anotacao_sha256": "2a600dfdbb7bb32168841181064f2ed7f2f123f0f36c8f7021c5106e65c04cb0",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_1200.jpg",
+      "imagem_sha256": "23048befb2ac1f6308bd814cb206e98219701596989a9cce4d1783c52a32461b",
+      "quadro": 1200,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_1300.txt",
+      "anotacao_sha256": "ef3ff22e907b48194fb6182bf9a32ed32835e736fd101e55778cbddd711e2540",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_1300.jpg",
+      "imagem_sha256": "eb130a9fd0eb3a2209636abe13f5461055998eab065c9cd7593f00ca9d64d759",
+      "quadro": 1300,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/15/labels/15_frame_1400.txt",
+      "anotacao_sha256": "af4f0778785719a89a4f52348e67e96efd5bd577411fc6b3d1b335edd1ab9dd7",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/15/images/15_frame_1400.jpg",
+      "imagem_sha256": "e1294c59b4856d821f73e7a5bbe4c47f86e34205b0191bcf8522f2e607b6b08e",
+      "quadro": 1400,
+      "video_id": "15"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_0.txt",
+      "anotacao_sha256": "fc8e45c667ae0ae930e0c9ab9c3926fbeec025a3e90a22b1220538b2340a963c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_0.jpg",
+      "imagem_sha256": "90573fdad5d63349fc90d100ff77201eb1b36f3cd76cdc8fbc0d3a6b33a8cb6a",
+      "quadro": 0,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_100.txt",
+      "anotacao_sha256": "ad9114cf352b94215d4ce4d6f638b8cc06a778702da539617e200f400dd04ae8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_100.jpg",
+      "imagem_sha256": "dd5bfb928e78f776320698b255104eb161bb8f44c881a561d4f18a04439f6f61",
+      "quadro": 100,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_200.txt",
+      "anotacao_sha256": "833f37d419ddcd4d83a47a7dd476f69511d636cd841f209e6ad7540bac5c55c0",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_200.jpg",
+      "imagem_sha256": "13c2e4a03e2958dcdf6fd3277ac8950b39b7fc5aa37e8f4c01256d6700dfbcf7",
+      "quadro": 200,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_300.txt",
+      "anotacao_sha256": "0feddfd57cc4f82fff97b30ce7fe1e27b58e2acb2e93011bd7474bc4cdcb5d59",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_300.jpg",
+      "imagem_sha256": "52d4dcccb47456d123f1e0fa64c499e551f687487411263e4482de2729fa48f7",
+      "quadro": 300,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_400.txt",
+      "anotacao_sha256": "ba6e333bc6569d7e8a5e697472a017f2d4406b655ef2c36d6ec8f0d743e74681",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_400.jpg",
+      "imagem_sha256": "aa4440ea9b9439b124487acb02fa48bd2bf0536c4baf60040ab32015fe49d68d",
+      "quadro": 400,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_500.txt",
+      "anotacao_sha256": "d2ec14fcc9465d47a8e9e4600d90c93d7b3f2b10c415348c7a6c14eeb91931fd",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_500.jpg",
+      "imagem_sha256": "17b4ad21fab8b5e5b6e3c111ebd2c85a2b7cca614599d48c990785bdcac5f464",
+      "quadro": 500,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_600.txt",
+      "anotacao_sha256": "293d58a5ab3dcca5fb1fa3bce63964da29101f990f99ece28e23cf166b4c2e8e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_600.jpg",
+      "imagem_sha256": "71e1adc5732ee007fbaff79ac96b14075d7d0daed3b67d439c7768928f06379b",
+      "quadro": 600,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_700.txt",
+      "anotacao_sha256": "e2a33dac0512a29ae536d672fd9cabc39c5806e217e651b5ac103182075f5df0",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_700.jpg",
+      "imagem_sha256": "3ba422b202a41a682f8b958e03639a37c329e3fe68e834f48cb88621d2b6c62e",
+      "quadro": 700,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_800.txt",
+      "anotacao_sha256": "761cbeebaa412bf51404e70e177c2a2ec4e42dc87f970e4fb0fbfca8829be706",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_800.jpg",
+      "imagem_sha256": "3bd5e8f601cfb9a54464bf202f3b911d287ced351f2531a0d2bb25b3aa4ce67e",
+      "quadro": 800,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_900.txt",
+      "anotacao_sha256": "1093a47544cec62798f30ab20d3765d60e5ff4b55be2aa486ed0d27f9f189146",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_900.jpg",
+      "imagem_sha256": "aa20007acc15dfbd14d633b108e8bd4ad3ee6aca025176787d26a363f9baf705",
+      "quadro": 900,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_1000.txt",
+      "anotacao_sha256": "156d80d3b779b067c9d4731c8a4b7ecdde3b66f89caed84c2e9e993c1fced6c1",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_1000.jpg",
+      "imagem_sha256": "251fcf59e63decdec2644580ee93cc9089363a685c2c10bd9ab84c338c21a03f",
+      "quadro": 1000,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_1100.txt",
+      "anotacao_sha256": "1f55c1cef872ed5d7311d65351f4986ba22b7d5c821f1c152e6462e192f8aa15",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_1100.jpg",
+      "imagem_sha256": "9beef3914e25d42c3e0078c8484e600b9a9432ab0f0e58e99e3f83976507ca90",
+      "quadro": 1100,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_1200.txt",
+      "anotacao_sha256": "ebb0f9eef23e8a43ccca4aad952478c765f0f035a2a8f2d8732947537d56824a",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_1200.jpg",
+      "imagem_sha256": "b2b5073c539a7215dd43ff554941043bfbbb05346a4247251dba5f1ec2a90f41",
+      "quadro": 1200,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_1300.txt",
+      "anotacao_sha256": "88e98c9da1c3643c6d75896db406b744fdc78772ac1d0a2711658ed44f0468ca",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_1300.jpg",
+      "imagem_sha256": "e39d95c2951b3bcb802a1f8b878905faf0796dbd4d8b175d004e8ff5250df0a2",
+      "quadro": 1300,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/19/labels/19_frame_1400.txt",
+      "anotacao_sha256": "0162d5663911342b39d649b4f0635f32801351260dbb266efd382c9f78fb7dba",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/19/images/19_frame_1400.jpg",
+      "imagem_sha256": "a0f6643911ec2a25f5cc14bfd05a9d0abec27c7fac0bc105e7071c4dd679e647",
+      "quadro": 1400,
+      "video_id": "19"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_0.txt",
+      "anotacao_sha256": "546a02693db5fed609982eccc1cc8facb8bfe221d674e01ace4fc6b3bd9f4dc9",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_0.jpg",
+      "imagem_sha256": "dea8bf8f8412cfb64fd048c50898055dde391ccbdb37d7fadae2fa3f75a7d793",
+      "quadro": 0,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_100.txt",
+      "anotacao_sha256": "681f4e9f897b951812a8ff2f9a6cedf0399423683543c4f68825f7aa4556a2fd",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_100.jpg",
+      "imagem_sha256": "6fa3db6388d5f51bb6afe7b7be5ddc953c7c33923c4b88487983b0482d38521c",
+      "quadro": 100,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_200.txt",
+      "anotacao_sha256": "dbef0e1eeae1fb4f27aa1a2dc895c8619104a43a595c8510aceffb47146b71c3",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_200.jpg",
+      "imagem_sha256": "2d1b924e2de6fc168182304987b88bf0121b49521368f110767d21c743fe480b",
+      "quadro": 200,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_300.txt",
+      "anotacao_sha256": "b1b078eee87c070e815511e6af9e5e6b0b99c00b0dc634205ae1712dea3be329",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_300.jpg",
+      "imagem_sha256": "e5358e113e696ea113da3fc418a640e816d9c0dc4ddd38a8c793a0a90eca3214",
+      "quadro": 300,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_400.txt",
+      "anotacao_sha256": "f3039fa201b7f4eade0880fa44c66601947a9a6466e9c3f16a6b09f850684261",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_400.jpg",
+      "imagem_sha256": "e30961221999355bbc230556e401fe395bf99a77207e5ec2ca8f410a126ac109",
+      "quadro": 400,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_500.txt",
+      "anotacao_sha256": "d6e9a15a6471fdeb14896b54ce88b7a17c5318a9d1b514596366ef24a5432d17",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_500.jpg",
+      "imagem_sha256": "cb02076f3ee9999f666284474500cef7b93e064cad5b312ea4d8195c37b1dda8",
+      "quadro": 500,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_600.txt",
+      "anotacao_sha256": "03949259e926857d898407026ae2a3c62a8da30254f85376d24acb78575106f4",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_600.jpg",
+      "imagem_sha256": "0a21aa234d09ccd73c8a3dbb8a4de834df79108af2b140ac7de2b2ad0f4bf06c",
+      "quadro": 600,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_700.txt",
+      "anotacao_sha256": "daa9a6793233072a6ed0dc12b5c2d37348ebaae548bc058866470fcc7893b1d4",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_700.jpg",
+      "imagem_sha256": "49e205f2fcf7c6fcd7478ad0e78b594ace81fc65c913d3a9c214001dc00e8244",
+      "quadro": 700,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_800.txt",
+      "anotacao_sha256": "c05a229b2d0497b7b89e253356d38fb8b59ac17e56fb36cbf744b08e3ad6ba07",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_800.jpg",
+      "imagem_sha256": "ddbb7ef99ff47f22755456b155f46c0126b952529ab1d6c5d8182a85b306fe11",
+      "quadro": 800,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_900.txt",
+      "anotacao_sha256": "5828d4ebf49190d883ffcea2324af4d0e8b23abe87edefc62c654c4275f02233",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_900.jpg",
+      "imagem_sha256": "22dcca83729a1e3f16d4552265c162a52cea19a2c80e7238a179f8918de8d9c0",
+      "quadro": 900,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_1000.txt",
+      "anotacao_sha256": "f6295cb29a3ef2f4154e479351ff5be3291d6bf6bd5750fc506b562c1fad6ea8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_1000.jpg",
+      "imagem_sha256": "49e03421974253b57f7691d179b2aabf509732168a88c14cdf17888a7a350455",
+      "quadro": 1000,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_1100.txt",
+      "anotacao_sha256": "c76ffc640da823a23cf2aec41c330ea23cf39a0c6f81b0847c8800100d086645",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_1100.jpg",
+      "imagem_sha256": "dff7d36c435c50c91b87cd5e8c244c35f965a29f60617a87e21fef520ad16fa6",
+      "quadro": 1100,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_1200.txt",
+      "anotacao_sha256": "eeffd0ad87dfacc5311ebd59405d06254d67948964cdf74b9144a3fa7643456d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_1200.jpg",
+      "imagem_sha256": "919a196509447d18164753be4904616fb1064a39fa4e09e2e2998b86a3fc1b7d",
+      "quadro": 1200,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_1300.txt",
+      "anotacao_sha256": "ddd2c86fd5a37cf6427b550d07aa0f1499a136c5b8bd3ef3198cd88c82359ab3",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_1300.jpg",
+      "imagem_sha256": "4445d9c0f0f24f267b0954c7fdf2e272e76b67ee7e6c4c6865aaa98fd5a220d2",
+      "quadro": 1300,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/21/labels/21_frame_1400.txt",
+      "anotacao_sha256": "1fb7f2b7753ad6781a77b080b023f44f5127933703622262e4fff50cc7bab407",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/21/images/21_frame_1400.jpg",
+      "imagem_sha256": "191e8c6dfaac08e2caead9946af274482db447d250a079533018b345d14d84dc",
+      "quadro": 1400,
+      "video_id": "21"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_0.txt",
+      "anotacao_sha256": "3cf65759b6ec83f5824a928e7b2a2e0672dd66c5137dbe979330c8d6d419ad1f",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_0.jpg",
+      "imagem_sha256": "ffb301755627b8e5821c186ebefed6b66a953d8765b3e2ffe9deca503b1d9d56",
+      "quadro": 0,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_100.txt",
+      "anotacao_sha256": "4fd514b00d79d4357b53e590b8cc353fcfefdd4c0c838252d696ae391ed13fa3",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_100.jpg",
+      "imagem_sha256": "2c513dc668c433126253b72418a744f06ea88ced13de315d78f82043a4ec5c41",
+      "quadro": 100,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_200.txt",
+      "anotacao_sha256": "b801a25fbf8ab4bb10c9136924ff9b9281ca03e401473b4f8dcdada33e4fcf70",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_200.jpg",
+      "imagem_sha256": "4e1b4d5c6a6f1d389defdf21d9d8acf2fbe9aa619e0f8bb5069578ac3cd4f2a2",
+      "quadro": 200,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_300.txt",
+      "anotacao_sha256": "67091c40a36e32f46349decc68a2193fc3f5c40526fc0bce752e7ae310c81bc6",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_300.jpg",
+      "imagem_sha256": "88b9487152b496b94eaa3d7acffaf9f33620a124ff6c11f5974bc636393c332b",
+      "quadro": 300,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_400.txt",
+      "anotacao_sha256": "920f5bd31428e1b7ae6cafaaf8b8367cc23f59b03d960cf25cb31001a028ab51",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_400.jpg",
+      "imagem_sha256": "c89d7635fb3c03d64cef193d4855fc79616de1fc5c3e56894f4cad2860dfa871",
+      "quadro": 400,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_500.txt",
+      "anotacao_sha256": "0a5807a00ae2d98f8f5a03b312befed29dce5d70540b97deaf0121ac09a49e1e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_500.jpg",
+      "imagem_sha256": "dee838168fcf8dba044f10718a64704da1a1543f7f8c9a226e3ebee6da604a8b",
+      "quadro": 500,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_600.txt",
+      "anotacao_sha256": "052a1304cb9cd935c123b307ec12b49eb67130f479f2af06fb2a7fc546352f10",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_600.jpg",
+      "imagem_sha256": "d0e09f033aec5c7bc2dc10e988e556ef20a62e7fe71b4860b54dec36d4d6df6a",
+      "quadro": 600,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_700.txt",
+      "anotacao_sha256": "570633ee6193a559b9f965cfdc64c8af60b09643e7b552ac6543a9710f3a99ce",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_700.jpg",
+      "imagem_sha256": "2d58a89c971e56c3ff1a6c80b32ed5a2290a1b6eb8ca1e6ae61925091bb5039b",
+      "quadro": 700,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_800.txt",
+      "anotacao_sha256": "4f73d47a1e15bee96284bd2ba386784546990b5d85951f373a325cbab0754f2e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_800.jpg",
+      "imagem_sha256": "33691b7403643817baea4b919a2aa23cb901277cfd99189efb3fee4341d40d43",
+      "quadro": 800,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_900.txt",
+      "anotacao_sha256": "ea6b607008e70d11fcc818bafe6c5a88c1c9a4c55bbaef2483dae601d2faffd2",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_900.jpg",
+      "imagem_sha256": "f5f0da3f91a0d658d312911fc8acad9ac84171071499a5f8333421f963fd6d41",
+      "quadro": 900,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_1000.txt",
+      "anotacao_sha256": "bd4db27a66b920e2641566443d022e443100d25006de77393587b3b1a60e4c0c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_1000.jpg",
+      "imagem_sha256": "e22d1698f2b5617d0cf16f7070ac46a0aac82be58a946eb2c278cc7532300703",
+      "quadro": 1000,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_1100.txt",
+      "anotacao_sha256": "d573731e7d46defff30052946abf6714580a766d01568b7058f19e8cafb0bb3c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_1100.jpg",
+      "imagem_sha256": "f475288a2484c0395a4a371cfa001bdee43124d494c513d7d604b2a88b8a4c91",
+      "quadro": 1100,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_1200.txt",
+      "anotacao_sha256": "1cb6918d53c78b54b3e7c03f3fa75ccc6c8c53f20cc8fe5f2787d5015005786b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_1200.jpg",
+      "imagem_sha256": "3379ca497830d21ce559c5cff3adf24b5285338f33e06f1b9d0771e2edffc41f",
+      "quadro": 1200,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_1300.txt",
+      "anotacao_sha256": "1273390f8cbf845ee856e527eae7b458d0539c36238c37559143a951fc1dfc0f",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_1300.jpg",
+      "imagem_sha256": "1a75be29f48d16bbf333b585f74234a1b627d1146726f73559a8236008f157f2",
+      "quadro": 1300,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/22/labels/22_frame_1400.txt",
+      "anotacao_sha256": "9ab2301a68d991ba63ac1f4180c30bfaa027a849ce48d634049034ce0c9eabcf",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/22/images/22_frame_1400.jpg",
+      "imagem_sha256": "0757cc37f0b41d1c483513c53a00dc52599aea28121c1f4ea55dbe5f92891772",
+      "quadro": 1400,
+      "video_id": "22"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_0.txt",
+      "anotacao_sha256": "1cfeef0877908d8ac519ed754d74ebcf44cb68b34849b7e083f6cbb3954061b8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_0.jpg",
+      "imagem_sha256": "2d657f99032045f0d694f97dbc3a93f4a4eb4428eee26fb1a3d713e6cbbe9a9d",
+      "quadro": 0,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_100.txt",
+      "anotacao_sha256": "ad2595bcc67a8ce740fa3026059e3993e14ff2fa0bafc552cbd3f0329be4964b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_100.jpg",
+      "imagem_sha256": "88fb6dce217563e46050673c56cb5521d6066e9736d6a2ecad07983ef3239905",
+      "quadro": 100,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_200.txt",
+      "anotacao_sha256": "212d3422475212e74ad097e7d4bd8aa70b5503a2d8c4fc975c84323cefb116c7",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_200.jpg",
+      "imagem_sha256": "c3e409d4815dc2d56df3047138cc78aa43ae1c5b48162dbde8617f911150384f",
+      "quadro": 200,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_300.txt",
+      "anotacao_sha256": "eeaa31f8aa40130b516534dc00cd928e481dd1aa6304c507e02f8d9ab79fbe9e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_300.jpg",
+      "imagem_sha256": "9cae73b82d1023ebec1425657bbc5288c7f1e51d4eb59d3c2d21990a8b03a581",
+      "quadro": 300,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_400.txt",
+      "anotacao_sha256": "c4b88f3fb55a1b58826e52259895dc7c48b169c5930352ccad7c87cb612e899d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_400.jpg",
+      "imagem_sha256": "f1c3c50e5b11cbd1a33c3fedca56d21b141d60fcf303eaff98f1332ef6a54023",
+      "quadro": 400,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_500.txt",
+      "anotacao_sha256": "04c93ea79f5707af27dce88b42347409b755aff71c9f81718f7c4efe228c809b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_500.jpg",
+      "imagem_sha256": "37e2659fcddb04611231bf99d2c2d511157900a0540dd01fb431de5b5dd5289e",
+      "quadro": 500,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_600.txt",
+      "anotacao_sha256": "7619ec2d154124fbd349722aa3d51cef8bb702111fe6ea4a6533ee36a0288cd0",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_600.jpg",
+      "imagem_sha256": "7b346f72b4106d3a07fc5d4037ca2b2cfbfbe08ac7fc7c0807d6d2d4cdf71f57",
+      "quadro": 600,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_700.txt",
+      "anotacao_sha256": "b046d3fbe0c3d5f3262c583dd62e63ef77c248b70faa7145bd3bf9a7c43181e8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_700.jpg",
+      "imagem_sha256": "3c9dc950378bfdfd6ef03afd6a1a344859f5e647bb4ef8edeffd529f557137f2",
+      "quadro": 700,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_800.txt",
+      "anotacao_sha256": "d18d7bb4a0d4e6b8eceb07ff4648280344b92c35fe549a566af9eea09d946fa3",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_800.jpg",
+      "imagem_sha256": "b3780d2bf363952dfc36383558fffc9c0a9b159ece74b43675a9fe59c66e6f60",
+      "quadro": 800,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_1000.txt",
+      "anotacao_sha256": "fd07ff3b786158bf66594040dd76b4139b011bb44e0375c94097a29fd6a171e8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_1000.jpg",
+      "imagem_sha256": "0c6d9d1887a350e137eb007b4d77a1eb46a92614e33a1a2512f06d0f664c4c34",
+      "quadro": 1000,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_1200.txt",
+      "anotacao_sha256": "6def0f783ecf0b67d2c913077367f8a05cf43e758f778b9ad2931d55ae61f24b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_1200.jpg",
+      "imagem_sha256": "35a667a57fa3f030e17dee82189c727ffabdec5fdb700780de9b9c7c86a2f907",
+      "quadro": 1200,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_1300.txt",
+      "anotacao_sha256": "88a22f28e5e81806844e0c0bca854158c94649b7225c99b6130bc1293a43b1cc",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_1300.jpg",
+      "imagem_sha256": "02bf119150a0e259a65a7e34bb5a0afe19948870038a100353a2d5c8c22be24f",
+      "quadro": 1300,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/23/labels/23_frame_1400.txt",
+      "anotacao_sha256": "9cff80ee88421c6289847af164853f2f70668d5f0e7c13e6e9ce0acf2f445d2c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/23/images/23_frame_1400.jpg",
+      "imagem_sha256": "e200f0650a97f58743d423c86f1670850ac5752f6b9b15eb82df589075fcf4cb",
+      "quadro": 1400,
+      "video_id": "23"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_0.txt",
+      "anotacao_sha256": "06d3320d847d580abf5c83fabfa758f5b561efe6761d37d93cde0ce406707fd8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_0.jpg",
+      "imagem_sha256": "1e872c68512e27b393377a2bfb67f9e242fb19627095bdd6e530ebabf14d088b",
+      "quadro": 0,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_100.txt",
+      "anotacao_sha256": "f2361737851278cdac6bf9507ae636faec38b777d1aaf276c0f904bdbdf11815",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_100.jpg",
+      "imagem_sha256": "8c4f1adea904d079ea011ffc3c2069ba105aad22cfad15b0b8c2809149a7583b",
+      "quadro": 100,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_200.txt",
+      "anotacao_sha256": "a3e92f5fc937e746954d06df683a2667cba63f77edcda3b045ac776d1765430a",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_200.jpg",
+      "imagem_sha256": "fcb7d903581a4f6f98379b5652d5af3f04ef7c06d0f610b11ab5743d7792787a",
+      "quadro": 200,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_300.txt",
+      "anotacao_sha256": "efc6b2c3209a4028bd21604ef8beaa03097a4637d7261a41e145a324fc8c9aea",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_300.jpg",
+      "imagem_sha256": "632f105b58f0cf0624548dcf89949139099f06b1eda198cc2ef1460627540514",
+      "quadro": 300,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_400.txt",
+      "anotacao_sha256": "f332c61ac4189f00053c8047bba87456a46402ea0aae580a6ef1ad1a78529505",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_400.jpg",
+      "imagem_sha256": "dfb97224aef0ff4a523b4c23d8032a8e91f29e350a897d2361b0de9a0149138c",
+      "quadro": 400,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_500.txt",
+      "anotacao_sha256": "9c530b3d125cce5114ddd594a055688876d686c0796e85601085d2d41376cd3c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_500.jpg",
+      "imagem_sha256": "4de72d3cda22bdae10190e670312e936b892ca017a459af026e3e518b567b195",
+      "quadro": 500,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_600.txt",
+      "anotacao_sha256": "7ece1343ddf60354ccca40bd282d65684c3e4c255c4eab111c5780b1c5c8f827",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_600.jpg",
+      "imagem_sha256": "642875dc29de29072a87700806c20409a71e356d45e1b061d9598d34e1925f83",
+      "quadro": 600,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_700.txt",
+      "anotacao_sha256": "1e25a1fa07862c9b13abed8719d3915ff124f5c03c5a09d66ebaab6d4a4ad4d4",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_700.jpg",
+      "imagem_sha256": "b7fb55d4013064fd05348c97836b8cbec5c93d84fa545f40b5793eba61fc592a",
+      "quadro": 700,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_800.txt",
+      "anotacao_sha256": "b609ad1403fe7ad9ac80161d788dd17e2c41a6de8a9cda97f5f12a518ea3daef",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_800.jpg",
+      "imagem_sha256": "b53fa7c685b2e80f8a4a5f76ba38a1871c0f878d6b0601c14e209578871a54e1",
+      "quadro": 800,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_900.txt",
+      "anotacao_sha256": "09453f36e30ccc7fee5cb7d61e64c779e82c4c3923ec4a1c27559f9552ff5013",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_900.jpg",
+      "imagem_sha256": "f8149edb800fa95b03a982cb61996c1f6320b7486d3354c67c70fa7c351b1277",
+      "quadro": 900,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_1000.txt",
+      "anotacao_sha256": "85bcf7e3aad5bb1fd9780f1fbc9047ca38828e2f0d7a118e9d17c94a80815a5e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_1000.jpg",
+      "imagem_sha256": "c17c516faf841eb5eb72c40cdd941ef506b868e67f7f0c52fcbed206734e91e2",
+      "quadro": 1000,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_1100.txt",
+      "anotacao_sha256": "df5939a26cdd570d95e6bc1d51b793c233a8dc838734dde184386f85ad48a431",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_1100.jpg",
+      "imagem_sha256": "180745a50b39519742b3eeb930bd3f3216164d5835939e0ea11117496ba7dd3b",
+      "quadro": 1100,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_1200.txt",
+      "anotacao_sha256": "d50328908f3dd18e55ae7c0b933af45bb956dbe4f2db11f6b9017a9411f9fdcf",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_1200.jpg",
+      "imagem_sha256": "21b0643c79731c0d8d41754a9ddc59c34be3b59fbb67f9f25e232cd72abd0c51",
+      "quadro": 1200,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_1300.txt",
+      "anotacao_sha256": "12e19097351374c5d8755afb4b91b03c59e4127039f6d78939119759f32748f9",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_1300.jpg",
+      "imagem_sha256": "54e7c5ba782cda66bd410ac5587c8f058892b08bc7fc2c57bbab236d50354564",
+      "quadro": 1300,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/30/labels/30_frame_1400.txt",
+      "anotacao_sha256": "3dfb62441d7f201413ac04f11a807395fb67a4f8a91f764115926093fdfa3be4",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/30/images/30_frame_1400.jpg",
+      "imagem_sha256": "7b9d7192aaa312f74516e8c01a179f9a018a7569dbcf56c8235a607902f782f7",
+      "quadro": 1400,
+      "video_id": "30"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_0.txt",
+      "anotacao_sha256": "1bc808006000366627c9f3d0e7b3f2623b935b99d42f737972d0354eaf167e4c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_0.jpg",
+      "imagem_sha256": "6c8957e2be81ef1e0911b9d6a630f04a72fd945926f647c443369ba59c2fa393",
+      "quadro": 0,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_100.txt",
+      "anotacao_sha256": "e59784dc9e6b8954d8eae97e9970491491bae350e10fe6d0f7f3856d46e9d618",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_100.jpg",
+      "imagem_sha256": "81816982cec145ab3e22f25384beaaa0c53e77ead1db83280c7b2a0dfe5ae41f",
+      "quadro": 100,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_200.txt",
+      "anotacao_sha256": "ecf295554e0a959dab429fb889533ad965752960c84d274b4b5c20dc1c8b7baa",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_200.jpg",
+      "imagem_sha256": "24cd848d4bcca3189b8728e1817d71799e57d438cbadad70fdad5366fd06f388",
+      "quadro": 200,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_300.txt",
+      "anotacao_sha256": "4a5f9ef65b47aec1784d949727ffaf5b0d0953d1c800878b2105e6a7147b5d6c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_300.jpg",
+      "imagem_sha256": "94602417ea1fa0a53b8cb27db6bebf52c6e0f034d468cc76f273218c0b7c9665",
+      "quadro": 300,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_400.txt",
+      "anotacao_sha256": "12a0b84171b7c3b5c6834f4fa1f73cd1a0ececc5af74d62ecd4b8dfa85e08300",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_400.jpg",
+      "imagem_sha256": "44c38682f4e740799b9db715e35da2f798c5a636ab3ded102e252467b422dd35",
+      "quadro": 400,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_500.txt",
+      "anotacao_sha256": "f52b173c089bc24c659d6b782b951e58d9b068f5989300226f2fe1f1906d0ef3",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_500.jpg",
+      "imagem_sha256": "9a275ff34ff7fc473e7e3a3b1f4e6caef74b69b35181947a6ae92a18d18babc4",
+      "quadro": 500,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_600.txt",
+      "anotacao_sha256": "f9a33e009996a8931f944b07b1f76fc378acbe723e6b8e89cc305ee7d4756531",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_600.jpg",
+      "imagem_sha256": "6c7a47081159e27dcf2e8b8ab44421e4fbc192efcff20535f5e7b204482a6dd9",
+      "quadro": 600,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_700.txt",
+      "anotacao_sha256": "6be3afaba294edc0d20b228a0a48d5ba26b7403c9836a8b27ac8d84ba59fe3f9",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_700.jpg",
+      "imagem_sha256": "44fabc07060e976a9a4c91aeb5b3979e6906b724d39c5c0ff2e446939ccd3525",
+      "quadro": 700,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_800.txt",
+      "anotacao_sha256": "b99891f777cb8fc9eb2e27c8a74b8acff24a34e4aac632850a591b8cae80c0c3",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_800.jpg",
+      "imagem_sha256": "3e6b5e6662db9316dea53cd2a114bf1c5522c71cb5325d6dc324a2bcaaa1b139",
+      "quadro": 800,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_900.txt",
+      "anotacao_sha256": "0683762074e8012435114e6c0bf1c46d7a49f47fa5a820f1021a521d604ca397",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_900.jpg",
+      "imagem_sha256": "04ac63df55aeb938cfa1ceae3b625f0b2f0c30ac0ca1b77350e742581c4a5ea7",
+      "quadro": 900,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_1000.txt",
+      "anotacao_sha256": "cbab1371562ba8b8730ed3577c6aad3c850215937465204c87733eb9178e9d86",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_1000.jpg",
+      "imagem_sha256": "8456ec6b962e3763a10a2cf38f047aaab286e3c69edf7bf517fe7c1b57482ca7",
+      "quadro": 1000,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_1100.txt",
+      "anotacao_sha256": "2d658d03678e4b1ef129fede6d85114f6fd7b5fd059020764f96ef27e3f051ec",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_1100.jpg",
+      "imagem_sha256": "ba82b08e8a27433bf0c8692e599790286742c5dae3e03bbcbd1b3d288df1654f",
+      "quadro": 1100,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_1200.txt",
+      "anotacao_sha256": "c1ee9dacd48dbbcddc06935404ade267858dbf6de74a670fed58ff8a4f2a6ff2",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_1200.jpg",
+      "imagem_sha256": "e7a883b9043bfb7e82ce25ac2f61004014edc418cb931f47d877281c6dc42f6e",
+      "quadro": 1200,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_1300.txt",
+      "anotacao_sha256": "e70247badb833f7d58ad193c0e075d9a01e101efaa674ce962d6284f303f7c65",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_1300.jpg",
+      "imagem_sha256": "bcae140a8cda18513f945d4ce61c5d2d25915517d86ea88aa9c8ec608a06e87f",
+      "quadro": 1300,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/35/labels/35_frame_1400.txt",
+      "anotacao_sha256": "cadce4854ce5bb06652331b713054372ec81220cbbe1232161c36c46da4c018d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/35/images/35_frame_1400.jpg",
+      "imagem_sha256": "cc12a9aaf6552134d01b466b3dd68253304a493ad5e93304571141e8a8c50dd6",
+      "quadro": 1400,
+      "video_id": "35"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_0.txt",
+      "anotacao_sha256": "944d55e8e751f8635804ca599483657e7560befe612e7da9454b691e270bd291",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_0.jpg",
+      "imagem_sha256": "36037c35831979d29d5f1361af0a140587bf0d8ac7b4235029aa7bf142056da8",
+      "quadro": 0,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_100.txt",
+      "anotacao_sha256": "12ac160935a99eada0e931ebf157121f07e6bfa4b82cb2b653d8e8c78a794726",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_100.jpg",
+      "imagem_sha256": "e457087271f9c7112b0737fe6bd47b3a3d3ddcd6db61f4c822e859cd73d59bcc",
+      "quadro": 100,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_200.txt",
+      "anotacao_sha256": "927a913fab8fa7d9069fee9b33a3737a1e2c06bf8dcd771177d2eed6fb2985d8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_200.jpg",
+      "imagem_sha256": "d86d5536a055508d38a7a902b270b38886c8db71e35d62153be61b4e62b69055",
+      "quadro": 200,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_300.txt",
+      "anotacao_sha256": "666e20db5d30a22e00505084dc8f25acd7bb7f141007863ed24834d1bc10e3f4",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_300.jpg",
+      "imagem_sha256": "66ca3e87045ac8dc12ca1b990fc4e9e085595e256f0892d6ca55098f632a48b0",
+      "quadro": 300,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_400.txt",
+      "anotacao_sha256": "c90f171acddca7ae726872c08fa12debd4c1df81baf5046797bb716515ba1ef5",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_400.jpg",
+      "imagem_sha256": "7dbc936fc7bc9231cf2f71021e3e8a308f422b1c71bd546ccad1e6eef973cf32",
+      "quadro": 400,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_500.txt",
+      "anotacao_sha256": "ba50d02d1e9862d4907d40f875d6622dbf69f92c67850d6e671741f997d7f09b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_500.jpg",
+      "imagem_sha256": "6fe8b2b583e9b18ff2840272269e0e3ceb0e0b69000dc0718380e31c14bd8c47",
+      "quadro": 500,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_600.txt",
+      "anotacao_sha256": "ae6ccfd6ebb1939df97d7ca29f83e80e295577faf3b65e17bee32b199e83f144",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_600.jpg",
+      "imagem_sha256": "513fc7430e66e7e787283324aebdca8ae0221b8d0832c6928aba39817c5d1fb7",
+      "quadro": 600,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_700.txt",
+      "anotacao_sha256": "4287dcb6ad2a1b54fd777436a734571e62adb432e538d79a62d8bd07da250abf",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_700.jpg",
+      "imagem_sha256": "323351629f7e81b446d712c28b6b004c62e67f65ce5b9245da8a864942b06a8f",
+      "quadro": 700,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_800.txt",
+      "anotacao_sha256": "465edb429e372ca48320647502e80eee8eb8cc8c0521995cc71266a5b247c768",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_800.jpg",
+      "imagem_sha256": "33da55dd735aa9a591996131079ab32d22ac3829c8c0b91e5c49719ed712ece9",
+      "quadro": 800,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_900.txt",
+      "anotacao_sha256": "8806eb175ad002b7a6eec968d9d9218b9a0e5f93e6a0a9dbd186088d2f550d64",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_900.jpg",
+      "imagem_sha256": "b960d73f8d5365b76be8df3298bd849c8021e710275fc041151c3d997c3483d6",
+      "quadro": 900,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_1000.txt",
+      "anotacao_sha256": "9348aa4db0c85f06dd4272bc9217373ed48f42629aa616300ee64a47b0f81eb1",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_1000.jpg",
+      "imagem_sha256": "ff0c0c0b3d47f3fe50b7cfbd868dd789de33845232e8d6592ab00de70be450e2",
+      "quadro": 1000,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_1100.txt",
+      "anotacao_sha256": "f1d7df000b8f2176eb3a62d8b495cde358323587ac56f4e32f8bcf72b64af49b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_1100.jpg",
+      "imagem_sha256": "a4e042567d50e82e5e64441b34a9b4ab6f8f04ca95e05a129946024e273c7f9a",
+      "quadro": 1100,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_1200.txt",
+      "anotacao_sha256": "9988c666625dd0adb6ce1af15cb2b45ddd292de51c0498090ebc602eb494ac57",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_1200.jpg",
+      "imagem_sha256": "5b7f057c2ccd55f82feb0ed99e89562ea3a246573ed89204fdad6328f33ba593",
+      "quadro": 1200,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_1300.txt",
+      "anotacao_sha256": "fb11bb4ca4e7c4dca6b6278814ee3169a8948f2f366fe6a1eb41fe79bffef4cb",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_1300.jpg",
+      "imagem_sha256": "77121a8fb32d40091186a26104b3f6ba814a6fd6df12a200b8f3d054fb8cf8e2",
+      "quadro": 1300,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/36/labels/36_frame_1400.txt",
+      "anotacao_sha256": "d778186abc5d3be0e7631bf2850b8884695ec14dd026c565aba8ce392c53134c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/36/images/36_frame_1400.jpg",
+      "imagem_sha256": "31c933a731dd16120442e12d54caf576eff0b7f130df64bfab16fffd9ce834b5",
+      "quadro": 1400,
+      "video_id": "36"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_0.txt",
+      "anotacao_sha256": "0fe7743a863726f41928e03749d04a7a862ef628b711d9e77e3d4be62b832269",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_0.jpg",
+      "imagem_sha256": "4240149701cd3701675fa36e5016b2cc195aba3d2d0e9560d5bd1e821382f4d2",
+      "quadro": 0,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_100.txt",
+      "anotacao_sha256": "398a6b6560633cb14ba81de8336dc3b32d4068f8dcb0c0cf2ec47675f2ce621c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_100.jpg",
+      "imagem_sha256": "2856aed5a129f1dc0173accc812efbda7857bdc40e8edb81a37c322c253727a9",
+      "quadro": 100,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_200.txt",
+      "anotacao_sha256": "cc657c16961f57d659073057bd86619a2d918e4bced8d374e7adbc4016cc0870",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_200.jpg",
+      "imagem_sha256": "4489cff70c74177f7efa58c3c72a5f43601164955a8fa77a0da953b4af7659fc",
+      "quadro": 200,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_300.txt",
+      "anotacao_sha256": "9f98ad33cecd2daf47ac13e8e4c6acf0438369c133353276b3bcc0bffb44f1c2",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_300.jpg",
+      "imagem_sha256": "6872ae2db96b55ef47490958ac4670d738202ab6ca1f227c9250365085131d2a",
+      "quadro": 300,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_400.txt",
+      "anotacao_sha256": "bbe5cf979fc6e7069be58ac0dfef19637ce65b692566e9e1230d173d4c4eae8a",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_400.jpg",
+      "imagem_sha256": "d533f3a180998cdd9c31bf1478c556ec3314073e97e4d3ba895fbc6b61f1023f",
+      "quadro": 400,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_500.txt",
+      "anotacao_sha256": "375cd327d04510aafef9975348d73f65f4c8ab6137c5ff1e887952ee1b0a5403",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_500.jpg",
+      "imagem_sha256": "487ac1ba0114eb685e75b0b365e89ddb8e7cb910d98a67fa0a6023f8a1ca58d7",
+      "quadro": 500,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_600.txt",
+      "anotacao_sha256": "7170cb2bc1b746e3ca2b31883d08000c0ec55c6a7c2f789096fff80adb916b98",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_600.jpg",
+      "imagem_sha256": "41439a593113f904da0c99e1f6996fe65949fdc89d8c61caf777feb151a4db20",
+      "quadro": 600,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_700.txt",
+      "anotacao_sha256": "a00b41a0b9d7107e45ea5c96a8e94b073de680c585fd238ef841742068c4c0b6",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_700.jpg",
+      "imagem_sha256": "c502d37236dd72ad498edd1fed197432cf218e353a8219904101b07efb214062",
+      "quadro": 700,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_800.txt",
+      "anotacao_sha256": "f1325ff80f22bf81d91058227aa79e635a166431f910a2f049e472e215d3e7b4",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_800.jpg",
+      "imagem_sha256": "72a606adb0bd52a76e8165b5b15b246f49d4e8495e1e6dd73a76d4cd4ceb4899",
+      "quadro": 800,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_900.txt",
+      "anotacao_sha256": "89d78d23c80c16df759c94e660121fa3622a05b3b733f149908c05235f89427d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_900.jpg",
+      "imagem_sha256": "f02b7aea0586e79ead324de50b45a9ca49bd3b25ca726570397db79bfeb9de1e",
+      "quadro": 900,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_1000.txt",
+      "anotacao_sha256": "266edc28bdbe0597750c04aad7d7620d223123abce039e3ba68892664fea11f2",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_1000.jpg",
+      "imagem_sha256": "53d381b6d483ef08995846cde4dc2089b1b141a38ed0269e87afc14a4a2c09b7",
+      "quadro": 1000,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_1100.txt",
+      "anotacao_sha256": "b5058f9c4eb5c90eb5dd3a5886c960c8ba8e1184322011fe316a5cc602c942ff",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_1100.jpg",
+      "imagem_sha256": "bbf6fade652d43778d9f268d53365d6b350cd71a3563ea75e5b6afa826be4d8e",
+      "quadro": 1100,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_1200.txt",
+      "anotacao_sha256": "290a39409bacc6fe97d1a4cad106c5f2ddc32f72b4dd1b02ca275b126f550142",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_1200.jpg",
+      "imagem_sha256": "7063c7702f991ae7aeb8d36989f86b2074aebe32cc10d1aeb3f7d60f466f636c",
+      "quadro": 1200,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_1300.txt",
+      "anotacao_sha256": "da64b59c857f2dd08476351d999224629fbc3e64cba13795ca4e6ecb2c9e369e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_1300.jpg",
+      "imagem_sha256": "9aede589bb668e1350e91b68b94007f516efc27bf53de824d56874a557e8e4e5",
+      "quadro": 1300,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/47/labels/47_frame_1400.txt",
+      "anotacao_sha256": "dc180c3cbf5db3915b87afbb67bfa67b9b7dd06d86ac04da96788d5c19f968d9",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/47/images/47_frame_1400.jpg",
+      "imagem_sha256": "002c3986933fd27267be38e058e80671aa6d0c912e5ffc6391403cf93b8b743a",
+      "quadro": 1400,
+      "video_id": "47"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_0.txt",
+      "anotacao_sha256": "46ba0c542ab6902bcbec7bda7b2a8d7b853240f1555b4040ebcb9f1bf56ebb03",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_0.jpg",
+      "imagem_sha256": "e51508b74cc8ff33a02a2360536e3d5657b5f62365c1f7558148a0f46c64fe89",
+      "quadro": 0,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_100.txt",
+      "anotacao_sha256": "fdde38174aefae98c1def3be22fbe043cda28ed08836ead7edded89c6dbc09e0",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_100.jpg",
+      "imagem_sha256": "7036c5d532649bef9ec9d60973c75c999d827ca25d4fb92e7dee12de7d6f838c",
+      "quadro": 100,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_200.txt",
+      "anotacao_sha256": "56837bef9a377a40b9d52abbfed3f9738ee843c220e82a2a86a15b161eccc60b",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_200.jpg",
+      "imagem_sha256": "0bc3a50269770066ca9a3fe58f13148efc2bc744f0876b7b6e96e49f330fe98e",
+      "quadro": 200,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_300.txt",
+      "anotacao_sha256": "cf4ac12beeeff8eb9f6250c0dd4168c76a37a7f53f04d3bb647aaa0e7e0b2bc0",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_300.jpg",
+      "imagem_sha256": "5aa44fc48a5a1e0e6cd2c92495678f194220d39b134ce44f5cc458bcfd335b4d",
+      "quadro": 300,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_400.txt",
+      "anotacao_sha256": "22d5ead266370dcbf88ccacca5d3bb786172ab76dc9232155a985d6f60b8e19e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_400.jpg",
+      "imagem_sha256": "3a3e7ecc5361a7315442065bd0aff2df0861dffa868b91c145f18283706f8c8f",
+      "quadro": 400,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_500.txt",
+      "anotacao_sha256": "a9b4475eed373ccdbf34cf36f18aab078ad6c90cf901c3731d69fa814d57f1e8",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_500.jpg",
+      "imagem_sha256": "01a0b0860d98e9f332a20e92a678fc5ed3d38680575eb92f7b5a17938f625bd2",
+      "quadro": 500,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_600.txt",
+      "anotacao_sha256": "a329b122a41257b46d448664bec8d0a7f290d7dcf066a9a1eb99cf6b3f6e6bbc",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_600.jpg",
+      "imagem_sha256": "c13be131b1b4e6397862c6b077c38b7edeab2312742b0367f693322fe7ac2811",
+      "quadro": 600,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_700.txt",
+      "anotacao_sha256": "bca45b091acdf365b9d9fad581884c691a04f11478ce6a39c6283b3316d676a4",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_700.jpg",
+      "imagem_sha256": "a2165a74c52748eda7c1c4e5854cc43d41801fb6c94a8b3abdc5e0e8733472d3",
+      "quadro": 700,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_800.txt",
+      "anotacao_sha256": "166f572dfe04e1e7d73ad941369b21ee136c0eed7dbfaac870194237fe8a5485",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_800.jpg",
+      "imagem_sha256": "af9d548bcd4449dc9e7ada3dfa99c34e71cf5135836c8c1429059937eaa21581",
+      "quadro": 800,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_900.txt",
+      "anotacao_sha256": "b6683ad534e1e54e5b26feefb952aee86f0e796740a55bf5e82ae1e094ce1510",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_900.jpg",
+      "imagem_sha256": "7483520f2bfadfbff2b865c8ba2e2acb975d65a081bace5586328a6c71f5463c",
+      "quadro": 900,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_1000.txt",
+      "anotacao_sha256": "f092066279cad2b69a6ce2011868b7cc6fcfcbb8a64555b0bb67e0184a6a550a",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_1000.jpg",
+      "imagem_sha256": "9d7f74c758582aae27eddc1cfc5acdfea564d0dbc3a3d3b3eedf3682b9eb7dcf",
+      "quadro": 1000,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_1100.txt",
+      "anotacao_sha256": "fcd9f988a8bf2768d5cc510d597c078c7c83cce6fc45d034b221e7c05a18106e",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_1100.jpg",
+      "imagem_sha256": "1a7c60d57a952d13069a22ad3db34c2db0fd39227156df5614506c3897b6367e",
+      "quadro": 1100,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_1200.txt",
+      "anotacao_sha256": "e958f5a1971291da20aba0b92862fd515ec16197ff1e6e9ba2a0632bd2161f99",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_1200.jpg",
+      "imagem_sha256": "87f43acad26290e3e59867e70429c9c204b69317e3ba98d85eb8bdce6d53d6fb",
+      "quadro": 1200,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_1300.txt",
+      "anotacao_sha256": "4b45a03a3b86dccf090bbae13e6b9f0a118cc43bc10c0f2f2703db9f1912292c",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_1300.jpg",
+      "imagem_sha256": "0e5568a7396407b4807f0dff6275ab566cec6fb129b2445fb150a97a68a95919",
+      "quadro": 1300,
+      "video_id": "60"
+    },
+    {
+      "anotacao": "bases_de_dados/visem_tracking/dataset/Train/60/labels/60_frame_1400.txt",
+      "anotacao_sha256": "4bb4fa6c7fabd55e34aa334187a0219cf854a8eb58e47a759c7bcdc4577c4a8d",
+      "imagem": "bases_de_dados/visem_tracking/dataset/Train/60/images/60_frame_1400.jpg",
+      "imagem_sha256": "6c0b6669eef5b399923d8d8c90705f6ac12280bb6de6ee3e146fd228872a7925",
+      "quadro": 1400,
+      "video_id": "60"
+    }
+  ],
+  "rodada": "round4",
+  "seed": 42,
+  "versao": 4
+}

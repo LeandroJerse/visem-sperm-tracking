@@ -3,6 +3,40 @@
 O fluxo de execução, avaliação e revisão conjunta de cada rodada está no
 [protocolo de desenvolvimento por rodadas](protocolo_rodadas.md), com fluxograma.
 
+**Etapa atual: vídeos de seleção de watershed preparados para execução.**
+A [análise](analise_selecao_watershed.md) e as
+[estatísticas](estatisticas_selecao_watershed.json) registram 6.840 avaliações
+íntegras, maior F1 de 0,342956 e limitações nas caixas e cobertura de pequenos.
+As configurações s063, s064, s061, s062 e s098 foram aprovadas para os vídeos
+completos 13, 29, 52 e 54. O [novo plano](plano_videos_watershed.md) prepara
+29.250 avaliações, vinte comparativos e PDF de quatro páginas, mantendo os
+parâmetros e critérios. A execução real fica com o pesquisador.
+Consulte a [análise do round5](analise_round5_watershed.md)
+e o [guia de execução](../scripts/watershed/README.md). A
+[conclusão de blobs](conclusao_blobs.md) encerra a avaliação final e registra
+a comparação descritiva com limiarização.
+
+**Blobs: cinco rodadas e seleção em imagens concluídas.** A
+[análise da seleção](analise_selecao_blobs.md) registra 7.140 avaliações
+íntegras. Foram aprovadas s052, s082, s084, s103 e s051 para os vídeos completos.
+Pequenos, aglomerados e classificação continuam com limitações. O
+[plano de seleção](plano_selecao_blobs.md) compara todas as 119 configurações
+distintas nos 60 frames dos vídeos 13, 29, 52 e 54. A execução usa
+`scripts/blobs/executar_selecao.py` e gera ranking por F1 de indivíduos,
+cobertura por classe, erros de classificação, resultados por vídeo e PDF.
+O [plano dos vídeos](plano_videos_blobs.md) foi executado: 29.250 avaliações
+e vinte MP4 comparativos nos vídeos 13, 29, 52 e 54. A
+[análise e auditoria](analise_videos_selecao_blobs.md) confirmam os arquivos e
+a mesma ordem das cinco configurações, com s052 em primeiro (F1 0,668702).
+A [avaliação final foi concluída e conferida](conclusao_blobs.md), mantendo
+as mesmas cinco nos vídeos 14, 24, 38 e 82. O comando é
+`scripts/blobs/executar_videos.py --etapa final`; são 29.550 avaliações,
+vinte MP4s, tabelas e PDF em `resultados/videos/blobs/final/`.
+O comando de seleção permanece disponível para reprodução; ambas as etapas
+mantêm as fontes separadas em `origens/`. Não é necessário repetir essas etapas.
+O [documento de desenvolvimento](desenvolvimento_blobs.html) preserva os
+motivos e as análises das cinco rodadas. As seções abaixo registram a limiarização.
+
 ## Critério atual: localizar indivíduos e registrar a classificação
 
 A seleção original de 122 configurações nos 60 quadros dos vídeos 13, 29, 52
@@ -120,15 +154,37 @@ Resultados, parâmetros e limitações estão na
 [conclusão da limiarização](conclusao_limiarizacao.md).
 O [plano de blobs](plano_blobs.md) mantém o ciclo com adaptações nas medidas.
 O round0 foi executado, com 12 avaliações e PDF concluídos, usando o critério
-atual de indivíduos e classificação separada. O resultado exige diagnóstico
-antes das rodadas. `diagnostico_blobs.py` examina relações geométricas entre
-centros e caixas salvos, sem novo matching ou ranking. O
+atual de indivíduos e classificação separada. O
+[diagnóstico concluído](diagnostico_round0_blobs.md) identificou caixas
+subdimensionadas e candidatos excedentes. `diagnostico_blobs.py` examina
+relações geométricas entre centros e caixas salvos, sem novo matching ou ranking. O
 [plano dos próximos testes](plano_diagnostico_blobs.md) explica limites,
 hipóteses e sequência. Os comandos estão no
-[guia de blobs](../scripts/blobs/README.md); o novo diagnóstico e os testes
-preparados ainda não foram executados.
+[guia de blobs](../scripts/blobs/README.md); foram concluídos os 12 casos
+e os 36 testes específicos do diagnóstico.
+A [síntese de continuidade](estado_pesquisa.md) reúne as decisões vigentes.
+O [round1 de blobs](analise_round1_blobs.md) foi concluído e analisado:
+48 configurações distintas nos mesmos 178 quadros. O módulo
+`relatorio_rodada_blobs.py` usa os resumos salvos pelo executor para produzir
+o PDF, com F1 de indivíduos, aglomerados, cobertura por classe, classificação
+nos pares válidos, controles e desempenho por vídeo. As comparações controladas
+e exploratórias são apresentadas separadamente. O relatório é gerado
+automaticamente ao concluir o batch e pode ser regenerado sem repetir detecções.
+O [round2 foi concluído e analisado](analise_round2_blobs.md): refinamentos,
+CLAHE e LoG/DoG. O [round3 concluído](analise_round3_blobs.md) confirmou
+ganhos na geometria de caixas e no filtro de resposta, com limitações na classe2.
+O [round4, com 18 configurações](analise_round4_blobs.md), foi concluído e
+analisado: não elevou o maior F1 e delimitou regiões desfavoráveis para a busca.
+O [round5 foi concluído e analisado](analise_round5_blobs.md): 14 configurações,
+quatro controles e dez novas. O maior F1 alcançou 0,568779; a mudança de
+classificação LoG recuperou 149 normais, com forte concentração no vídeo 35.
+O [documento completo de blobs](desenvolvimento_blobs.html) reúne decisões,
+resultados, gráficos e as 119 configurações distintas. A seleção foi concluída
+e está na [análise própria](analise_selecao_blobs.md); vídeos pendentes.
+O PDF foi reorganizado com gráficos
+ordenados, cobertura e mapa por vídeo, mantendo o avaliador atual.
 Comandos, dependências e saídas estão no
-[guia de limiarização](../scripts/limiarizacao/README.md).
+[guia de blobs](../scripts/blobs/README.md).
 
 ## Avaliadores históricos: três classes e localização auxiliar
 

@@ -8,8 +8,8 @@ reúne o fluxograma e as regras de execução, avaliação e revisão dos batche
 | Método | Estado |
 |---|---|
 | Limiarização manual/Otsu + morfologia + componentes conectados | Desenvolvimento, seleção e avaliação final concluídos; [análise consolidada](../../analise/conclusao_limiarizacao.md) |
-| Blobs | Round0 executado; [diagnóstico e próximos testes](../../analise/plano_diagnostico_blobs.md) preparados para revisão |
-| Watershed | Planejado; representação dos aglomerados a definir |
+| Blobs | Desenvolvimento, seleção e vídeos finais concluídos; [conclusão](../../analise/conclusao_blobs.md) |
+| Watershed | Cinco rounds e [seleção em imagens concluídos e conferidos](../../analise/analise_selecao_watershed.md); cinco candidatas aprovadas e [vídeos de seleção preparados](../../analise/plano_videos_watershed.md) |
 
 Os módulos desta pasta não leem nem gravam arquivos. A inspeção de uma imagem
 anotada pode ser feita com o primeiro script descrito em
@@ -32,10 +32,19 @@ Todas as execuções dos algoritmos e experimentos serão feitas pelo pesquisado
 ## Arquivos
 
 - `comum.py`: classes, caixas, medidas e representação tabular das detecções.
+- `watershed.py`: segmentação por distância e marcadores, caixas das regiões
+  e diagnóstico das duas políticas de aglomerados.
+- `variantes_watershed.py`: ajuste explícito do limiar de Otsu antes da
+  morfologia. Deslocamento zero chama diretamente o detector histórico;
+  registra limiar original, efetivo e fração da máscara, sem consultar anotações.
 - `classificacao.py`: hipóteses de classificação por área segmentada ou estimada,
   em configurações separadas.
 - `limiarizacao.py`: detecção de componentes após limiarização e morfologia.
 - `blobs.py`: SimpleBlobDetector, caixas aproximadas e medidas estimadas.
+- `variantes_blobs.py`: CLAHE e detectores LoG/DoG; sigma e proveniência
+  preservados, sem máscara segmentada ou rastreamento.
+- `caixas_blobs.py`: caixas originais, com escala ou margem, preservando medidas
+  brutas e classes; parâmetros separados para manter a reprodução do round0.
 - `requirements.txt`: dependências declaradas; requer Python 3.10 ou posterior.
 - `requirements-blobs.txt`: versão de referência do OpenCV para a inspeção de blobs.
 
@@ -276,12 +285,12 @@ por vídeo complementam o F1 de indivíduos. Detalhes no [guia de avaliação](.
   sem substituição. As alternativas 973 e 1108 não foram aplicadas.
   Arquivo ausente não é interpretado automaticamente como anotação vazia.
   Essa ausência continua como limitação documentada da amostragem.
-- Antes do Watershed, definir como representar caixas de aglomerados e de
-  indivíduos quando houver sobreposição nas anotações.
-- Antes das rodadas de blobs, diagnosticar os registros da
-  [inspeção inicial já executada](../../scripts/blobs/README.md).
-  O detector está implementado; sua eficácia e os limites de classificação
-  dependem dos resultados dessa inspeção e das rodadas de desenvolvimento.
+- Watershed compara duas políticas aprovadas: dividir as regiões ou preservar
+  componentes classificados como aglomerados pela área. A representação é
+  tecnicamente compatível e foi auditada no round0. O round1 amplia a
+  avaliação para os mesmos 178 quadros de desenvolvimento.
+- O ciclo de blobs está concluído; a reprodução está no
+  [guia de execução](../../scripts/blobs/README.md).
 - Rastreamento, SORT, Lucas–Kanade, Horn–Schunck e predição estão fora desta etapa.
 - A reserva de vídeos vale para esta organização experimental. O uso dos dados
   na versão anterior permanece parte do histórico e não torna esses dados inéditos.

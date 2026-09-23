@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import IntEnum
-from math import isclose, isfinite, pi
+from math import isclose, isfinite, pi, sqrt
 from numbers import Integral, Real
 
 
@@ -94,7 +94,7 @@ class MedidasObjeto:
 
 @dataclass(frozen=True, slots=True)
 class MedidasBlob:
-    """Geometria estimada por keypoint; não representa uma região segmentada."""
+    """Geometria estimada por keypoint ou escala; não é uma região segmentada."""
 
     centro_blob_x: float
     centro_blob_y: float
@@ -102,6 +102,8 @@ class MedidasBlob:
     area_estimada_blob: float
     area_caixa: int
     caixa_recortada_na_borda: bool
+    origem_medidas: str = "simpleblob_keypoint"
+    sigma_blob: float | None = None
 
     def __post_init__(self) -> None:
         for nome in ("centro_blob_x", "centro_blob_y", "diametro_blob", "area_estimada_blob"):
@@ -120,6 +122,22 @@ class MedidasBlob:
         validar_inteiro("area_caixa", self.area_caixa, 1)
         if type(self.caixa_recortada_na_borda) is not bool:
             raise TypeError("caixa_recortada_na_borda deve ser booleana.")
+        if not isinstance(self.origem_medidas, str) or self.origem_medidas not in (
+            "simpleblob_keypoint", "log_sigma", "dog_sigma",
+        ):
+            raise ValueError("origem_medidas deve identificar keypoint, LoG ou DoG.")
+        if self.origem_medidas == "simpleblob_keypoint":
+            if self.sigma_blob is not None:
+                raise ValueError("Keypoints SimpleBlobDetector não fornecem sigma.")
+        else:
+            validar_real("sigma_blob", self.sigma_blob)
+            if self.sigma_blob <= 0:
+                raise ValueError("sigma_blob deve ser positivo.")
+            diametro_esperado = 2 * sqrt(2) * self.sigma_blob
+            if not isfinite(diametro_esperado) or not isclose(
+                self.diametro_blob, diametro_esperado, rel_tol=1e-12, abs_tol=0.0
+            ):
+                raise ValueError("O diâmetro de LoG/DoG deve ser 2 * sqrt(2) * sigma.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -219,12 +237,14 @@ class ResultadoDeteccao:
             }
             if estimada:
                 registro.update({
-                    "origem_medidas": "simpleblob_keypoint",
+                    "origem_medidas": medidas.origem_medidas,
                     "centro_blob_x_px": medidas.centro_blob_x,
                     "centro_blob_y_px": medidas.centro_blob_y,
                     "diametro_blob_px": medidas.diametro_blob,
                     "area_estimada_blob_px2": medidas.area_estimada_blob,
                     "caixa_recortada_na_borda": medidas.caixa_recortada_na_borda,
                 })
+                if medidas.sigma_blob is not None:
+                    registro["sigma_blob_px"] = medidas.sigma_blob
             registros.append(registro)
         return tuple(registros)

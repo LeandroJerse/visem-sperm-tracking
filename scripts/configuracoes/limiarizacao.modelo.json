@@ -1,22 +1,22 @@
 {
-  "metodo": null,
-  "polaridade": null,
+  "metodo": "otsu",
+  "polaridade": "claro",
   "limiar_manual": null,
   "abertura": {
-    "forma": null,
-    "tamanho": null,
-    "iteracoes": null
+    "forma": "elipse",
+    "tamanho": 3,
+    "iteracoes": 0
   },
   "fechamento": {
-    "forma": null,
-    "tamanho": null,
-    "iteracoes": null
+    "forma": "elipse",
+    "tamanho": 3,
+    "iteracoes": 0
   },
-  "conectividade": null,
-  "area_minima": null,
+  "conectividade": 8,
+  "area_minima": 1,
   "area_maxima": null,
   "classificacao": {
-    "area_maxima_pequeno": null,
-    "area_minima_aglomerado": null
+    "area_maxima_pequeno": 40,
+    "area_minima_aglomerado": 150
   }
 }

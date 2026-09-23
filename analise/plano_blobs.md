@@ -1,19 +1,38 @@
 # Plano de avaliação do detector de blobs
 
-20/09/2026 — round0 executado; diagnóstico preparado para revisão posterior.
+20/09/2026 — round0 e diagnóstico concluídos; round1 concluído e analisado.
+Round2, round3 e [round4 concluídos e analisados](analise_round4_blobs.md).
+[Round5 concluído e analisado](analise_round5_blobs.md): 14 configurações,
+quatro controles e dez novas; 119 distintas avaliadas. O
+[documento completo](desenvolvimento_blobs.html) sintetiza as cinco rodadas.
+
+A [síntese de continuidade](estado_pesquisa.md) registra o estado atual e a
+decisão de incorporar os ajustes às rodadas formais. Foram aprovadas caixas
+original/escala/margem e até cinco rodadas de 48/32/24/18/14 configurações,
+com teto de 122 distintas. Não há exigência de bom F1 antes do round1 nem
+incompatibilidade de formato impedindo sua preparação.
 
 O próximo experimento compara uma nova forma de detectar objetos com a
-[limiarização concluída](conclusao_limiarizacao.md). Este documento propõe
-o método, a representação das saídas e o ciclo experimental. A primeira
-entrega implementa o detector e a inspeção descrita no
-[guia de blobs](../scripts/blobs/README.md). Ainda não há um batch do round1
-nem valores de parâmetros calibrados pelo novo detector.
+[limiarização concluída](conclusao_limiarizacao.md). Este documento registra
+o método, a representação das saídas e o ciclo experimental. Detector,
+inspeção, adaptação de caixas e executor de rodadas estão disponíveis no
+[guia de blobs](../scripts/blobs/README.md). O
+[plano congelado do round1](../scripts/blobs/rodadas/round1.json) contém
+48 configurações distintas, sendo 12 controles e 36 exploratórias, geradas
+com seed 42 para os 178 quadros. A primeira tentativa foi interrompida e a
+repetição concluída; desempenho de desenvolvimento não constitui validação final.
 
-O resultado do round0 indicou caixas insuficientes e candidatos excedentes.
+O [diagnóstico do round0](diagnostico_round0_blobs.md) confirmou caixas
+subdimensionadas apesar de conversão coerente, além de candidatos excedentes.
 O [plano de diagnóstico e próximos testes](plano_diagnostico_blobs.md)
 registra os resultados, a revisão dessa hipótese e a sequência de trabalho.
 
 ## 1. Método proposto e objetivo
+
+A descrição abaixo registra a versão inicial. A extensão aprovada no
+[round2](plano_round2_blobs.md) acrescenta CLAHE como pré-processamento
+controlado e LoG/DoG como detectores identificados, com o mesmo formato de
+saída e avaliador. O round1 permanece preservado; o orçamento não aumenta.
 
 Adotar **SimpleBlobDetector do OpenCV**, inicialmente sobre a imagem em cinza,
 sem suavização, equalização ou morfologia adicional. Isso permite estudar
@@ -57,17 +76,20 @@ inválidos devem produzir erro explícito, não uma detecção artificial.
 Antes do recorte na borda, a caixa envolve um círculo estimado, sem garantia
 de conter a região real do objeto; pode cobrir mal objetos alongados ou irregulares. O IoU continuará
 medindo a adequação dessa caixa às anotações.
-Esta é a conversão original, preservada como referência. Eventuais adaptações
-de escala, margem ou segmentação local serão variantes explícitas,
-avaliadas conforme o plano de diagnóstico; não haverá alteração manual das
-previsões nem consulta às anotações dentro do detector. A representação deve
-ser revista antes de comprometer todas as rodadas.
+Esta é a conversão original, preservada como referência. Escala e margem
+estão implementadas no [adaptador separado](../algoritmos/classicos/caixas_blobs.py):
+o lado passa a ser `fator × diâmetro` ou `diâmetro + 2 × margem`, antes do
+mesmo arredondamento e recorte. A adaptação parte das medidas brutas,
+preservando centro, diâmetro, área circular, classe e ordem dos candidatos.
+Não combina as duas regras, consulta anotações ou altera o avaliador.
+O round1 registra tanto a caixa original quanto a usada na avaliação.
+Segmentação local permanece fora desta implementação.
 
 ### Medidas disponíveis e indisponíveis
 
 | Campo exportado | Significado |
 |---|---|
-| Caixa em pixels e normalizada | Calculada pela regra acima |
+| Caixa em pixels e normalizada | Regra original ou variante explícita de escala/margem do plano |
 | `centro_blob_x_px`, `centro_blob_y_px` | Posição estimada retornada pelo detector |
 | `diametro_blob_px` | Tamanho retornado pelo detector |
 | `area_estimada_blob_px2` | Área do círculo estimado, antes do recorte na borda |
@@ -145,7 +167,7 @@ válidos após a conversão dos parâmetros float32 do OpenCV.
 existir um único limiar para toda a detecção; a faixa completa ficará no JSON.
 Não será criado um valor de confiança probabilística sem um modelo calibrado.
 
-## 4. Protocolo proposto
+## 4. Protocolo e orçamento acordados
 
 Reutilizar as imagens originais e a divisão já documentada:
 
@@ -177,43 +199,55 @@ mudança desse tipo exigirá uma revisão prévia do protocolo e da comparação
 1. **Round0:** inspeção de imagens de desenvolvimento que representem as três
    classes, vizinhança de objetos e bordas. Fixar a lista e os parâmetros da
    inspeção antes de executar. Conferir representação, unidades e arquivos.
-2. **Round1:** exploração ampla, com plano salvo, alternativas claras/escuras
-   e controles sem filtros de forma. As faixas numéricas serão propostas a
-   partir do desenvolvimento e da inspeção; ainda não foram escolhidas.
+2. **Round1:** exploração ampla preparada, com plano salvo, alternativas
+   claras/escuras e controles sem filtros de forma. São 12 comparações
+   controladas de caixa e 36 combinações exploratórias, todas distintas.
+   Faixas e justificativas estão no [desenho do round1](plano_round1_blobs.md);
+   nenhuma das 8.544 avaliações previstas foi executada.
 3. **Rounds2–5:** refinar hipóteses justificadas pelos resultados anteriores,
    preservando controles e alguma exploração. As combinações completas serão
    registradas antes de cada execução. Não há garantia de melhoria por rodada.
 4. **Encerramento:** no máximo cinco rodadas. Uma parada anterior poderá ser
    acordada após revisão, com justificativa registrada. Não haverá novas
    rodadas orientadas pelos vídeos finais.
-5. **Seleção e vídeos:** remover configurações repetidas, congelar candidatas,
+5. **Relatório após o round5:** ao concluir e analisar as cinco rodadas,
+   documentar o desenvolvimento de blobs antes da seleção. Explicar o método,
+   adaptações das caixas, dados e critérios de comparação, configurações,
+   hipóteses e resultados de cada rodada, motivos dos refinamentos,
+   reprodução e limitações. Distinguir escolhas anteriores aos testes das
+   mudanças motivadas pelos resultados. Essa entrega foi solicitada pelo
+   pesquisador e não substitui a avaliação posterior em seleção e vídeos.
+6. **Seleção e vídeos:** remover configurações repetidas, congelar candidatas,
    comparar em outras imagens, revisar as cinco melhores e seguir aos vídeos.
    Empate atravessando a quinta vaga exige decisão registrada, sem escolha
    automática pelo ID ou pelo arredondamento.
 
-Como referência de esforço, propor **até 136 execuções de configuração nos
+Foi aprovado o limite de **até 136 execuções de configuração nos
 178 quadros, incluindo controles repetidos, e até 122 configurações distintas**.
 Esses números reproduzem o orçamento formal das cinco rodadas de limiarização;
-o round0 fica separado. A distribuição entre rodadas ainda precisa ser definida.
+o round0 fica separado. A distribuição aprovada é **48/32/24/18/14**.
+Cada combinação de detector, caixa e classificação conta nesse limite.
 Listas de classificação testadas separadamente também contam como tentativas
 e devem ser registradas, inclusive se reaproveitarem detecções salvas.
 
 Esse teto facilita a comparação, mas não iguala tempo computacional nem todo
 o esforço histórico: a limiarização teve análises auxiliares de classificação
 e mudou o critério de avaliação durante o estudo. Documentar essas diferenças;
-não apresentar as buscas como idênticas. A seed proposta é 42 para eventual
-sorteio de parâmetros; a lista completa salva é a referência da repetição.
+não apresentar as buscas como idênticas. A geração do round1 usa seed 42;
+a lista completa salva é a referência da repetição. O executor não sorteia
+configurações durante o experimento.
 
 ```mermaid
 flowchart TD
     P["Revisar método, medidas, métricas e orçamento"] --> I["Implementar detector e inspeção"]
     I --> Z["Executar round0 no desenvolvimento"]
-    Z --> R{"Caixas e registros adequados?"}
-    R -->|Não| A["Rever a representação no desenvolvimento"] --> P
+    Z --> R{"Formato, unidades e avaliador corretos?"}
+    R -->|Não| A["Corrigir integração e conferir novamente"] --> Z
     R -->|Sim| D["Executar a rodada planejada; analisar e planejar a seguinte"]
     D --> Q{"Encerrar desenvolvimento até round5?"}
     Q -->|Não| D
-    Q -->|Sim| S["Fixar candidatas e comparar nos 60 JPEGs de seleção"]
+    Q -->|Sim| T["Documentar desenvolvimento, decisões e limitações; relatório obrigatório após round5"]
+    T --> S["Fixar candidatas e comparar nos 60 JPEGs de seleção"]
     S --> C["Revisar cinco configurações e eventuais empates"]
     C --> V["Avaliar as cinco nos vídeos completos de seleção"]
     V --> F["Congelar as mesmas cinco e avaliar nos vídeos finais"]
@@ -228,12 +262,14 @@ tem um único ponto de entrada:
 O detector recebe apenas imagem e configuração, sem ler anotações,
 modificar a entrada ou gravar arquivos.
 
-Reutilizar avaliação, leitura da base, exportação e composição visual onde
-forem compatíveis. Os executores e relatórios atuais presumem limiarização
-em nomes, configurações e métricas históricas; não basta trocar a importação
-do detector. Adaptar interfaces explicitamente e preservar os comandos antigos.
+A nova regra de caixa permanece separada do parser do detector. As rodadas
+usam [executar_rodada.py](../scripts/blobs/executar_rodada.py), o
+[planejamento próprio](../scripts/blobs/planejamento.py) e o
+[relatório de rodadas](relatorio_rodada_blobs.py). Reutilizam leitura,
+exportação, composição visual e o avaliador atual de indivíduos. Os
+executores, planos e resultados anteriores foram preservados.
 
-Saídas propostas, seguindo a organização já usada:
+Saídas das rodadas implementadas e organização prevista para seleção/vídeos:
 
 ```text
 resultados/frame-to-frame/blobs/round<N>/
@@ -246,8 +282,9 @@ resultados/videos/blobs/<selecao-ou-final>/batch__<execucao>/
   <configuracao>__<execucao>/         parâmetros, tabelas e vídeos
 ```
 
-O nome legível terá um identificador derivado de todos os parâmetros. Cada
-execução registrará entradas, hashes, parâmetros, versões, código e situação.
+O nome curto das configurações tem um hash derivado de todos os parâmetros
+efetivos, classificação e regra de caixa. Cada execução registra entradas,
+hashes, parâmetros, versões, código e situação.
 Não depender somente da seed nem de um commit com alterações locais.
 Preservar saídas anteriores, falhas parciais e registros de imagens sem objetos.
 
@@ -261,9 +298,26 @@ O ambiente da limiarização registrou `opencv-python 4.13.0.92`. Essa versão
 foi fixada em [requirements-blobs.txt](../algoritmos/classicos/requirements-blobs.txt)
 como referência inicial. O executor registra as versões importadas e os
 parâmetros efetivos do OpenCV, além da configuração originalmente informada.
-Os testes preparados cobrem geometria, bordas, medidas ausentes, parâmetros
-inválidos, preservação da entrada, exportação e compatibilidade dos resultados
-antigos. Os experimentos com a base permanecem a cargo do pesquisador.
+
+A implementação do round1 passou em **179 testes sintéticos: 66 novos e
+113 de regressão**. Foram revisadas oito páginas do PDF sintético. A
+conferência real `--conferir` passou para 48 configurações e 178 quadros,
+sem detecção nem criação de resultados. Ela verifica dependências, planos,
+hashes e decodificação das imagens antes da execução. Essas conferências não
+constituem medição de desempenho do detector na base.
+
+Na raiz do projeto:
+
+```powershell
+& "C:\Python313\python.exe" ".\scripts\blobs\executar_rodada.py" --rodada round1 --conferir
+& "C:\Python313\python.exe" ".\scripts\blobs\executar_rodada.py" --rodada round1
+```
+
+O segundo comando executa as 8.544 avaliações e fica a cargo do pesquisador.
+Também há `--plano` para indicar a lista salva e `--somente-relatorio` para
+gerar nova versão do PDF a partir de um batch concluído. Os cinco planos
+de desenvolvimento foram executados e analisados. Os executores
+de seleção e vídeos de blobs dependem das próximas etapas.
 
 ## 6. Limitações a preservar na interpretação
 
@@ -293,14 +347,15 @@ antigos. Os experimentos com a base permanecem a cargo do pesquisador.
    adequação no round0 antes dos batches.
 3. Classificação inicial por área estimada, com limites próprios e três classes.
 4. Mesmo ciclo e dados, F1 de indivíduos desde o início e diagnóstico por classe.
-5. Até cinco rodadas, teto proposto de tentativas e seed 42 quando houver sorteio.
+5. Até cinco rodadas, teto aprovado de 136 execuções e 122 distintas;
+   distribuição 48/32/24/18/14. Round1 gerado com seed 42.
 
-O plano numérico do round1 será uma entrega posterior ao diagnóstico da
-inspeção inicial. O pesquisador executou o round0, com 12 avaliações
-concluídas; os resultados não demonstraram eficácia satisfatória. Nenhuma
-rodada ampla de blobs foi executada.
+O plano numérico do round1 está preparado após o diagnóstico da inspeção
+inicial. O pesquisador executou o round0, com 12 avaliações concluídas;
+os resultados não demonstraram eficácia satisfatória. Nenhuma rodada ampla
+de blobs foi executada, e não há cinco finalistas de blobs escolhidas.
 
-## 8. Viabilidade estrutural e round0 preparado
+## 8. Viabilidade estrutural e round0 concluído
 
 Foi conferido o formato das caixas anotadas nos mesmos 178 JPEGs de
 desenvolvimento. As dimensões foram lidas dos cabeçalhos JPEG; larguras e
@@ -323,7 +378,8 @@ de seleção. Nenhuma anotação foi excluída.
 A maioria das caixas anotadas tem formato próximo do quadrado, inclusive
 nas classes 1 e 2. Portanto, sua geometria não impede tentar a representação
 proposta. Isso não comprova que o blob estime o centro e o diâmetro corretos
-nem que a região biológica seja circular. Essa adequação depende do round0.
+nem que a região biológica seja circular. O diagnóstico do round0 mostrou
+limitações de extensão das caixas e candidatos excedentes.
 
 O [plano de inspeção](../scripts/blobs/inspecao/round0.json) fixa seis imagens
 de desenvolvimento e duas configurações, clara e escura: **12 avaliações**.
@@ -337,7 +393,8 @@ de forma desligados. A classificação usa diâmetros hipotéticos de 8 e 24
 pixels, convertidos em área estimada. São valores de sondagem, sem calibração
 ou alegação biológica. Motivos e comandos estão no guia de blobs.
 
-O round0 foi executado e a revisão identificou a necessidade de investigar
-candidatos e delimitação antes de definir o round1 nos 178 quadros. O ciclo
-de seleção e vídeos permanece viável como estrutura, condicionado ao
-diagnóstico, à revisão das hipóteses e à adaptação dos executores seguintes.
+O round0 foi executado e diagnosticado. A saída é compatível com o avaliador;
+candidatos e delimitação são os principais eixos de investigação do round1
+nos 178 quadros. O executor e o plano do round1 estão preparados. Seleção e
+vídeos permanecem previstos, com os respectivos executores ainda a preparar.
+Bom F1 não é requisito de integração.
